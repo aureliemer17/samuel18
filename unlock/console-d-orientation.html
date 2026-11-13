@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='8' fill='%23141d18'/%3E%3Ccircle cx='32' cy='32' r='20' fill='%236f9d61'/%3E%3Ccircle cx='32' cy='32' r='8' fill='%23141d18'/%3E%3C/svg%3E" />
+    <title>Console</title>
+    <style>
+      :root { --deep: #111b16; --machine: #293d31; --green: #93b775; --acid: #d5e883; --brass: #b8a96d; --ink: #111914; }
+      * { box-sizing: border-box; }
+      body { align-items: center; background: radial-gradient(circle at 50% 0%, #506351, #17241d 54%, #0b120e); display: flex; justify-content: center; margin: 0; min-height: 100vh; overflow: hidden; padding: 18px; }
+      main { width: min(100%, 670px); }
+      .instruction { color: #e4edc6; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: clamp(.8rem, 2.4vw, 1.1rem); font-weight: 900; letter-spacing: .14em; margin: 0 0 13px; text-align: center; text-shadow: 0 0 10px rgba(213, 232, 131, .8); text-transform: uppercase; }
+      .console { background: linear-gradient(145deg, #516154, #1c2a21 39%, #344638); border: 7px solid #0c130f; border-radius: 28px; box-shadow: 0 24px 45px rgba(0, 0, 0, .52), inset 0 2px 1px rgba(255, 255, 255, .25), inset 0 -8px 16px #0a100c; display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(155px, .85fr); gap: clamp(15px, 5vw, 45px); padding: clamp(20px, 5vw, 45px); position: relative; width: 100%; }
+      .console::before { background-image: radial-gradient(rgba(225, 238, 194, .15) 1px, transparent 1px); background-size: 7px 7px; border-radius: inherit; content: ""; inset: 0; pointer-events: none; position: absolute; }
+      .mechanism { align-items: center; display: flex; justify-content: center; min-width: 0; position: relative; }
+      .gear { animation: rotate 20s linear infinite; aspect-ratio: 1; background: repeating-conic-gradient(from 0deg, #99b676 0deg 7deg, #34513b 7deg 14deg); clip-path: polygon(50% 0%, 56% 6%, 65% 2%, 69% 10%, 79% 9%, 80% 18%, 90% 22%, 86% 31%, 97% 38%, 90% 46%, 100% 54%, 90% 60%, 96% 71%, 86% 73%, 88% 84%, 78% 83%, 74% 94%, 65% 89%, 57% 100%, 50% 91%, 42% 100%, 35% 89%, 26% 94%, 22% 83%, 12% 84%, 14% 73%, 4% 71%, 10% 60%, 0% 54%, 10% 46%, 3% 38%, 14% 31%, 10% 22%, 20% 18%, 21% 9%, 31% 10%, 35% 2%, 44% 6%); filter: drop-shadow(0 8px 3px rgba(0, 0, 0, .6)); max-width: 260px; position: relative; width: 100%; }
+      .gear::before { background: repeating-conic-gradient(#d1db91 0deg 4deg, #58764e 4deg 9deg); border: clamp(10px, 4vw, 22px) solid #243c2d; border-radius: 50%; box-shadow: inset 0 0 15px #102018, 0 0 0 4px #b3a76d; content: ""; inset: 16%; position: absolute; }
+      .gear::after { background: radial-gradient(circle at 35% 30%, #edf0ba, #8c9f64 28%, #2a442f 31%, #18291e 67%); border: 5px solid #0c1710; border-radius: 50%; box-shadow: inset 0 0 0 5px #688553, 0 0 0 3px #b3a76d; content: ""; inset: 36%; position: absolute; }
+      .panel { background: linear-gradient(145deg, #19271f, #0d1711); border: 4px solid #0a100c; box-shadow: inset 0 0 0 2px #60765b, 5px 7px 0 rgba(0, 0, 0, .28); min-width: 0; padding: 14px; position: relative; }
+      .screen { align-items: center; background: #07120b; border: 3px solid #060a07; box-shadow: inset 0 0 12px #000, 0 0 0 1px #789265; color: var(--acid); display: flex; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: clamp(1rem, 4vw, 1.6rem); height: 49px; justify-content: center; letter-spacing: .3em; margin-bottom: 14px; padding-left: .3em; text-shadow: 0 0 8px #d5e883; }
+      .keypad { display: grid; gap: 7px; grid-template-columns: repeat(3, 1fr); }
+      .key { appearance: none; background: linear-gradient(145deg, #a0af8b, #50664f 55%, #324633); border: 2px solid #0a110c; box-shadow: inset 0 1px 1px rgba(255, 255, 255, .35), 0 3px 0 #070b08; color: #f4f0cc; cursor: pointer; font-family: ui-monospace, monospace; font-size: 1.05rem; font-weight: 900; min-height: 37px; padding: 0; text-shadow: 0 1px #172217; transition: transform .06s, box-shadow .06s; }
+      .key:active { box-shadow: inset 0 2px 5px #182519, 0 1px 0 #070b08; transform: translateY(2px); }
+      .key--clear { color: #f4bb98; }
+      .key--enter { background: linear-gradient(145deg, #d6d982, #758b46 55%, #4d6439); color: #111a11; grid-column: span 2; }
+      .error { animation: shake .28s linear; }
+      @keyframes rotate { to { transform: rotate(360deg); } }
+      @keyframes shake { 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+      @media (max-width: 430px) { .console { gap: 16px; grid-template-columns: minmax(0, 1fr) minmax(124px, .72fr); padding: 18px; } .panel { padding: 10px; } .key { min-height: 32px; } }
+    </style>
+  </head>
+  <body>
+    <main>
+      <p class="instruction">Selectionner une machine</p>
+      <section class="console">
+        <div class="mechanism" aria-hidden="true"><div class="gear"></div></div>
+        <section class="panel" aria-label="Console de navigation">
+          <output class="screen" id="screen" aria-live="polite"></output>
+          <div class="keypad" id="keypad">
+            <button class="key" type="button" data-key="1">1</button><button class="key" type="button" data-key="2">2</button><button class="key" type="button" data-key="3">3</button>
+            <button class="key" type="button" data-key="4">4</button><button class="key" type="button" data-key="5">5</button><button class="key" type="button" data-key="6">6</button>
+            <button class="key" type="button" data-key="7">7</button><button class="key" type="button" data-key="8">8</button><button class="key" type="button" data-key="9">9</button>
+            <button class="key key--clear" type="button" data-clear="true">C</button><button class="key" type="button" data-key="0">0</button><button class="key key--enter" type="button" data-enter="true">OK</button>
+          </div>
+        </section>
+      </section>
+    </main>
+    <script>
+      // Add future destinations here. The key is the code typed on the console.
+      const destinations = {
+        1: "ascenseur-magique.html",
+        2: "boite-a-cle.html",
+      };
+      const screen = document.querySelector("#screen");
+      const keypad = document.querySelector("#keypad");
+      const panel = document.querySelector(".panel");
+      let code = "";
+
+      function render() {
+        screen.textContent = code;
+      }
+
+      function reject() {
+        panel.classList.remove("error");
+        window.requestAnimationFrame(() => panel.classList.add("error"));
+        code = "";
+        window.setTimeout(render, 280);
+      }
+
+      function submit() {
+        const destination = destinations[code];
+        if (destination) window.location.assign(destination);
+        else reject();
+      }
+
+      keypad.addEventListener("click", (event) => {
+        const key = event.target.closest("button");
+        if (!key) return;
+        if (key.dataset.clear) { code = ""; render(); return; }
+        if (key.dataset.enter) { submit(); return; }
+        if (code.length < 4) { code += key.dataset.key; render(); }
+      });
+    </script>
+  </body>
+</html>
