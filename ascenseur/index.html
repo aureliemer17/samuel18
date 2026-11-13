@@ -1,7 +1,6 @@
 <!doctype html>
 <html lang="fr">
   <head>
-<link rel="manifest" href="manifest.webmanifest"/>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>L'ascenseur capricieux</title>
@@ -53,6 +52,8 @@
       .shaft { background: #11100f; border: clamp(4px, 1.2vw, 10px) solid #9a887b; box-shadow: inset 0 0 0 clamp(2px, .4vw, 4px) #342c28, 0 3px 10px #1b100b; inset: 8% 10% 0; overflow: hidden; position: absolute; }
       .shaft::before { background: linear-gradient(180deg, #d8c8b9 0%, #6f625a 20%, #392f2a 25%, transparent 26%); content: ""; height: 13%; left: 0; position: absolute; right: 0; top: 0; z-index: 3; }
       .cabin { height: 100%; inset: 0; overflow: hidden; position: absolute; width: 100%; }
+      .unlock-message { align-items: center; color: #f7e6cc; display: flex; flex-direction: column; font-family: Arial, sans-serif; font-size: clamp(.7rem, 2.4vw, 1.5rem); font-weight: 900; height: 100%; justify-content: center; letter-spacing: .18em; opacity: 0; position: absolute; text-align: center; text-shadow: 0 0 10px rgba(247, 230, 204, .75); transition: opacity .35s ease .45s; width: 100%; z-index: 1; }
+      .unlock-message__code { font-size: 1.7em; letter-spacing: .08em; margin-top: .45em; }
       .doors { height: 100%; inset: 0; pointer-events: none; position: absolute; z-index: 2; }
       .door { background: linear-gradient(105deg, #4d4540 0%, #b3a89d 10%, #716862 23%, #c9beb1 46%, #645b56 67%, #a69c91 88%, #423b37 100%); border-color: #27221f; border-style: solid; box-shadow: inset 0 0 18px rgba(255, 237, 215, .16), inset 0 -35px 30px rgba(27, 20, 16, .42); height: 100%; position: absolute; top: 0; transition: transform 1.15s cubic-bezier(.7, 0, .2, 1); width: 50%; }
       .door::after { background: linear-gradient(180deg, transparent, rgba(255, 244, 224, .22), transparent); content: ""; inset: 0; opacity: .7; position: absolute; }
@@ -60,6 +61,7 @@
       .door--right { background-position: 100% 0; border-width: 0 0 0 2px; right: 0; }
       .cabin.doors-open .door--left { transform: translateX(-102%); }
       .cabin.doors-open .door--right { transform: translateX(102%); }
+      .cabin.doors-open .unlock-message { opacity: 1; }
 
       .panel { align-self: center; background: linear-gradient(90deg, #514842, #c0b5aa 45%, #5b5049); border: clamp(2px, .5vw, 4px) solid #352b27; box-shadow: 0 2px 5px rgba(0, 0, 0, .45); min-width: 0; padding: clamp(5px, .8vw, 9px); width: 100%; }
       .panel-label { display: none; }
@@ -100,7 +102,7 @@
 
       <section class="scene" aria-label="Ascenseur et panneau d'appel">
         <div class="building">
-          <div class="shaft"><div class="cabin" id="cabin" aria-label="Portes de l'ascenseur fermees"><div class="doors" aria-hidden="true"><div class="door door--left"></div><div class="door door--right"></div></div></div></div>
+          <div class="shaft"><div class="cabin" id="cabin" aria-label="Portes de l'ascenseur fermees"><div class="unlock-message" id="unlockMessage"><span>UNLOCK</span><strong class="unlock-message__code" id="unlockCode"></strong></div><div class="doors" aria-hidden="true"><div class="door door--left"></div><div class="door door--right"></div></div></div></div>
         </div>
         <div class="panel">
           <button class="call-button" id="callButton" type="button" aria-label="Appeler l'ascenseur"><span class="arrows" aria-hidden="true"><span class="arrow arrow--up"></span><span class="arrow arrow--down"></span></span></button>
@@ -126,8 +128,10 @@
       const cabin = document.querySelector("#cabin");
       const debug = document.querySelector("#debug");
       const micLevel = document.querySelector("#micLevel");
+      const unlockCode = document.querySelector("#unlockCode");
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      const setupMode = new URLSearchParams(window.location.search).has("setup");
+      const parameters = new URLSearchParams(window.location.search);
+      const setupMode = parameters.has("setup");
       let unlocked = false;
       let recognition;
       let microphoneStream;
@@ -136,6 +140,12 @@
       let shouldListen = false;
 
       document.body.classList.toggle("setup", setupMode);
+
+      const rawCode = parameters.get("code");
+      if (/^-?\d+$/.test(rawCode ?? "")) {
+        // XOR obscures the displayed value without putting it directly in the URL.
+        unlockCode.textContent = String(Number(rawCode) ^ 7319);
+      }
 
       function log(message) {
         const timestamp = new Date().toLocaleTimeString("fr-FR");
