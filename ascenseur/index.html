@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+<link rel="manifest" href="manifest.webmanifest"/>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>L'ascenseur capricieux</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --ink: #172017;
+        --cream: #f4eddc;
+        --wall: #d9cdb6;
+        --metal: #738079;
+        --dark-metal: #343d38;
+        --red: #ef5b47;
+        --green: #a8f06b;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        align-items: center;
+        background: radial-gradient(circle at 18% 15%, #bdc1c4 0 4%, transparent 25%), #64686a;
+        color: var(--ink);
+        display: flex;
+        font-family: Georgia, "Times New Roman", serif;
+        justify-content: center;
+        margin: 0;
+        min-height: 100vh;
+        padding: 24px;
+        transition: background .5s ease;
+      }
+
+      body.mic-ready { background: radial-gradient(circle at 18% 15%, #ffd36c 0 4%, transparent 25%), linear-gradient(135deg, #e87b32, #b54024); }
+
+      main {
+        background: var(--cream);
+        border: 5px solid #111812;
+        box-shadow: 12px 12px 0 #111812;
+        max-width: 900px;
+        min-width: 0;
+        padding: 28px;
+        width: 100%;
+      }
+
+      h1 { display: none; }
+      .subtitle { font-family: Arial, sans-serif; font-size: .85rem; font-weight: 700; letter-spacing: .12em; margin: 18px 0 26px; text-transform: uppercase; }
+
+      .scene { --gap: 5px; align-items: center; display: grid; gap: var(--gap); grid-template-columns: minmax(0, 1fr) minmax(0, .22fr); min-width: 0; width: 100%; }
+      .building { background: linear-gradient(90deg, #3f281d 0%, #79513a 8%, #2f1d16 22%, #573926 50%, #2d1d16 78%, #76503a 92%, #3b251b 100%); border: 5px solid #2a1b15; box-shadow: inset 0 0 0 clamp(6px, 1.5vw, 14px) #a97e5d, inset 0 0 24px #160e0a; aspect-ratio: 5 / 6.5; min-width: 0; overflow: hidden; padding: 0; position: relative; width: 100%; }
+      .floor-number { display: none; }
+      .shaft { background: #11100f; border: clamp(4px, 1.2vw, 10px) solid #9a887b; box-shadow: inset 0 0 0 clamp(2px, .4vw, 4px) #342c28, 0 3px 10px #1b100b; inset: 8% 10% 0; overflow: hidden; position: absolute; }
+      .shaft::before { background: linear-gradient(180deg, #d8c8b9 0%, #6f625a 20%, #392f2a 25%, transparent 26%); content: ""; height: 13%; left: 0; position: absolute; right: 0; top: 0; z-index: 3; }
+      .cabin { height: 100%; inset: 0; overflow: hidden; position: absolute; width: 100%; }
+      .doors { height: 100%; inset: 0; pointer-events: none; position: absolute; z-index: 2; }
+      .door { background: linear-gradient(105deg, #4d4540 0%, #b3a89d 10%, #716862 23%, #c9beb1 46%, #645b56 67%, #a69c91 88%, #423b37 100%); border-color: #27221f; border-style: solid; box-shadow: inset 0 0 18px rgba(255, 237, 215, .16), inset 0 -35px 30px rgba(27, 20, 16, .42); height: 100%; position: absolute; top: 0; transition: transform 1.15s cubic-bezier(.7, 0, .2, 1); width: 50%; }
+      .door::after { background: linear-gradient(180deg, transparent, rgba(255, 244, 224, .22), transparent); content: ""; inset: 0; opacity: .7; position: absolute; }
+      .door--left { border-width: 0 2px 0 0; left: 0; }
+      .door--right { background-position: 100% 0; border-width: 0 0 0 2px; right: 0; }
+      .cabin.doors-open .door--left { transform: translateX(-102%); }
+      .cabin.doors-open .door--right { transform: translateX(102%); }
+
+      .panel { align-self: center; background: linear-gradient(90deg, #514842, #c0b5aa 45%, #5b5049); border: clamp(2px, .5vw, 4px) solid #352b27; box-shadow: 0 2px 5px rgba(0, 0, 0, .45); min-width: 0; padding: clamp(5px, .8vw, 9px); width: 100%; }
+      .panel-label { display: none; }
+      .call-button { align-items: center; appearance: none; background: radial-gradient(circle at 35% 28%, #f1ebe1, #a39a91 53%, #615a54 100%); border: clamp(2px, .7vw, 4px) solid #39322d; border-radius: 50%; box-shadow: inset 0 1px 2px rgba(255, 255, 255, .8), inset 0 -2px 4px rgba(24, 19, 16, .6), 0 clamp(3px, 1.5vw, 8px) 0 #39312d; color: #2d2824; cursor: pointer; display: grid; height: auto; justify-content: center; min-height: 0; padding: 0; place-content: center; transition: box-shadow .08s, transform .08s, background .2s; width: 100%; aspect-ratio: 1; }
+      .arrows { display: grid; gap: clamp(1px, .25vw, 3px); justify-items: center; }
+      .arrow { border-left: clamp(5px, 1.5vw, 11px) solid transparent; border-right: clamp(5px, 1.5vw, 11px) solid transparent; filter: drop-shadow(0 1px 0 rgba(255, 255, 255, .5)); height: 0; width: 0; }
+      .arrow--up { border-bottom: clamp(8px, 2.2vw, 16px) solid #312b27; }
+      .arrow--down { border-top: clamp(8px, 2.2vw, 16px) solid #312b27; }
+      .call-button:active, .call-button.pressed { box-shadow: 0 2px 0 #111812; transform: translateY(6px); }
+      .call-button.unlocked { background: var(--green); box-shadow: 0 0 20px var(--green), 0 8px 0 #111812; }
+      .call-button.unlocked:active, .call-button.unlocked.pressed { box-shadow: 0 0 20px var(--green), 0 2px 0 #111812; }
+      .call-button:focus-visible, .microphone:focus-visible { outline: 4px solid var(--red); outline-offset: 4px; }
+
+      .status { background: #ebe2cd; border: 3px solid var(--ink); font-family: Arial, sans-serif; font-size: .9rem; font-weight: 700; margin-top: 25px; min-height: 54px; padding: 16px; }
+      .status strong { color: #b53c2d; }
+      .status.ready strong { color: #3d7c22; }
+      .microphone { background: var(--red); border: 3px solid var(--ink); box-shadow: 4px 4px 0 var(--ink); color: #fff; cursor: pointer; font-family: Arial, sans-serif; font-size: .8rem; font-weight: 900; letter-spacing: .06em; margin-top: 18px; padding: 13px 16px; text-transform: uppercase; }
+      .microphone.listening { background: #315f38; }
+      .microphone:disabled { cursor: not-allowed; opacity: .55; }
+      .mic-level { background: #19231d; border: 3px solid var(--ink); height: 16px; margin-top: 15px; overflow: hidden; width: 100%; }
+      .mic-level__fill { background: var(--green); height: 100%; transform-origin: left; transform: scaleX(0); transition: transform .06s linear; width: 100%; }
+      .hint { font-family: Arial, sans-serif; font-size: .82rem; line-height: 1.45; margin: 14px 0 0; }
+      .test-button { background: transparent; border: 2px solid var(--ink); cursor: pointer; font-family: Arial, sans-serif; font-size: .72rem; font-weight: 800; letter-spacing: .04em; margin: 18px 0 0 10px; padding: 12px 14px; text-transform: uppercase; }
+      details { border-top: 2px solid var(--ink); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .75rem; margin-top: 22px; padding-top: 12px; }
+      summary { cursor: pointer; font-family: Arial, sans-serif; font-weight: 800; text-transform: uppercase; }
+      #debug { line-height: 1.5; margin: 10px 0 0; max-height: 180px; overflow: auto; white-space: pre-wrap; }
+      .setup-only { display: none; }
+      body.setup .setup-only { display: block; }
+      body.setup .test-button { display: inline-block; }
+      body.setup .setup-banner { background: var(--red); color: #fff; font-family: Arial, sans-serif; font-size: .75rem; font-weight: 900; letter-spacing: .08em; margin: -8px 0 20px; padding: 9px 12px; text-transform: uppercase; }
+
+      @media (max-width: 600px) { body { padding: 8px; } main { padding: 14px; } }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="setup-banner setup-only">Mode preparation : activez le micro ici, puis partagez la page sans <code>?setup=1</code>.</div>
+
+      <section class="scene" aria-label="Ascenseur et panneau d'appel">
+        <div class="building">
+          <div class="shaft"><div class="cabin" id="cabin" aria-label="Portes de l'ascenseur fermees"><div class="doors" aria-hidden="true"><div class="door door--left"></div><div class="door door--right"></div></div></div></div>
+        </div>
+        <div class="panel">
+          <button class="call-button" id="callButton" type="button" aria-label="Appeler l'ascenseur"><span class="arrows" aria-hidden="true"><span class="arrow arrow--up"></span><span class="arrow arrow--down"></span></span></button>
+        </div>
+      </section>
+
+      <div class="status setup-only" id="status" role="status"><strong>PREPARATION.</strong> Activez le micro avant de donner l'enigme.</div>
+      <button class="microphone setup-only" id="microphone" type="button">Activer le micro</button>
+      <div class="mic-level setup-only" aria-label="Niveau du microphone"><div class="mic-level__fill" id="micLevel"></div></div>
+      <button class="test-button setup-only" id="testButton" type="button">Tester sans micro</button>
+      <p class="hint setup-only">Une fois l'autorisation accordee, revenez a l'URL normale. Aucun indice vocal ne sera visible.</p>
+      <details class="setup-only">
+        <summary>Diagnostic</summary>
+        <pre id="debug"></pre>
+      </details>
+    </main>
+
+    <script>
+      const callButton = document.querySelector("#callButton");
+      const microphone = document.querySelector("#microphone");
+      const testButton = document.querySelector("#testButton");
+      const status = document.querySelector("#status");
+      const cabin = document.querySelector("#cabin");
+      const debug = document.querySelector("#debug");
+      const micLevel = document.querySelector("#micLevel");
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const setupMode = new URLSearchParams(window.location.search).has("setup");
+      let unlocked = false;
+      let recognition;
+      let microphoneStream;
+      let audioContext;
+      let meterFrame;
+      let shouldListen = false;
+
+      document.body.classList.toggle("setup", setupMode);
+
+      function log(message) {
+        const timestamp = new Date().toLocaleTimeString("fr-FR");
+        debug.textContent = `[${timestamp}] ${message}\n` + debug.textContent;
+        console.info("Ascenseur:", message);
+      }
+
+      function setMicrophoneState(ready) {
+        document.body.classList.toggle("mic-ready", ready);
+        log(ready ? "Micro operationnel." : "Micro non operationnel.");
+      }
+
+      function unlock(source) {
+        if (unlocked) return;
+        unlocked = true;
+        stopListening();
+        callButton.classList.add("unlocked");
+        microphone?.classList.remove("listening");
+        if (setupMode) microphone.textContent = "Mot magique detecte";
+        playDoorChime();
+        cabin.classList.add("doors-open");
+        cabin.setAttribute("aria-label", "Portes de l'ascenseur ouvertes");
+        updateStatus("<strong>DEVERROUILLE.</strong> " + source + " Vous pouvez appeler l'ascenseur.", true);
+        log("Ascenseur deverrouille: " + source);
+      }
+
+      function stopMeter() {
+        window.cancelAnimationFrame(meterFrame);
+        micLevel.style.transform = "scaleX(0)";
+        audioContext?.close();
+        audioContext = undefined;
+        microphoneStream?.getTracks().forEach((track) => track.stop());
+        microphoneStream = undefined;
+      }
+
+      function stopListening() {
+        shouldListen = false;
+        recognition?.stop();
+        stopMeter();
+        microphone.classList.remove("listening");
+      }
+
+      function startMeter(stream) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return;
+        audioContext = new AudioContext();
+        const analyser = audioContext.createAnalyser();
+        const samples = new Uint8Array(analyser.fftSize);
+        audioContext.createMediaStreamSource(stream).connect(analyser);
+
+        function renderMeter() {
+          analyser.getByteTimeDomainData(samples);
+          const volume = samples.reduce((total, value) => total + Math.abs(value - 128), 0) / samples.length;
+          micLevel.style.transform = `scaleX(${Math.min(volume / 22, 1)})`;
+          meterFrame = window.requestAnimationFrame(renderMeter);
+        }
+        renderMeter();
+      }
+
+      function updateStatus(message, ready = false) {
+        status.innerHTML = message;
+        status.classList.toggle("ready", ready);
+      }
+
+      function pressButton() {
+        callButton.classList.add("pressed");
+        window.setTimeout(() => callButton.classList.remove("pressed"), 130);
+      }
+
+      function playLockedBuzzer() {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return;
+        const context = new AudioContext();
+        const oscillator = context.createOscillator();
+        const gain = context.createGain();
+        oscillator.type = "square";
+        oscillator.frequency.value = 105;
+        gain.gain.setValueAtTime(.08, context.currentTime);
+        gain.gain.exponentialRampToValueAtTime(.001, context.currentTime + .22);
+        oscillator.connect(gain).connect(context.destination);
+        oscillator.start();
+        oscillator.stop(context.currentTime + .22);
+        oscillator.addEventListener("ended", () => context.close());
+      }
+
+      function playDoorChime() {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return;
+        const context = new AudioContext();
+        const gain = context.createGain();
+        gain.gain.setValueAtTime(.09, context.currentTime);
+        gain.gain.exponentialRampToValueAtTime(.001, context.currentTime + .75);
+        gain.connect(context.destination);
+        [880, 1320].forEach((frequency, index) => {
+          const oscillator = context.createOscillator();
+          oscillator.type = "sine";
+          oscillator.frequency.value = frequency;
+          oscillator.connect(gain);
+          oscillator.start(context.currentTime + index * .12);
+          oscillator.stop(context.currentTime + .72);
+        });
+        window.setTimeout(() => context.close(), 800);
+      }
+
+      function playPageBuzzer() {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return;
+        const context = new AudioContext();
+        const oscillator = context.createOscillator();
+        const gain = context.createGain();
+        oscillator.type = "triangle";
+        oscillator.frequency.setValueAtTime(280, context.currentTime);
+        oscillator.frequency.exponentialRampToValueAtTime(190, context.currentTime + .12);
+        gain.gain.setValueAtTime(.045, context.currentTime);
+        gain.gain.exponentialRampToValueAtTime(.001, context.currentTime + .14);
+        oscillator.connect(gain).connect(context.destination);
+        oscillator.start();
+        oscillator.stop(context.currentTime + .14);
+        oscillator.addEventListener("ended", () => context.close());
+      }
+
+      callButton.addEventListener("click", () => {
+        pressButton();
+        if (!unlocked) {
+          playLockedBuzzer();
+          log("Appel ignore: ascenseur encore verrouille.");
+          if (setupMode) updateStatus("<strong>VERROUILLE.</strong> Le bouton ne repond pas encore.");
+          return;
+        }
+        cabin.classList.add("doors-open");
+        cabin.setAttribute("aria-label", "Portes de l'ascenseur ouvertes");
+        updateStatus("<strong>PORTES OUVERTES.</strong> L'ascenseur est disponible.", true);
+        log("Ouverture des portes demandee.");
+      });
+
+      document.addEventListener("click", (event) => {
+        if (event.target.closest("button, details, summary")) return;
+        playPageBuzzer();
+      });
+
+      if (!SpeechRecognition) {
+        setMicrophoneState(false);
+        if (setupMode) {
+          microphone.disabled = true;
+          updateStatus("<strong>MICRO INDISPONIBLE.</strong> Ouvrez cette page dans Chrome ou Edge.");
+        }
+        log("SpeechRecognition indisponible dans ce navigateur.");
+      } else {
+        recognition = new SpeechRecognition();
+        recognition.lang = "fr-FR";
+        recognition.continuous = true;
+        recognition.interimResults = true;
+        log("SpeechRecognition disponible, langue: fr-FR.");
+
+        recognition.onstart = () => {
+          setMicrophoneState(true);
+        };
+
+        recognition.onresult = (event) => {
+          Array.from(event.results)
+            .slice(event.resultIndex)
+            .forEach((result) => {
+              const transcript = result[0].transcript.trim().toLowerCase();
+              const command = transcript
+                .normalize("NFKD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .replace(/[’']/g, "'")
+                .replace(/\s+/g, " ")
+                .replace(/^[^\p{L}]+|[^\p{L}]+$/gu, "");
+              updateStatus("<strong>ECOUTE :</strong> « " + transcript + " »");
+              log(`Transcription ${result.isFinal ? "finale" : "intermediaire"}: ${transcript} | commande: ${command}`);
+
+              // Only a single, final magic word is accepted; phrases and “ascenseur” stay locked.
+              if (result.isFinal && ["senceur", "censeur", "sincere", "sans soeur", "sang soeur", "cent soeur", "sens soeur", "sent soeur", "s'en soeur"].includes(command)) {
+                unlock("Commande vocale reconnue.");
+              }
+            });
+        };
+
+        recognition.onerror = (event) => {
+          log("Erreur SpeechRecognition: " + event.error);
+          if (["not-allowed", "service-not-allowed", "audio-capture"].includes(event.error)) {
+            shouldListen = false;
+            stopMeter();
+            setMicrophoneState(false);
+            if (setupMode) {
+              microphone.classList.remove("listening");
+              microphone.textContent = "Verifier le micro";
+              updateStatus("<strong>MICRO BLOQUE.</strong> Autorisez le microphone pour cette page, puis rechargez-la.");
+            }
+          }
+        };
+
+        recognition.onend = () => {
+          log("Ecoute arretee.");
+          if (shouldListen && !unlocked) {
+            shouldListen = false;
+            stopMeter();
+            setMicrophoneState(false);
+            if (setupMode) {
+              microphone.classList.remove("listening");
+              microphone.textContent = "Relancer le micro";
+              updateStatus("<strong>ECOUTE ARRETEE.</strong> Cliquez pour la relancer.");
+            }
+            log("Ecoute arretee sans relance automatique.");
+          }
+        };
+
+        microphone.addEventListener("click", async () => {
+          if (unlocked) return;
+          if (shouldListen) {
+            stopListening();
+            microphone.textContent = "Activer le micro";
+            updateStatus("<strong>MICRO ARRETE.</strong> Cliquez pour recommencer l'ecoute.");
+            log("Ecoute arretee par l'utilisateur.");
+            return;
+          }
+          try {
+            microphone.disabled = true;
+            updateStatus("<strong>VERIFICATION DU MICRO.</strong> Autorisez l'acces quand le navigateur le demande.");
+            microphoneStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            startMeter(microphoneStream);
+            shouldListen = true;
+            recognition.start();
+            microphone.classList.add("listening");
+            microphone.textContent = "Ecoute active (cliquer pour arreter)";
+            updateStatus("<strong>ECOUTE ACTIVE.</strong> Verifiez que la jauge bouge, puis dites « senceur ».");
+            log("Micro autorise et ecoute activee.");
+          } catch (error) {
+            stopListening();
+            microphone.textContent = "Reessayer le micro";
+            updateStatus("<strong>MICRO INACCESSIBLE.</strong> " + error.name + ". Consultez Diagnostic.");
+            log("Impossible de demarrer le micro: " + error.name + " - " + error.message);
+          } finally {
+            microphone.disabled = false;
+          }
+        });
+      }
+
+      testButton.addEventListener("click", () => unlock("Mode test active, sans microphone."));
+
+      if (!setupMode && SpeechRecognition) {
+        try {
+          shouldListen = true;
+          recognition.start();
+          log("Ecoute visiteur demarree discretement.");
+        } catch (error) {
+          shouldListen = false;
+          log("Ecoute visiteur indisponible: " + error.name);
+        }
+      }
+    </script>
+  </body>
+</html>

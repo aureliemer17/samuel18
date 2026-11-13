@@ -1,0 +1,8 @@
+{
+ "name": "Ascenceur",
+ "short_name": "Ascenceur",
+ "start_url": "samuel18/ascenseur/",
+ "display": "standalone",
+ "background_color": "#64686a",
+ "theme_color" : "#b54024"
+}
