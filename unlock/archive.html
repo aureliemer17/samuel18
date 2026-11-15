@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Archives</title>
+    <style>
+      :root { --dark: #101614; --steel: #2f3b37; --steel-light: #6d7d72; --paper: #e2d8b8; --amber: #d39c45; --red: #b74338; }
+      * { box-sizing: border-box; }
+      body { align-items: center; background: radial-gradient(circle at 50% 0%, #53635a, #17221d 55%, #09100d); color: var(--paper); display: flex; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; justify-content: center; margin: 0; min-height: 100vh; padding: 20px; }
+      main { width: min(100%, 620px); }
+      .title { color: #edf0d7; font-size: clamp(.9rem, 3vw, 1.25rem); letter-spacing: .2em; margin: 0 0 13px; text-align: center; text-shadow: 0 0 9px rgba(222, 220, 164, .65); text-transform: uppercase; }
+      .archive-console { background: linear-gradient(145deg, #59655d, #1a2721 45%, #35453c); border: 7px solid #0a100d; box-shadow: 0 22px 45px rgba(0, 0, 0, .55), inset 0 2px 2px rgba(255, 255, 255, .22), inset 0 -8px 14px #090e0b; padding: clamp(18px, 5vw, 42px); }
+      .archive-console::before { background-image: radial-gradient(rgba(237, 240, 215, .13) 1px, transparent 1px); background-size: 7px 7px; content: ""; inset: 0; pointer-events: none; position: absolute; }
+      .selector { align-items: center; display: grid; gap: clamp(6px, 2vw, 17px); grid-template-columns: 1fr auto 1fr auto 1fr; position: relative; }
+      .divider { color: var(--amber); font-size: clamp(1.5rem, 6vw, 3rem); text-shadow: 0 0 8px rgba(211, 156, 69, .7); }
+      .wheel-unit { display: grid; gap: 8px; grid-template-rows: auto 1fr auto; justify-items: center; min-width: 0; }
+      .turn { appearance: none; background: transparent; border: 0; cursor: pointer; height: 30px; padding: 0; width: 45px; }
+      .turn::before { border-left: 14px solid transparent; border-right: 14px solid transparent; content: ""; display: block; margin: auto; width: 0; }
+      .turn--up::before { border-bottom: 18px solid #d9b85c; filter: drop-shadow(0 2px 0 #111); }
+      .turn--down::before { border-top: 18px solid #d9b85c; filter: drop-shadow(0 -2px 0 #111); }
+      .turn:active { transform: translateY(1px); }
+      .wheel { align-items: center; aspect-ratio: 1; background: repeating-conic-gradient(#9eae91 0deg 11deg, #334b3c 11deg 22deg); border-radius: 50%; box-shadow: 0 5px 4px #080d0a, inset 0 0 0 8px #1b2b22, inset 0 0 0 11px #829577; display: flex; justify-content: center; max-width: 150px; padding: 17%; position: relative; width: 100%; }
+      .wheel::before { background: radial-gradient(circle at 33% 28%, #f4eed3, #a8a994 38%, #536457 41%, #24362b 72%); border: 3px solid #0b110d; border-radius: 50%; box-shadow: inset 0 0 0 3px #829577; content: ""; inset: 13%; position: absolute; }
+      .wheel-value { color: #fff9d9; font-family: Georgia, serif; font-size: clamp(1.2rem, 6vw, 2.8rem); font-weight: 900; position: relative; text-shadow: 0 2px 2px #111; z-index: 1; }
+      .confirm { appearance: none; background: linear-gradient(145deg, #e1c168, #8d733b 52%, #5c492a); border: 3px solid #15180f; box-shadow: inset 0 1px 2px #ffedab, 0 4px 0 #0a0d09; color: #151b10; cursor: pointer; font-family: inherit; font-size: clamp(.75rem, 2.8vw, 1rem); font-weight: 900; letter-spacing: .14em; margin: 28px auto 0; min-height: 49px; padding: 0 24px; text-transform: uppercase; }
+      .confirm:active { box-shadow: inset 0 2px 5px #5c492a, 0 1px 0 #0a0d09; transform: translateY(3px); }
+      .return-link { color: #e4edc6; display: block; font-family: Arial, sans-serif; font-size: .7rem; font-weight: 900; letter-spacing: .1em; margin-top: 18px; text-align: center; text-decoration: none; text-transform: uppercase; }
+      @media (max-width: 380px) { .archive-console { padding: 16px 10px; } .selector { gap: 3px; } .wheel-unit { gap: 3px; } .wheel { padding: 13%; } .divider { font-size: 1.3rem; } }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1 class="title">Entrepôt documentaire</h1>
+      <section class="archive-console" aria-label="Sélecteur de dossier">
+        <div class="selector">
+          <div class="wheel-unit"><button class="turn turn--up" type="button" data-wheel="row" data-step="-1" aria-label="Rangée précédente"></button><div class="wheel"><output class="wheel-value" id="row">I</output></div><button class="turn turn--down" type="button" data-wheel="row" data-step="1" aria-label="Rangée suivante"></button></div>
+          <span class="divider" aria-hidden="true">-</span>
+          <div class="wheel-unit"><button class="turn turn--up" type="button" data-wheel="column" data-step="-1" aria-label="Colonne précédente"></button><div class="wheel"><output class="wheel-value" id="column">A</output></div><button class="turn turn--down" type="button" data-wheel="column" data-step="1" aria-label="Colonne suivante"></button></div>
+          <span class="divider" aria-hidden="true">-</span>
+          <div class="wheel-unit"><button class="turn turn--up" type="button" data-wheel="level" data-step="-1" aria-label="Niveau précédent"></button><div class="wheel"><output class="wheel-value" id="level">1</output></div><button class="turn turn--down" type="button" data-wheel="level" data-step="1" aria-label="Niveau suivant"></button></div>
+        </div>
+        <button class="confirm" id="confirm" type="button">Consulter le dossier</button>
+      </section>
+      <a class="return-link" href="index.html">Retour aux machines</a>
+    </main>
+    <script src="config.js"></script>
+    <script>
+      const values = { row: ["I", "II", "III", "IV", "V", "VI", "VII"], column: ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"], level: ["1", "2", "3", "4", "5", "6", "7", "8"] };
+      const position = { row: 0, column: 0, level: 0 };
+      const archiveConfig = window.PUZZLE_CONFIG.archives.media;
+
+      function render(wheel) { document.querySelector(`#${wheel}`).textContent = values[wheel][position[wheel]]; }
+      document.querySelectorAll(".turn").forEach((button) => button.addEventListener("click", () => {
+        const wheel = button.dataset.wheel;
+        position[wheel] = (position[wheel] + Number(button.dataset.step) + values[wheel].length) % values[wheel].length;
+        render(wheel);
+      }));
+      document.querySelector("#confirm").addEventListener("click", () => {
+        const code = `${values.row[position.row]}-${values.column[position.column]}-${values.level[position.level]}`;
+        window.location.assign(Object.hasOwn(archiveConfig, code) ? `archive/media.html#code=${encodeURIComponent(code)}` : "archive/acces-refuse.html");
+      });
+    </script>
+  </body>
+</html>

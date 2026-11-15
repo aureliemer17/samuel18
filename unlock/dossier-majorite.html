@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Le dossier de la majorité de Samuel</title>
+    <style>
+      :root { --paper: #e8dfc6; --ink: #20241d; --olive: #485940; --border: #7e8967; }
+      * { box-sizing: border-box; }
+      body { background: #d8d1bd; color: var(--ink); font-family: Georgia, serif; margin: 0; min-height: 100vh; padding: clamp(18px, 5vw, 52px); }
+      main { margin: auto; max-width: 1050px; }
+      header { border-bottom: 3px double var(--olive); margin-bottom: 30px; padding-bottom: 24px; }
+      .label { color: var(--olive); font-family: ui-monospace, monospace; font-size: .8rem; font-weight: 900; letter-spacing: .15em; }
+      h1 { font-size: clamp(2.4rem, 7vw, 5.4rem); line-height: .93; margin: 12px 0 0; }
+      .grid { display: grid; gap: 19px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+      .category { background: var(--paper); border: 2px solid var(--olive); box-shadow: 6px 6px 0 var(--border); color: var(--ink); min-height: 155px; padding: 21px; text-decoration: none; }
+      .category:hover { background: #f4ecd7; transform: translate(-2px, -2px); }
+      .category-code { color: var(--olive); font-family: ui-monospace, monospace; font-size: .82rem; font-weight: 900; }
+      .category-name { display: block; font-size: 1.35rem; margin-top: 10px; }
+    </style>
+  </head>
+  <body>
+    <main><header><div class="label">ACCÈS ADMINISTRATEUR</div><h1>Le dossier de la majorité de Samuel</h1></header><section class="grid" id="categories"></section></main>
+    <script src="config.js"></script>
+    <script>
+      const container = document.querySelector("#categories");
+      Object.entries(window.PUZZLE_CONFIG.archives.categories).forEach(([code, title]) => {
+        const link = document.createElement("a");
+        link.className = "category";
+        link.href = `archive/categorie.html#categorie=${encodeURIComponent(code)}`;
+        link.innerHTML = `<span class="category-code">${code}</span><strong class="category-name"></strong>`;
+        link.querySelector(".category-name").textContent = title;
+        container.append(link);
+      });
+    </script>
+  </body>
+</html>

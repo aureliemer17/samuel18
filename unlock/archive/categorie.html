@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Catégorie d'archive</title>
+    <style>
+      :root { --paper: #e8dfc6; --ink: #20241d; --olive: #485940; --border: #7e8967; }
+      * { box-sizing: border-box; }
+      body { background: #d8d1bd; color: var(--ink); font-family: Georgia, serif; margin: 0; min-height: 100vh; padding: clamp(18px, 5vw, 52px); }
+      main { margin: auto; max-width: 1050px; }
+      header { margin-bottom: 25px; }
+      .category-code { color: var(--olive); font-family: ui-monospace, monospace; font-weight: 900; letter-spacing: .15em; }
+      h1 { font-size: clamp(2rem, 6vw, 4rem); margin: 8px 0; }
+      .grid { display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
+      .item { background: var(--paper); border: 2px solid var(--olive); box-shadow: 5px 5px 0 var(--border); color: var(--ink); min-height: 145px; padding: 20px; text-decoration: none; }
+      .item:hover { background: #f4ecd7; transform: translate(-2px, -2px); }
+      .item-code { color: var(--olive); font-family: ui-monospace, monospace; font-size: .8rem; font-weight: 900; }
+      .item-title { display: block; font-size: 1.35rem; margin-top: 10px; }
+      .empty { background: var(--paper); border: 2px dashed var(--border); padding: 25px; }
+      .return { color: #2f4e31; display: inline-block; font-family: ui-monospace, monospace; font-weight: 900; margin-top: 30px; }
+    </style>
+  </head>
+  <body>
+    <main><header><div class="category-code" id="code"></div><h1 id="title"></h1></header><section class="grid" id="grid"></section><a class="return" href="../dossier-majorite.html">Retour au dossier de la majorité</a></main>
+    <script src="../config.js"></script>
+    <script>
+      const category = new URLSearchParams(window.location.hash.slice(1)).get("categorie");
+      const archives = window.PUZZLE_CONFIG.archives;
+      if (!archives.categories[category]) window.location.replace("acces-refuse.html");
+      document.title = archives.categories[category];
+      document.querySelector("#code").textContent = `CATÉGORIE ${category}`;
+      document.querySelector("#title").textContent = archives.categories[category];
+      const entries = Object.entries(archives.media).filter(([key]) => key.startsWith(`${category}-`));
+      const grid = document.querySelector("#grid");
+      if (!entries.length) grid.innerHTML = '<p class="empty">Aucun dossier référencé dans cette catégorie.</p>';
+      entries.forEach(([code, item]) => {
+        const link = document.createElement("a");
+        link.className = "item";
+        link.href = `media.html#code=${encodeURIComponent(code)}`;
+        link.innerHTML = `<span class="item-code">${code}</span><strong class="item-title"></strong>`;
+        link.querySelector(".item-title").textContent = item.title;
+        grid.append(link);
+      });
+    </script>
+  </body>
+</html>

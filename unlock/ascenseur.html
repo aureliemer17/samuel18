@@ -35,42 +35,41 @@
       body.mic-ready { background: radial-gradient(circle at 18% 15%, #ffd36c 0 4%, transparent 25%), linear-gradient(135deg, #e87b32, #b54024); }
 
       main {
-        background: var(--cream);
-        border: 5px solid #111812;
-        box-shadow: 12px 12px 0 #111812;
-        max-width: 900px;
+        max-width: 760px;
         min-width: 0;
-        padding: 28px;
+        padding: clamp(10px, 3vw, 28px);
         width: 100%;
       }
 
       h1 { display: none; }
       .subtitle { font-family: Arial, sans-serif; font-size: .85rem; font-weight: 700; letter-spacing: .12em; margin: 18px 0 26px; text-transform: uppercase; }
 
-      .scene { --gap: 5px; align-items: center; display: grid; gap: var(--gap); grid-template-columns: minmax(0, 1fr) minmax(0, .22fr); min-width: 0; width: 100%; }
-      .building { background: linear-gradient(90deg, #3f281d 0%, #79513a 8%, #2f1d16 22%, #573926 50%, #2d1d16 78%, #76503a 92%, #3b251b 100%); border: 5px solid #2a1b15; box-shadow: inset 0 0 0 clamp(6px, 1.5vw, 14px) #a97e5d, inset 0 0 24px #160e0a; aspect-ratio: 5 / 6.5; min-width: 0; overflow: hidden; padding: 0; position: relative; width: 100%; }
+      .scene { --gap: 5px; align-items: center; display: grid; gap: var(--gap); grid-template-columns: minmax(0, 1fr) minmax(0, .16fr); margin: auto; min-width: 0; width: min(100%, calc((100vh - 120px) * .89)); }
+      .building { background: linear-gradient(90deg, #ae8967 0%, #e7c5a0 10%, #d7ad82 29%, #f2d4ae 49%, #d4a97d 72%, #edcba4 91%, #a97e5e 100%); border: clamp(4px, .8vw, 7px) solid #9e714e; box-shadow: inset 0 0 0 clamp(4px, 1vw, 10px) #f4d7b5, inset 0 0 30px rgba(90, 51, 27, .35), 0 8px 14px rgba(49, 25, 14, .32); aspect-ratio: 5 / 6.5; min-width: 0; overflow: visible; padding: 0; position: relative; width: 100%; }
+      .building::before { background: linear-gradient(180deg, #f9e1c1, #bf8c60 13%, #f4d2a8 40%, #a8754d 43%, #efcda5 77%, #bd895c); border: clamp(3px, .6vw, 6px) solid #a77750; box-shadow: inset 0 3px 4px rgba(255, 255, 255, .65), 0 5px 7px rgba(58, 30, 15, .3); content: ""; height: 11%; left: -5%; position: absolute; right: -5%; top: -6%; z-index: 5; }
+      .building::after { background: linear-gradient(180deg, #f3d4ad, #bb865b 12%, #e8bd91 21%, #b37a4f 24%, #f7d9b4 57%, #c18c61 60%, #efc79d); border-bottom: clamp(3px, .6vw, 6px) solid #9d6c47; box-shadow: 0 4px 7px rgba(58, 30, 15, .25); content: ""; height: 19%; left: -3%; position: absolute; right: -3%; top: 0; z-index: 4; }
       .floor-number { display: none; }
-      .shaft { background: #11100f; border: clamp(4px, 1.2vw, 10px) solid #9a887b; box-shadow: inset 0 0 0 clamp(2px, .4vw, 4px) #342c28, 0 3px 10px #1b100b; inset: 8% 10% 0; overflow: hidden; position: absolute; }
-      .shaft::before { background: linear-gradient(180deg, #d8c8b9 0%, #6f625a 20%, #392f2a 25%, transparent 26%); content: ""; height: 13%; left: 0; position: absolute; right: 0; top: 0; z-index: 3; }
+      .shaft { background: #3d2b20; border: clamp(3px, .7vw, 7px) solid #7e583e; box-shadow: inset 0 0 0 clamp(2px, .4vw, 4px) #2f2119, 0 4px 8px rgba(57, 27, 13, .48); inset: 19% 12% 0; overflow: hidden; position: absolute; }
+      .shaft::before { background: linear-gradient(180deg, #d8a97a 0%, #8c5d3e 26%, #4a3022 30%, transparent 32%); content: ""; height: 10%; left: 0; position: absolute; right: 0; top: 0; z-index: 3; }
       .cabin { height: 100%; inset: 0; overflow: hidden; position: absolute; width: 100%; }
       .unlock-message { align-items: center; color: #f7e6cc; display: flex; flex-direction: column; font-family: Arial, sans-serif; font-size: clamp(.7rem, 2.4vw, 1.5rem); font-weight: 900; height: 100%; justify-content: center; letter-spacing: .18em; opacity: 0; position: absolute; text-align: center; text-shadow: 0 0 10px rgba(247, 230, 204, .75); transition: opacity .35s ease .45s; width: 100%; z-index: 1; }
       .unlock-message__code { font-size: 1.7em; letter-spacing: .08em; margin-top: .45em; }
       .doors { height: 100%; inset: 0; pointer-events: none; position: absolute; z-index: 2; }
-      .door { background: linear-gradient(105deg, #4d4540 0%, #b3a89d 10%, #716862 23%, #c9beb1 46%, #645b56 67%, #a69c91 88%, #423b37 100%); border-color: #27221f; border-style: solid; box-shadow: inset 0 0 18px rgba(255, 237, 215, .16), inset 0 -35px 30px rgba(27, 20, 16, .42); height: 100%; position: absolute; top: 0; transition: transform 1.15s cubic-bezier(.7, 0, .2, 1); width: 50%; }
-      .door::after { background: linear-gradient(180deg, transparent, rgba(255, 244, 224, .22), transparent); content: ""; inset: 0; opacity: .7; position: absolute; }
+      .door { background: linear-gradient(100deg, #4e4b49 0%, #bdb9b2 12%, #706c68 27%, #d0cbc2 46%, #686460 67%, #aaa69e 88%, #45423f 100%); border-color: #3b3937; border-style: solid; box-shadow: inset 0 0 20px rgba(255, 255, 255, .22), inset 0 -38px 36px rgba(25, 24, 22, .42); height: 100%; position: absolute; top: 0; transition: transform 1.15s cubic-bezier(.7, 0, .2, 1); width: 50%; }
+      .door::after { background: linear-gradient(180deg, rgba(255, 255, 255, .18), transparent 40%, rgba(22, 21, 20, .25)); content: ""; inset: 0; opacity: .8; position: absolute; }
       .door--left { border-width: 0 2px 0 0; left: 0; }
       .door--right { background-position: 100% 0; border-width: 0 0 0 2px; right: 0; }
       .cabin.doors-open .door--left { transform: translateX(-102%); }
       .cabin.doors-open .door--right { transform: translateX(102%); }
       .cabin.doors-open .unlock-message { opacity: 1; }
 
-      .panel { align-self: center; background: linear-gradient(90deg, #514842, #c0b5aa 45%, #5b5049); border: clamp(2px, .5vw, 4px) solid #352b27; box-shadow: 0 2px 5px rgba(0, 0, 0, .45); min-width: 0; padding: clamp(5px, .8vw, 9px); width: 100%; }
+      .panel { align-self: center; background: linear-gradient(90deg, #66412c, #a7754e 45%, #603c29); border: clamp(2px, .5vw, 4px) solid #4b2f21; box-shadow: 0 3px 6px rgba(46, 21, 10, .52); min-width: 0; padding: clamp(4px, .7vw, 7px); width: 100%; }
       .panel-label { display: none; }
-      .call-button { align-items: center; appearance: none; background: radial-gradient(circle at 35% 28%, #f1ebe1, #a39a91 53%, #615a54 100%); border: clamp(2px, .7vw, 4px) solid #39322d; border-radius: 50%; box-shadow: inset 0 1px 2px rgba(255, 255, 255, .8), inset 0 -2px 4px rgba(24, 19, 16, .6), 0 clamp(3px, 1.5vw, 8px) 0 #39312d; color: #2d2824; cursor: pointer; display: grid; height: auto; justify-content: center; min-height: 0; padding: 0; place-content: center; transition: box-shadow .08s, transform .08s, background .2s; width: 100%; aspect-ratio: 1; }
+      .call-button { align-items: center; appearance: none; background: linear-gradient(145deg, #936448, #5b3828 53%, #3c251b); border: clamp(2px, .7vw, 4px) solid #482c1e; border-radius: 9px; box-shadow: inset 0 1px 2px rgba(255, 214, 173, .42), inset 0 -2px 4px rgba(24, 12, 7, .6), 0 clamp(3px, 1.5vw, 8px) 0 #493020; color: #2d2824; cursor: pointer; display: grid; height: auto; justify-content: center; min-height: 0; padding: 0; place-content: center; transition: box-shadow .08s, transform .08s, background .2s; width: 100%; aspect-ratio: .62; }
       .arrows { display: grid; gap: clamp(1px, .25vw, 3px); justify-items: center; }
       .arrow { border-left: clamp(5px, 1.5vw, 11px) solid transparent; border-right: clamp(5px, 1.5vw, 11px) solid transparent; filter: drop-shadow(0 1px 0 rgba(255, 255, 255, .5)); height: 0; width: 0; }
-      .arrow--up { border-bottom: clamp(8px, 2.2vw, 16px) solid #312b27; }
-      .arrow--down { border-top: clamp(8px, 2.2vw, 16px) solid #312b27; }
+      .arrow--up { border-bottom: clamp(8px, 2.2vw, 16px) solid #ffb520; }
+      .arrow--down { border-top: clamp(8px, 2.2vw, 16px) solid #d9452b; }
       .call-button:active, .call-button.pressed { box-shadow: 0 2px 0 #111812; transform: translateY(6px); }
       .call-button.unlocked { background: var(--green); box-shadow: 0 0 20px var(--green), 0 8px 0 #111812; }
       .call-button.unlocked:active, .call-button.unlocked.pressed { box-shadow: 0 0 20px var(--green), 0 2px 0 #111812; }
@@ -123,9 +122,10 @@
         <summary>Diagnostic</summary>
         <pre id="debug"></pre>
       </details>
-      <a class="return-link" href="console-d-orientation.html"><span class="return-gear" aria-hidden="true"></span>Retour</a>
+      <a class="return-link" href="index.html"><span class="return-gear" aria-hidden="true"></span>Retour</a>
     </main>
 
+    <script src="config.js"></script>
     <script>
       const callButton = document.querySelector("#callButton");
       const microphone = document.querySelector("#microphone");
@@ -137,7 +137,6 @@
       const unlockCode = document.querySelector("#unlockCode");
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
       const parameters = new URLSearchParams(window.location.search);
-      const fragmentParameters = new URLSearchParams(window.location.hash.slice(1));
       const setupMode = parameters.has("setup");
       let unlocked = false;
       let recognition;
@@ -148,12 +147,7 @@
 
       document.body.classList.toggle("setup", setupMode);
 
-      const rawCode = fragmentParameters.get("code") ?? parameters.get("code");
-      if (/^-?\d{1,9}$/.test(rawCode ?? "")) {
-        // XOR obscures the displayed value without putting it directly in the URL.
-        const encodedCode = Number.parseInt(rawCode, 10);
-        unlockCode.textContent = String(encodedCode ^ 7319);
-      }
+      unlockCode.textContent = window.PUZZLE_CONFIG.pages.ascenseur.unlockCode;
 
       function log(message) {
         const timestamp = new Date().toLocaleTimeString("fr-FR");

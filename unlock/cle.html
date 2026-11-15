@@ -45,23 +45,20 @@
         </div>
       </section>
       <section class="success" id="success" aria-live="polite"><span class="success__label">UNLOCK</span><strong class="success__code" id="unlockCode"></strong></section>
-      <a class="return-link" href="console-d-orientation.html"><span class="return-gear" aria-hidden="true"></span>Retour</a>
+      <a class="return-link" href="index.html"><span class="return-gear" aria-hidden="true"></span>Retour</a>
     </main>
+    <script src="config.js"></script>
     <script>
-      const correctCode = "519223";
+      const pageConfig = window.PUZZLE_CONFIG.pages.boiteACle;
+      const correctCode = pageConfig.entryCode;
       const display = document.querySelector("#display");
       const keypad = document.querySelector("#keypad");
       const keybox = document.querySelector("#keybox");
       const success = document.querySelector("#success");
       const unlockCode = document.querySelector("#unlockCode");
-      const parameters = new URLSearchParams(window.location.search);
-      const fragmentParameters = new URLSearchParams(window.location.hash.slice(1));
-      const rawCode = fragmentParameters.get("code") ?? parameters.get("code");
       let enteredCode = "";
 
-      if (/^-?\d{1,9}$/.test(rawCode ?? "")) {
-        unlockCode.textContent = String(Number.parseInt(rawCode, 10) ^ 7319);
-      }
+      unlockCode.textContent = pageConfig.unlockCode;
 
       function render() {
         display.textContent = enteredCode.padEnd(6, "-");

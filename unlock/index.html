@@ -46,12 +46,9 @@
         </section>
       </section>
     </main>
+    <script src="config.js"></script>
     <script>
-      // Add future destinations here. The key is the code typed on the console.
-      const destinations = {
-        1: "ascenseur-magique.html",
-        2: "boite-a-cle.html",
-      };
+      const destinations = window.PUZZLE_CONFIG.machines;
       const screen = document.querySelector("#screen");
       const keypad = document.querySelector("#keypad");
       const panel = document.querySelector(".panel");
