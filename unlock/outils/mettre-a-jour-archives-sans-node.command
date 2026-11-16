@@ -161,7 +161,33 @@ BLOCK_FILE="$BLOCK_FILE" perl -0777 -i -pe '
     or die "Bloc généré introuvable dans archive-config.js\n";
 ' "$CONFIG_FILE"
 
+# Each regenerated archive list starts a new local progress session.
+perl -0777 -i -pe '
+  s/(progressResetKey:\s*")([0-9]+)(")/$1 . ($2 + 1) . $3/e
+    or die "progressResetKey introuvable dans archive-config.js\n";
+' "$CONFIG_FILE"
+
 print ""
-print "Configuration générée : ${count} dossier(s) d'archive trouvé(s)."
+print "Configuration générée : ${count} dossier(s) d'archive trouvé(s). Suivi réinitialisé."
 print ""
 read "?Appuyez sur Entree pour fermer cette fenetre..."
+
+# Terminal may be configured to keep completed shells open. Close only the
+# window containing this script once the user acknowledges the result.
+if [[ "$TERM_PROGRAM" == "Apple_Terminal" && -n "$TTY" ]]; then
+  osascript - "$TTY" <<'APPLESCRIPT' >/dev/null 2>&1
+on run argv
+  set targetTty to item 1 of argv
+  tell application "Terminal"
+    repeat with terminalWindow in windows
+      repeat with terminalTab in tabs of terminalWindow
+        if tty of terminalTab is targetTty then
+          close terminalWindow
+          return
+        end if
+      end repeat
+    end repeat
+  end tell
+end run
+APPLESCRIPT
+fi
