@@ -20,17 +20,17 @@
       .categories { display: grid; gap: 28px; }
       .category { border-top: 1px solid var(--line); padding-top: 22px; }
       .category:first-child { border-top: 0; padding-top: 0; }
-      .category-heading { align-items: baseline; display: flex; gap: 12px; margin: 0 0 15px; }
-      .category-code { color: var(--violet); font-family: ui-monospace, monospace; font-size: .8rem; font-weight: 900; letter-spacing: .1em; }
-      .category-name { font-size: clamp(1.25rem, 3vw, 1.65rem); letter-spacing: -.03em; margin: 0; }
-      .dossiers { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
-      .dossier-link { background: #f7f8fc; border: 1px solid var(--line); border-radius: 16px; color: var(--ink); min-height: 105px; padding: 17px; text-decoration: none; transition: background .15s, box-shadow .15s, transform .15s; }
+      .category-heading { align-items: center; display: flex; gap: 12px; margin: 0 0 15px; }
+      .category-code { color: var(--violet); font-family: ui-monospace, monospace; font-size: 1.35rem; font-weight: 900; letter-spacing: -.03em; }
+      .category-name { font-size: 1.35rem; letter-spacing: -.03em; margin: 0; }
+      .dossiers { display: grid; gap: 9px; }
+      .dossier-link { align-items: center; background: #f7f8fc; border: 1px solid var(--line); border-radius: 13px; color: var(--ink); display: flex; font-size: 1rem; font-weight: 700; gap: 12px; min-height: 0; padding: 14px 16px; text-decoration: none; transition: background .15s, box-shadow .15s, transform .15s; }
       .dossier-link:hover { background: #fff; box-shadow: 0 10px 21px rgba(53, 68, 101, .13); transform: translateY(-2px); }
       .dossier-link.viewed { background: linear-gradient(135deg, #effaf2, #f8fffa); border-color: #b9e2c5; }
-      .status-icon { align-items: center; border: 1px solid #cdd5e0; border-radius: 50%; color: #9aa6b5; display: inline-flex; font-size: .75rem; font-weight: 900; height: 22px; justify-content: center; margin-left: 8px; vertical-align: middle; width: 22px; }
+      .status-icon { align-items: center; border: 1px solid #cdd5e0; border-radius: 50%; color: #9aa6b5; display: inline-flex; flex: 0 0 auto; font-size: .75rem; font-weight: 900; height: 22px; justify-content: center; width: 22px; }
       .dossier-link.viewed .status-icon { background: #43a06a; border-color: #43a06a; color: #fff; }
-      .dossier-code { color: var(--violet); display: block; font-family: ui-monospace, monospace; font-size: .75rem; font-weight: 900; letter-spacing: .08em; }
-      .dossier-title { display: block; font-size: 1rem; font-weight: 750; line-height: 1.25; margin-top: 8px; }
+      .dossier-code { color: var(--violet); font-family: ui-monospace, monospace; font-size: 1rem; font-weight: 900; letter-spacing: 0; }
+      .dossier-title { font-size: 1rem; font-weight: 700; line-height: 1.25; }
       .empty { background: #f7f8fc; border: 1px dashed #ccd5e3; border-radius: 14px; color: var(--muted); font-size: .9rem; margin: 0; padding: 14px; }
     </style>
   </head>
@@ -59,7 +59,7 @@
             link.className = "dossier-link";
             if (viewedCodes.has(dossierCode)) link.classList.add("viewed");
             link.href = `media.html#code=${encodeURIComponent(dossierCode)}&from=majorite`;
-            link.innerHTML = `<span class="dossier-code"></span><strong class="dossier-title"></strong><span class="status-icon" aria-label="${viewedCodes.has(dossierCode) ? "Consulté" : "Non consulté"}">${viewedCodes.has(dossierCode) ? "✓" : "?"}</span>`;
+            link.innerHTML = `<span class="status-icon" aria-label="${viewedCodes.has(dossierCode) ? "Consulté" : "Non consulté"}">${viewedCodes.has(dossierCode) ? "✓" : "?"}</span><span class="dossier-code"></span><strong class="dossier-title"></strong>`;
             link.querySelector(".dossier-code").textContent = dossierCode;
             link.querySelector(".dossier-title").textContent = item.title;
             list.append(link);

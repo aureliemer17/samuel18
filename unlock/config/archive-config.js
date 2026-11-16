@@ -1,5 +1,7 @@
 // Configuration des catégories et médias d'archives.
 window.ARCHIVE_CONFIG = {
+  // Changez ce numéro pour réinitialiser le suivi local des dossiers consultés.
+  progressResetKey: "1",
   categories: {
     I: "Disparitions mystérieuses",
     II: "Un esprit scientifique",
