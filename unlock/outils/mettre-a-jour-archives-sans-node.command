@@ -4,6 +4,8 @@
 # Requiert seulement zsh et perl, fournis avec macOS.
 set -e
 setopt null_glob
+export LANG="en_US.UTF-8"
+export LC_ALL="en_US.UTF-8"
 
 OUTILS_DIR="${0:A:h}"
 UNLOCK_DIR="${OUTILS_DIR:h}"
@@ -35,7 +37,15 @@ clean_title() {
 }
 
 source_path() {
-  printf '../../dossiers/%s/%s/%s' "$1" "$2" "$3"
+  printf '../../dossiers/%s/%s/%s' "$(url_encode "$1")" "$(url_encode "$2")" "$(url_encode "$3")"
+}
+
+url_encode() {
+  printf '%s' "$1" | perl -0777 -ne '
+    $value = $_;
+    $value =~ s{([^A-Za-z0-9\-._~/])}{sprintf("%%%02X", ord($1))}ge;
+    print $value;
+  '
 }
 
 print '  // BEGIN GENERATED MEDIA - généré par mettre-a-jour-archives-sans-node.command depuis ../dossiers.' > "$BLOCK_FILE"
