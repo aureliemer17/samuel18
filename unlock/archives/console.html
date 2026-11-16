@@ -42,13 +42,13 @@
         </div>
         <button class="confirm" id="confirm" type="button">Consulter le dossier</button>
       </section>
-      <a class="return-link" href="index.html">Retour aux machines</a>
+      <a class="return-link" href="../jeu/machine.html">Retour aux machines</a>
     </main>
-    <script src="config.js"></script>
+    <script src="../config/archive-config.js"></script>
     <script>
       const values = { row: ["I", "II", "III", "IV", "V", "VI", "VII"], column: ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"], level: ["1", "2", "3", "4", "5", "6", "7", "8"] };
       const position = { row: 0, column: 0, level: 0 };
-      const archiveConfig = window.PUZZLE_CONFIG.archives.media;
+      const archiveConfig = window.ARCHIVE_CONFIG.media;
 
       function render(wheel) { document.querySelector(`#${wheel}`).textContent = values[wheel][position[wheel]]; }
       document.querySelectorAll(".turn").forEach((button) => button.addEventListener("click", () => {
@@ -58,7 +58,7 @@
       }));
       document.querySelector("#confirm").addEventListener("click", () => {
         const code = `${values.row[position.row]}-${values.column[position.column]}-${values.level[position.level]}`;
-        window.location.assign(Object.hasOwn(archiveConfig, code) ? `archive/media.html#code=${encodeURIComponent(code)}` : "archive/acces-refuse.html");
+        window.location.assign(Object.hasOwn(archiveConfig, code) ? `media.html#code=${encodeURIComponent(code)}` : "acces-refuse.html");
       });
     </script>
   </body>

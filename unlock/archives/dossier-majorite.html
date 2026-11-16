@@ -21,13 +21,13 @@
   </head>
   <body>
     <main><header><div class="label">ACCÈS ADMINISTRATEUR</div><h1>Le dossier de la majorité de Samuel</h1></header><section class="grid" id="categories"></section></main>
-    <script src="config.js"></script>
+    <script src="../config/archive-config.js"></script>
     <script>
       const container = document.querySelector("#categories");
-      Object.entries(window.PUZZLE_CONFIG.archives.categories).forEach(([code, title]) => {
+      Object.entries(window.ARCHIVE_CONFIG.categories).forEach(([code, title]) => {
         const link = document.createElement("a");
         link.className = "category";
-        link.href = `archive/categorie.html#categorie=${encodeURIComponent(code)}`;
+        link.href = `categorie.html#categorie=${encodeURIComponent(code)}`;
         link.innerHTML = `<span class="category-code">${code}</span><strong class="category-name"></strong>`;
         link.querySelector(".category-name").textContent = title;
         container.append(link);

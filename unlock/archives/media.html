@@ -30,11 +30,11 @@
     </style>
   </head>
   <body>
-    <main><article class="folder"><div class="code" id="code"></div><h1 id="title"></h1><div id="content"></div></article><footer class="folder-footer"><a class="return" href="../archive.html">Retour aux archives</a><div id="instructions"></div></footer></main>
-    <script src="../config.js"></script>
+    <main><article class="folder"><div class="code" id="code"></div><h1 id="title"></h1><div id="content"></div></article><footer class="folder-footer"><a class="return" href="console.html">Retour aux archives</a><div id="instructions"></div></footer></main>
+    <script src="../config/archive-config.js"></script>
     <script>
       const code = new URLSearchParams(window.location.hash.slice(1)).get("code");
-      const item = window.PUZZLE_CONFIG.archives.media[code];
+      const item = window.ARCHIVE_CONFIG.media[code];
       if (!item) window.location.replace("acces-refuse.html");
       document.title = item.title;
       document.querySelector("#code").textContent = `DOSSIER ${code}`;

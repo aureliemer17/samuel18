@@ -96,11 +96,20 @@
       body.setup .setup-only { display: block; }
       body.setup .test-button { display: inline-block; }
       body.setup .setup-banner { background: var(--red); color: #fff; font-family: Arial, sans-serif; font-size: .75rem; font-weight: 900; letter-spacing: .08em; margin: -8px 0 20px; padding: 9px 12px; text-transform: uppercase; }
+      .start-dialog { align-items: center; background: rgba(11, 19, 14, .62); display: flex; inset: 0; justify-content: center; padding: 24px; position: fixed; z-index: 20; }
+      .start-dialog[hidden] { display: none; }
+      .start-dialog__card { background: #f5ead5; border: 4px solid #8d633f; border-radius: 20px; box-shadow: 0 22px 55px rgba(0, 0, 0, .45); color: #2b241d; max-width: 430px; padding: clamp(26px, 6vw, 42px); text-align: center; }
+      .start-dialog__card p { font-family: Georgia, serif; font-size: clamp(1.2rem, 4vw, 1.75rem); line-height: 1.35; margin: 0 0 26px; }
+      .start-button { background: linear-gradient(135deg, #6950e8, #ed8a3f); border: 0; border-radius: 999px; box-shadow: 0 7px 0 #3d2b78; color: #fff; cursor: pointer; font-family: Arial, sans-serif; font-size: .9rem; font-weight: 900; letter-spacing: .12em; padding: 15px 25px; text-transform: uppercase; }
+      .start-button:active { box-shadow: 0 2px 0 #3d2b78; transform: translateY(5px); }
 
       @media (max-width: 600px) { body { padding: 8px; } main { padding: 14px; } }
     </style>
   </head>
   <body>
+    <section class="start-dialog" id="startDialog" aria-modal="true" role="dialog" aria-label="Préparation de l'énigme">
+      <div class="start-dialog__card"><p>Samuel, tu dois être seul pour résoudre cette énigme.</p><p>Quand tu es prêt, appuie sur ce bouton.</p><button class="start-button" id="startButton" type="button">Commencer</button></div>
+    </section>
     <main>
       <div class="setup-banner setup-only">Mode preparation : activez le micro ici, puis partagez la page sans <code>?setup=1</code>.</div>
 
@@ -122,10 +131,10 @@
         <summary>Diagnostic</summary>
         <pre id="debug"></pre>
       </details>
-      <a class="return-link" href="index.html"><span class="return-gear" aria-hidden="true"></span>Retour</a>
+      <a class="return-link" href="machine.html"><span class="return-gear" aria-hidden="true"></span>Retour</a>
     </main>
 
-    <script src="config.js"></script>
+    <script src="../config/config.js"></script>
     <script>
       const callButton = document.querySelector("#callButton");
       const microphone = document.querySelector("#microphone");
@@ -135,6 +144,8 @@
       const debug = document.querySelector("#debug");
       const micLevel = document.querySelector("#micLevel");
       const unlockCode = document.querySelector("#unlockCode");
+      const startDialog = document.querySelector("#startDialog");
+      const startButton = document.querySelector("#startButton");
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
       const parameters = new URLSearchParams(window.location.search);
       const setupMode = parameters.has("setup");
@@ -144,8 +155,10 @@
       let audioContext;
       let meterFrame;
       let shouldListen = false;
+      let restartTimer;
 
       document.body.classList.toggle("setup", setupMode);
+      if (setupMode) startDialog.hidden = true;
 
       unlockCode.textContent = window.PUZZLE_CONFIG.pages.ascenseur.unlockCode;
 
@@ -185,6 +198,7 @@
 
       function stopListening() {
         shouldListen = false;
+        window.clearTimeout(restartTimer);
         recognition?.stop();
         stopMeter();
         microphone.classList.remove("listening");
@@ -205,6 +219,36 @@
           meterFrame = window.requestAnimationFrame(renderMeter);
         }
         renderMeter();
+      }
+
+      async function beginListening() {
+        if (unlocked || shouldListen) return;
+        try {
+          if (setupMode) {
+            microphone.disabled = true;
+            updateStatus("<strong>VERIFICATION DU MICRO.</strong> Autorisez l'acces quand le navigateur le demande.");
+          }
+          microphoneStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          if (setupMode) startMeter(microphoneStream);
+          shouldListen = true;
+          recognition.start();
+          if (setupMode) {
+            microphone.classList.add("listening");
+            microphone.textContent = "Ecoute active (cliquer pour arreter)";
+            updateStatus("<strong>ECOUTE ACTIVE.</strong> Verifiez que la jauge bouge, puis dites « senceur ».");
+          }
+          log("Micro autorise et ecoute activee.");
+        } catch (error) {
+          shouldListen = false;
+          stopMeter();
+          if (setupMode) {
+            microphone.textContent = "Reessayer le micro";
+            updateStatus("<strong>MICRO INACCESSIBLE.</strong> " + error.name + ". Consultez Diagnostic.");
+          }
+          log("Impossible de demarrer le micro: " + error.name + " - " + error.message);
+        } finally {
+          if (setupMode) microphone.disabled = false;
+        }
       }
 
       function updateStatus(message, ready = false) {
@@ -344,15 +388,14 @@
         recognition.onend = () => {
           log("Ecoute arretee.");
           if (shouldListen && !unlocked) {
-            shouldListen = false;
-            stopMeter();
-            setMicrophoneState(false);
-            if (setupMode) {
-              microphone.classList.remove("listening");
-              microphone.textContent = "Relancer le micro";
-              updateStatus("<strong>ECOUTE ARRETEE.</strong> Cliquez pour la relancer.");
-            }
-            log("Ecoute arretee sans relance automatique.");
+            restartTimer = window.setTimeout(() => {
+              try {
+                recognition.start();
+                log("Ecoute relancee apres silence.");
+              } catch (error) {
+                log("Relance ignoree: " + error.name);
+              }
+            }, 350);
           }
         };
 
@@ -365,40 +408,16 @@
             log("Ecoute arretee par l'utilisateur.");
             return;
           }
-          try {
-            microphone.disabled = true;
-            updateStatus("<strong>VERIFICATION DU MICRO.</strong> Autorisez l'acces quand le navigateur le demande.");
-            microphoneStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            startMeter(microphoneStream);
-            shouldListen = true;
-            recognition.start();
-            microphone.classList.add("listening");
-            microphone.textContent = "Ecoute active (cliquer pour arreter)";
-            updateStatus("<strong>ECOUTE ACTIVE.</strong> Verifiez que la jauge bouge, puis dites « senceur ».");
-            log("Micro autorise et ecoute activee.");
-          } catch (error) {
-            stopListening();
-            microphone.textContent = "Reessayer le micro";
-            updateStatus("<strong>MICRO INACCESSIBLE.</strong> " + error.name + ". Consultez Diagnostic.");
-            log("Impossible de demarrer le micro: " + error.name + " - " + error.message);
-          } finally {
-            microphone.disabled = false;
-          }
+          beginListening();
         });
       }
 
       testButton.addEventListener("click", () => unlock("Mode test active, sans microphone."));
 
-      if (!setupMode && SpeechRecognition) {
-        try {
-          shouldListen = true;
-          recognition.start();
-          log("Ecoute visiteur demarree discretement.");
-        } catch (error) {
-          shouldListen = false;
-          log("Ecoute visiteur indisponible: " + error.name);
-        }
-      }
+      startButton.addEventListener("click", () => {
+        startDialog.hidden = true;
+        if (SpeechRecognition) beginListening();
+      });
     </script>
   </body>
 </html>

@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Indices</title>
+    <style>
+      :root { --ink: #273346; --muted: #718096; --line: #dbe2eb; --panel: #ffffff; --green: #5ca37b; --green-dark: #2d6649; --orange: #ef9445; }
+      * { box-sizing: border-box; }
+      body { align-items: center; background: radial-gradient(circle at 7% 6%, #dff6ff 0, transparent 25%), radial-gradient(circle at 94% 8%, #ffe8cf 0, transparent 29%), #f6f8fc; color: var(--ink); display: flex; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; justify-content: center; margin: 0; min-height: 100vh; padding: 22px; }
+      main { width: min(100%, 560px); }
+      .heading { color: var(--muted); font-size: .76rem; font-weight: 850; letter-spacing: .16em; margin: 0 0 14px; text-align: center; text-transform: uppercase; }
+      .console { background: rgba(255, 255, 255, .88); border: 1px solid #fff; border-radius: 28px; box-shadow: 0 22px 55px rgba(51, 68, 99, .17); padding: clamp(22px, 6vw, 45px); }
+      .screen { align-items: center; background: #f1f5f4; border: 2px solid #d1ded6; border-radius: 14px; color: var(--green-dark); display: flex; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: clamp(1.4rem, 6vw, 2.25rem); font-weight: 900; height: 66px; justify-content: center; letter-spacing: .28em; margin-bottom: 20px; padding-left: .28em; }
+      .keypad { display: grid; gap: 10px; grid-template-columns: repeat(3, 1fr); margin: auto; max-width: 340px; }
+      .key { appearance: none; background: linear-gradient(145deg, #fff, #e3e9ef); border: 1px solid #cbd5e0; border-radius: 14px; box-shadow: inset 0 1px 2px #fff, 0 4px 0 #b2bdc9, 0 7px 10px rgba(47, 60, 79, .12); color: var(--ink); cursor: pointer; font-family: ui-monospace, monospace; font-size: 1.2rem; font-weight: 900; min-height: 52px; transition: transform .06s, box-shadow .06s; }
+      .key:active { box-shadow: inset 0 2px 5px #c7d0d8, 0 1px 0 #b2bdc9; transform: translateY(3px); }
+      .key--clear { color: #b14d48; }
+      .key--enter { background: linear-gradient(145deg, #bde0bd, #70af82 55%, #4c8b68); color: #153d28; grid-column: span 2; }
+      .home-link { color: var(--muted); display: block; font-family: ui-monospace, monospace; font-size: .75rem; font-weight: 850; letter-spacing: .08em; margin-top: 22px; text-align: center; text-decoration: none; text-transform: uppercase; }
+      .home-link:hover { color: var(--green-dark); }
+      .modal { align-items: center; background: rgba(30, 41, 59, .35); display: flex; inset: 0; justify-content: center; padding: 20px; position: fixed; z-index: 10; }
+      .modal[hidden] { display: none; }
+      .modal__card { background: var(--panel); border: 1px solid #fff; border-radius: 24px; box-shadow: 0 25px 80px rgba(24, 37, 58, .28); max-width: 580px; padding: clamp(24px, 6vw, 45px); position: relative; width: 100%; }
+      .close { align-items: center; background: #f0f3f7; border: 0; border-radius: 50%; color: var(--muted); cursor: pointer; display: flex; font-size: 1.35rem; height: 36px; justify-content: center; position: absolute; right: 16px; top: 16px; width: 36px; }
+      .close:hover { background: #e3e9ef; color: var(--ink); }
+      .modal__eyebrow { color: var(--muted); font-family: ui-monospace, monospace; font-size: .76rem; font-weight: 850; letter-spacing: .12em; margin: 0 0 12px; text-transform: uppercase; }
+      .modal h1 { font-size: clamp(1.8rem, 6vw, 3.4rem); letter-spacing: -.05em; line-height: 1; margin: 0 35px 22px 0; }
+      .hint-text { background: #f6faf7; border: 1px solid #dcebe0; border-radius: 16px; font-size: clamp(1.05rem, 2.8vw, 1.35rem); line-height: 1.58; min-height: 125px; padding: 22px; white-space: pre-wrap; }
+      .hint-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+      .hint-tab { background: #dce2e8; border: 0; border-radius: 999px; color: #4d5c6c; cursor: pointer; font-family: ui-monospace, monospace; font-size: .82rem; font-weight: 900; height: 32px; min-width: 32px; padding: 0 11px; }
+      .hint-tab.active { background: var(--green); color: #fff; }
+      .error { animation: shake .28s linear; }
+      @keyframes shake { 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+    </style>
+  </head>
+  <body>
+    <main>
+      <p class="heading">Consulter un indice</p>
+      <section class="console" aria-label="Digicode des indices">
+        <output class="screen" id="screen" aria-live="polite"></output>
+        <div class="keypad" id="keypad">
+          <button class="key" type="button" data-key="1">1</button><button class="key" type="button" data-key="2">2</button><button class="key" type="button" data-key="3">3</button>
+          <button class="key" type="button" data-key="4">4</button><button class="key" type="button" data-key="5">5</button><button class="key" type="button" data-key="6">6</button>
+          <button class="key" type="button" data-key="7">7</button><button class="key" type="button" data-key="8">8</button><button class="key" type="button" data-key="9">9</button>
+          <button class="key key--clear" type="button" data-clear="true">C</button><button class="key" type="button" data-key="0">0</button><button class="key key--enter" type="button" data-enter="true">OK</button>
+        </div>
+      </section>
+      <a class="home-link" href="../index.html">Retour à l'accueil</a>
+    </main>
+    <section class="modal" id="modal" hidden aria-modal="true" role="dialog">
+      <div class="modal__card"><button class="close" id="close" type="button" aria-label="Fermer">×</button><p class="modal__eyebrow" id="modalLabel"></p><h1 id="modalTitle"></h1><div class="hint-text" id="hintText"></div><div class="hint-tabs" id="hintTabs"></div></div>
+    </section>
+    <script src="../config/hints-config.js"></script>
+    <script>
+      const screen = document.querySelector("#screen");
+      const keypad = document.querySelector("#keypad");
+      const consoleElement = document.querySelector(".console");
+      const modal = document.querySelector("#modal");
+      const close = document.querySelector("#close");
+      const modalLabel = document.querySelector("#modalLabel");
+      const modalTitle = document.querySelector("#modalTitle");
+      const hintText = document.querySelector("#hintText");
+      const hintTabs = document.querySelector("#hintTabs");
+      const hints = window.HINTS_CONFIG;
+      let cardNumber = "";
+
+      function render() { screen.textContent = cardNumber; }
+      function closeModal() { modal.hidden = true; cardNumber = ""; render(); }
+      function showHint(number, list, index = 0) {
+        modalLabel.textContent = `INDICE "${number}"`;
+        modalTitle.textContent = list.length ? `Indice ${index + 1}` : "Rien à signaler";
+        hintText.textContent = list.length ? list[index] : `Il n'y a pas d'indice pour la carte sélectionnée.`;
+        hintTabs.replaceChildren();
+        list.forEach((_, tabIndex) => {
+          const tab = document.createElement("button");
+          tab.className = `hint-tab${tabIndex === index ? " active" : ""}`;
+          tab.type = "button";
+          tab.textContent = tabIndex + 1;
+          tab.addEventListener("click", () => showHint(number, list, tabIndex));
+          hintTabs.append(tab);
+        });
+        modal.hidden = false;
+      }
+      function submit() { showHint(cardNumber, hints[cardNumber] || []); }
+      keypad.addEventListener("click", (event) => {
+        const key = event.target.closest("button");
+        if (!key) return;
+        if (key.dataset.clear) { cardNumber = ""; render(); return; }
+        if (key.dataset.enter) { if (cardNumber) submit(); return; }
+        if (cardNumber.length < 8) { cardNumber += key.dataset.key; render(); }
+      });
+      close.addEventListener("click", closeModal);
+      modal.addEventListener("click", (event) => { if (event.target === modal) closeModal(); });
+    </script>
+  </body>
+</html>

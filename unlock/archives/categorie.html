@@ -22,11 +22,11 @@
     </style>
   </head>
   <body>
-    <main><header><div class="category-code" id="code"></div><h1 id="title"></h1></header><section class="grid" id="grid"></section><a class="return" href="../dossier-majorite.html">Retour au dossier de la majorité</a></main>
-    <script src="../config.js"></script>
+    <main><header><div class="category-code" id="code"></div><h1 id="title"></h1></header><section class="grid" id="grid"></section><a class="return" href="dossier-majorite.html">Retour au dossier de la majorité</a></main>
+    <script src="../config/archive-config.js"></script>
     <script>
       const category = new URLSearchParams(window.location.hash.slice(1)).get("categorie");
-      const archives = window.PUZZLE_CONFIG.archives;
+      const archives = window.ARCHIVE_CONFIG;
       if (!archives.categories[category]) window.location.replace("acces-refuse.html");
       document.title = archives.categories[category];
       document.querySelector("#code").textContent = `CATÉGORIE ${category}`;

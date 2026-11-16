@@ -4,8 +4,9 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = path.dirname(fileURLToPath(import.meta.url));
-const archiveRoot = path.join(root, "archive", "dossiers");
-const configPath = path.join(root, "config.js");
+const unlockRoot = path.join(root, "..");
+const archiveRoot = path.join(unlockRoot, "..", "dossiers");
+const configPath = path.join(unlockRoot, "config", "archive-config.js");
 const codePattern = /^(I|II|III|IV|V|VI|VII)-([A-J])-([1-8])$/;
 const ignoredNames = new Set([".DS_Store", "README.md", "titre.txt", "titre.html", "titre.htm", "instruction.txt", "instruction.html", "instruction.htm"]);
 const imageExtensions = new Set([".avif", ".gif", ".jpeg", ".jpg", ".png", ".webp"]);
@@ -36,7 +37,7 @@ async function findInstruction(folderPath) {
   for (const name of ["instruction.html", "instruction.htm", "instruction.txt"]) {
     try {
       await readFile(path.join(folderPath, name));
-      return `dossiers/${encodeURIComponent(path.basename(path.dirname(folderPath)))}/${encodeURIComponent(path.basename(folderPath))}/${encodeURIComponent(name)}`;
+      return `../../dossiers/${encodeURIComponent(path.basename(path.dirname(folderPath)))}/${encodeURIComponent(path.basename(folderPath))}/${encodeURIComponent(name)}`;
     } catch {
       // Try the next supported instruction filename.
     }
@@ -62,7 +63,7 @@ async function listMedia(folderPath, code) {
     const mediaItem = {
       title: path.basename(name, extension).replace(/[-_]/g, " "),
       type,
-      source: `dossiers/${encodeURIComponent(path.basename(path.dirname(folderPath)))}/${encodeURIComponent(code)}/${encodeURIComponent(name)}`,
+      source: `../../dossiers/${encodeURIComponent(path.basename(path.dirname(folderPath)))}/${encodeURIComponent(code)}/${encodeURIComponent(name)}`,
     };
     if (type === "image" || type === "video") {
       const metadata = await stat(path.join(folderPath, name));
@@ -120,7 +121,8 @@ function renderMedia(media) {
 
 const media = await scanArchives();
 const config = await readFile(configPath, "utf8");
-const nextConfig = config.replace(/    media: \{[\s\S]*?\n    \},\n  \},\n  pages:/, `${renderMedia(media)}\n  },\n  pages:`);
-if (nextConfig === config) throw new Error("Le bloc archives.media est introuvable dans config.js.");
+const generatedBlock = /  \/\/ BEGIN GENERATED MEDIA[^\n]*\n[\s\S]*?  \/\/ END GENERATED MEDIA/;
+if (!generatedBlock.test(config)) throw new Error("Le bloc généré est introuvable dans archive-config.js.");
+const nextConfig = config.replace(generatedBlock, `  // BEGIN GENERATED MEDIA - généré par generer-config-archives.mjs depuis ../dossiers.\n${renderMedia(media).replace(/^    /gm, "  ")}\n  // END GENERATED MEDIA`);
 await writeFile(configPath, nextConfig);
 console.log(`Configuration générée : ${Object.keys(media).length} dossier(s) d'archive trouvé(s).`);
