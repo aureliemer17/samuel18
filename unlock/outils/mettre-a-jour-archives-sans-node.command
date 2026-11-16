@@ -36,12 +36,18 @@ clean_title() {
   perl -pe 's/<[^>]*>/ /g' "$1" | tr '\n' ' ' | tr -s ' ' | sed 's/^ *//; s/ *$//'
 }
 
+declared_height() {
+  perl -0777 -ne 'print $1 if /<meta\s+[^>]*name\s*=\s*["\x27]archive-height["\x27][^>]*content\s*=\s*["\x27](\d+)["\x27][^>]*>/i || /<meta\s+[^>]*content\s*=\s*["\x27](\d+)["\x27][^>]*name\s*=\s*["\x27]archive-height["\x27][^>]*>/i' "$1"
+}
+
 source_path() {
   printf '../../dossiers/%s/%s/%s' "$(url_encode "$1")" "$(url_encode "$2")" "$(url_encode "$3")"
 }
 
 url_encode() {
-  printf '%s' "$1" | perl -0777 -ne '
+  # APFS stores accented filenames in the UTF-8-MAC decomposed form.
+  # Preserve that form before percent-encoding it for file:// URLs.
+  printf '%s' "$1" | iconv -f UTF-8 -t UTF-8-MAC | perl -0777 -ne '
     $value = $_;
     $value =~ s{([^A-Za-z0-9\-._~/])}{sprintf("%%%02X", ord($1))}ge;
     print $value;
@@ -70,6 +76,15 @@ for category_dir in "$DOSSIERS_DIR"/*(/); do
     done
     [[ -z "$title" ]] && title="Dossier $code"
 
+    # Convert HEIC files before listing media so each photo is referenced once as JPEG.
+    for heic_file in "$folder_dir"/*.(#i)(heic|heif)(.N); do
+      converted_file="${heic_file:r}.jpg"
+      if [[ ! -f "$converted_file" || "$heic_file" -nt "$converted_file" ]]; then
+        print "Conversion HEIC en JPEG : ${heic_file:t}"
+        sips -s format jpeg -s formatOptions 85 "$heic_file" --out "$converted_file" >/dev/null
+      fi
+    done
+
     instruction=""
     for instruction_file in "$folder_dir/instruction.html" "$folder_dir/instruction.htm" "$folder_dir/instruction.txt"; do
       if [[ -f "$instruction_file" ]]; then
@@ -92,6 +107,7 @@ for category_dir in "$DOSSIERS_DIR"/*(/); do
       extension="${name:e:l}"
       case "$extension" in
         jpg|jpeg|png|gif|webp|avif) type="image" ;;
+        heic|heif) continue ;;
         mp4|mov|m4v|webm) type="video" ;;
         html|htm|txt|pdf) type="document" ;;
         *) print "Ignoré (${code}) : extension non prise en charge pour ${name}"; continue ;;
@@ -101,6 +117,24 @@ for category_dir in "$DOSSIERS_DIR"/*(/); do
       media_title="${media_title//[-_]/ }"
       source="$(source_path "$category_name" "$code" "$name")"
       line="        { title: $(json "$media_title"), type: $(json "$type"), source: $(json "$source")"
+      if [[ "$type" == "image" ]]; then
+        dimensions="$(sips -g pixelWidth -g pixelHeight "$media_file" 2>/dev/null || true)"
+        pixel_width="$(printf '%s\n' "$dimensions" | awk '/pixelWidth:/{print $2}')"
+        pixel_height="$(printf '%s\n' "$dimensions" | awk '/pixelHeight:/{print $2}')"
+        if [[ "$pixel_width" =~ '^[0-9]+$' && "$pixel_height" =~ '^[0-9]+$' ]]; then
+          if (( pixel_width > pixel_height )); then orientation="landscape"
+          elif (( pixel_width < pixel_height )); then orientation="portrait"
+          else orientation="square"
+          fi
+          line+=", width: ${pixel_width}, height: ${pixel_height}, orientation: $(json "$orientation")"
+        fi
+      fi
+      if [[ "$extension" == "html" || "$extension" == "htm" ]]; then
+        height="$(declared_height "$media_file")"
+        if [[ "$height" =~ '^[0-9]+$' && "$height" -ge 120 && "$height" -le 2000 ]]; then
+          line+=", height: ${height}"
+        fi
+      fi
       if [[ "$type" == "image" || "$type" == "video" ]]; then
         created="$(LC_ALL=fr_FR.UTF-8 stat -f '%SB' -t '%d %B %Y' "$media_file")"
         line+=", createdAt: $(json "$created")"

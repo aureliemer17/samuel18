@@ -19,14 +19,20 @@
       .media-date { color: var(--ink); font-size: 1rem; font-weight: 800; }
       .media { background: #151a2a; border: 0; border-radius: 18px; box-shadow: 0 10px 27px rgba(38, 47, 79, .15); display: block; height: min(62vw, 560px); max-height: 65vh; overflow: hidden; width: 100%; }
       img.media { object-fit: contain; }
-      .document-frame { background: #fffdf7; height: 80vh; max-height: none; min-height: 560px; }
+      .photo-gallery { border-top: 1px solid var(--line); display: grid; gap: 18px; grid-auto-flow: dense; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 34px; padding-top: 24px; }
+      .photo-gallery .media-card { border: 0; margin: 0; min-width: 0; padding: 0; }
+      .photo-gallery img.media { aspect-ratio: var(--photo-ratio, 1); height: auto; max-height: none; object-fit: cover; }
+      .photo-gallery--1 { grid-template-columns: minmax(0, 1fr); }
+      .photo-gallery--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .photo-gallery:not(.photo-gallery--1):not(.photo-gallery--2) .photo--landscape { grid-column: span 2; }
+      .document-frame { background: #fffdf7; height: 420px; max-height: none; min-height: 120px; }
       .folder-footer { align-items: end; display: grid; gap: 20px; grid-template-columns: minmax(0, 1fr) minmax(0, 3fr); margin-top: 22px; }
       .instructions { background: linear-gradient(135deg, #fff7e7, #fff0d6); border: 1px solid #f2c47b; border-radius: 14px; box-shadow: 0 8px 18px rgba(170, 105, 21, .1); padding: 14px 16px; }
       .instructions__label { color: #a9661e; font-size: .68rem; font-weight: 850; letter-spacing: .14em; margin: 0 0 7px; text-transform: uppercase; }
       .instructions iframe { background: transparent; border: 0; display: block; font-size: .85rem; height: 11.2em; line-height: 1.4; max-height: 11.2em; width: 100%; }
       .return { align-items: center; background: linear-gradient(135deg, var(--violet), #8669ed); border-radius: 999px; box-shadow: 0 8px 16px rgba(105, 80, 232, .25); color: #fff; display: inline-flex; font-size: .85rem; font-weight: 800; justify-content: center; padding: 12px 18px; text-decoration: none; width: 100%; }
       .return:hover { background: linear-gradient(135deg, #5740d8, #ed8a3f); }
-      @media (max-width: 620px) { .folder-footer { align-items: stretch; grid-template-columns: 1fr; } .return { justify-content: center; } }
+      @media (max-width: 620px) { .folder-footer { align-items: stretch; grid-template-columns: 1fr; } .return { justify-content: center; } .photo-gallery, .photo-gallery--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); } .photo-gallery--1 { grid-template-columns: minmax(0, 1fr); } .photo-gallery:not(.photo-gallery--1) .photo--landscape { grid-column: span 2; } }
     </style>
   </head>
   <body>
@@ -41,7 +47,7 @@
       document.querySelector("#title").textContent = item.title;
       const content = document.querySelector("#content");
       const instructionSlot = document.querySelector("#instructions");
-      (item.items || []).forEach((mediaItem) => {
+      function createCard(mediaItem) {
         const card = document.createElement("section");
         card.className = "media-card";
         const meta = document.createElement("div");
@@ -62,6 +68,8 @@
           image.className = "media";
           image.alt = mediaItem.title;
           image.src = mediaItem.source;
+          if (mediaItem.orientation) card.classList.add(`photo--${mediaItem.orientation}`);
+          if (mediaItem.width && mediaItem.height) card.style.setProperty("--photo-ratio", `${mediaItem.width} / ${mediaItem.height}`);
           card.append(image);
         } else if (mediaItem.type === "video") {
           const video = document.createElement("video");
@@ -75,14 +83,40 @@
           const isTextDocument = /\.(?:html?|txt)$/i.test(mediaItem.source);
           if (isTextDocument) {
             frame.classList.add("document-frame");
-            frame.addEventListener("load", () => resizeDocumentFrame(frame));
+            if (mediaItem.height) frame.style.height = `${mediaItem.height}px`;
           }
           frame.src = mediaItem.source;
           frame.title = mediaItem.title;
           card.append(frame);
         }
-        content.append(card);
-      });
+        return card;
+      }
+
+      const items = item.items || [];
+      for (let index = 0; index < items.length;) {
+        const mediaItem = items[index];
+        if (mediaItem.type !== "image") {
+          content.append(createCard(mediaItem));
+          index += 1;
+          continue;
+        }
+
+        const images = [];
+        while (index < items.length && items[index].type === "image") {
+          images.push(items[index]);
+          index += 1;
+        }
+
+        if (images.length === 1) {
+          content.append(createCard(images[0]));
+          continue;
+        }
+
+        const gallery = document.createElement("section");
+        gallery.className = `photo-gallery photo-gallery--${Math.min(images.length, 10)}`;
+        images.forEach((image) => gallery.append(createCard(image)));
+        content.append(gallery);
+      }
 
       if (item.instruction) {
         const instructions = document.createElement("aside");
@@ -93,18 +127,6 @@
         frame.title = "Instructions";
         instructions.append(frame);
         instructionSlot.append(instructions);
-      }
-
-      function resizeDocumentFrame(frame) {
-        try {
-          const documentHeight = Math.max(
-            frame.contentDocument.documentElement.scrollHeight,
-            frame.contentDocument.body.scrollHeight,
-          );
-          frame.style.height = `${documentHeight}px`;
-        } catch {
-          // PDF and browser-protected documents keep their fixed reader height.
-        }
       }
     </script>
   </body>
