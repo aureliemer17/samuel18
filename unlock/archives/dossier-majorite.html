@@ -5,32 +5,54 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Le dossier de la majorité de Samuel</title>
     <style>
-      :root { --paper: #e8dfc6; --ink: #20241d; --olive: #485940; --border: #7e8967; }
+      :root { --ink: #1d2941; --muted: #77829a; --violet: #6950e8; --orange: #ed8a3f; --mint: #43c7a0; --surface: #ffffff; --line: #e2e7f0; }
       * { box-sizing: border-box; }
-      body { background: #d8d1bd; color: var(--ink); font-family: Georgia, serif; margin: 0; min-height: 100vh; padding: clamp(18px, 5vw, 52px); }
-      main { margin: auto; max-width: 1050px; }
-      header { border-bottom: 3px double var(--olive); margin-bottom: 30px; padding-bottom: 24px; }
-      .label { color: var(--olive); font-family: ui-monospace, monospace; font-size: .8rem; font-weight: 900; letter-spacing: .15em; }
-      h1 { font-size: clamp(2.4rem, 7vw, 5.4rem); line-height: .93; margin: 12px 0 0; }
-      .grid { display: grid; gap: 19px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
-      .category { background: var(--paper); border: 2px solid var(--olive); box-shadow: 6px 6px 0 var(--border); color: var(--ink); min-height: 155px; padding: 21px; text-decoration: none; }
-      .category:hover { background: #f4ecd7; transform: translate(-2px, -2px); }
-      .category-code { color: var(--olive); font-family: ui-monospace, monospace; font-size: .82rem; font-weight: 900; }
-      .category-name { display: block; font-size: 1.35rem; margin-top: 10px; }
+      body { background: radial-gradient(circle at 5% 5%, #d9fff1 0, transparent 24%), radial-gradient(circle at 95% 8%, #ffe1c2 0, transparent 29%), #f4f7fc; color: var(--ink); font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; margin: 0; min-height: 100vh; padding: clamp(18px, 5vw, 52px); }
+      main { margin: auto; max-width: 1100px; }
+      .dossier { background: rgba(255, 255, 255, .86); border: 1px solid rgba(255, 255, 255, .9); border-radius: 28px; box-shadow: 0 20px 70px rgba(48, 66, 104, .16); padding: clamp(24px, 5vw, 60px); }
+      header { border-bottom: 1px solid var(--line); margin-bottom: 35px; padding-bottom: 26px; }
+      .label { color: var(--muted); font-family: ui-monospace, monospace; font-size: .72rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+      h1 { font-size: clamp(2.2rem, 7vw, 5rem); letter-spacing: -.055em; line-height: .95; margin: 12px 0 0; }
+      .categories { display: grid; gap: 28px; }
+      .category { border-top: 1px solid var(--line); padding-top: 22px; }
+      .category:first-child { border-top: 0; padding-top: 0; }
+      .category-heading { align-items: baseline; display: flex; gap: 12px; margin: 0 0 15px; }
+      .category-code { color: var(--violet); font-family: ui-monospace, monospace; font-size: .8rem; font-weight: 900; letter-spacing: .1em; }
+      .category-name { font-size: clamp(1.25rem, 3vw, 1.65rem); letter-spacing: -.03em; margin: 0; }
+      .dossiers { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
+      .dossier-link { background: #f7f8fc; border: 1px solid var(--line); border-radius: 16px; color: var(--ink); min-height: 105px; padding: 17px; text-decoration: none; transition: background .15s, box-shadow .15s, transform .15s; }
+      .dossier-link:hover { background: #fff; box-shadow: 0 10px 21px rgba(53, 68, 101, .13); transform: translateY(-2px); }
+      .dossier-code { color: var(--violet); display: block; font-family: ui-monospace, monospace; font-size: .75rem; font-weight: 900; letter-spacing: .08em; }
+      .dossier-title { display: block; font-size: 1rem; font-weight: 750; line-height: 1.25; margin-top: 8px; }
+      .empty { background: #f7f8fc; border: 1px dashed #ccd5e3; border-radius: 14px; color: var(--muted); font-size: .9rem; margin: 0; padding: 14px; }
     </style>
   </head>
   <body>
-    <main><header><div class="label">ACCÈS ADMINISTRATEUR</div><h1>Le dossier de la majorité de Samuel</h1></header><section class="grid" id="categories"></section></main>
+    <main><article class="dossier"><header><div class="label">ACCÈS ADMINISTRATEUR</div><h1>Le dossier de la majorité de Samuel</h1></header><section class="categories" id="categories"></section></article></main>
     <script src="../config/archive-config.js"></script>
     <script>
       const container = document.querySelector("#categories");
+      const media = window.ARCHIVE_CONFIG.media;
       Object.entries(window.ARCHIVE_CONFIG.categories).forEach(([code, title]) => {
-        const link = document.createElement("a");
-        link.className = "category";
-        link.href = `categorie.html#categorie=${encodeURIComponent(code)}`;
-        link.innerHTML = `<span class="category-code">${code}</span><strong class="category-name"></strong>`;
-        link.querySelector(".category-name").textContent = title;
-        container.append(link);
+        const category = document.createElement("section");
+        category.className = "category";
+        category.innerHTML = `<div class="category-heading"><span class="category-code">${code}</span><h2 class="category-name"></h2></div><div class="dossiers"></div>`;
+        category.querySelector(".category-name").textContent = title;
+        const dossiers = Object.entries(media).filter(([dossierCode]) => dossierCode.startsWith(`${code}-`));
+        const list = category.querySelector(".dossiers");
+        if (!dossiers.length) {
+          list.innerHTML = '<p class="empty">Aucun dossier référencé dans cette catégorie.</p>';
+        }
+        dossiers.forEach(([dossierCode, item]) => {
+          const link = document.createElement("a");
+          link.className = "dossier-link";
+          link.href = `media.html#code=${encodeURIComponent(dossierCode)}&from=majorite`;
+          link.innerHTML = `<span class="dossier-code"></span><strong class="dossier-title"></strong>`;
+          link.querySelector(".dossier-code").textContent = dossierCode;
+          link.querySelector(".dossier-title").textContent = item.title;
+          list.append(link);
+        });
+        container.append(category);
       });
     </script>
   </body>
