@@ -61,9 +61,11 @@ count=0
 for category_dir in "$DOSSIERS_DIR"/*(/); do
   category_name="${category_dir:t}"
   for folder_dir in "$category_dir"/*(/); do
-    code="${folder_dir:t}"
-    if [[ ! "$code" =~ '^(I|II|III|IV|V|VI|VII)-[A-J]-[1-8]$' ]]; then
-      print "Ignoré : ${category_name}/${code} ne respecte pas le format I-A-1."
+    folder_name="${folder_dir:t}"
+    if [[ "$folder_name" =~ '^((I|II|III|IV|V|VI|VII)-[A-J]-[1-8])( - .+)?$' ]]; then
+      code="${match[1]}"
+    else
+      print "Ignoré : ${category_name}/${folder_name} ne respecte pas le format I-A-1 ou I-A-1 - Description."
       continue
     fi
 
@@ -88,7 +90,7 @@ for category_dir in "$DOSSIERS_DIR"/*(/); do
     instruction=""
     for instruction_file in "$folder_dir/instruction.html" "$folder_dir/instruction.htm" "$folder_dir/instruction.txt"; do
       if [[ -f "$instruction_file" ]]; then
-        instruction="$(source_path "$category_name" "$code" "${instruction_file:t}")"
+        instruction="$(source_path "$category_name" "$folder_name" "${instruction_file:t}")"
         break
       fi
     done
@@ -115,7 +117,7 @@ for category_dir in "$DOSSIERS_DIR"/*(/); do
 
       media_title="${name:r}"
       media_title="${media_title//[-_]/ }"
-      source="$(source_path "$category_name" "$code" "$name")"
+      source="$(source_path "$category_name" "$folder_name" "$name")"
       line="        { title: $(json "$media_title"), type: $(json "$type"), source: $(json "$source")"
       if [[ "$type" == "image" ]]; then
         dimensions="$(sips -g pixelWidth -g pixelHeight "$media_file" 2>/dev/null || true)"
