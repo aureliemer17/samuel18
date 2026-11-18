@@ -124,6 +124,13 @@
         window.setTimeout(() => { enteredCode = ""; render(); }, 420);
       }
 
+      function tease(message) {
+        playSound("error");
+        window.alert(message);
+        enteredCode = "";
+        render();
+      }
+
       function unlock() {
         playSound("success");
         keybox.hidden = true;
@@ -144,6 +151,8 @@
         render();
         if (enteredCode.length === 6) {
           if (enteredCode === correctCode) unlock();
+          else if (enteredCode === "174149") tease("Bien tenté mais 4 n'est pas le bon indice.");
+          else if (enteredCode === "131105") tease("Bien tenté mais c'est un peu trop simple.");
           else deny();
         }
       });
