@@ -8,8 +8,8 @@
     <style>
       :root { --deep: #111b16; --machine: #293d31; --green: #93b775; --acid: #d5e883; --brass: #b8a96d; --ink: #111914; }
       * { box-sizing: border-box; }
-      body { align-items: center; background: radial-gradient(circle at 50% 0%, #506351, #17241d 54%, #0b120e); display: flex; justify-content: center; margin: 0; min-height: 100vh; overflow: hidden; padding: 18px; }
-      main { width: min(100%, 670px); }
+      body { align-items: center; background: radial-gradient(circle at 50% 0%, #506351, #17241d 54%, #0b120e); display: flex; justify-content: center; margin: 0; min-height: 100vh; padding: 18px; }
+      main { width: min(100%, 820px); }
       .instruction { color: #e4edc6; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: clamp(.8rem, 2.4vw, 1.1rem); font-weight: 900; letter-spacing: .14em; margin: 0 0 13px; text-align: center; text-shadow: 0 0 10px rgba(213, 232, 131, .8); text-transform: uppercase; }
       .console { background: linear-gradient(145deg, #516154, #1c2a21 39%, #344638); border: 7px solid #0c130f; border-radius: 28px; box-shadow: 0 24px 45px rgba(0, 0, 0, .52), inset 0 2px 1px rgba(255, 255, 255, .25), inset 0 -8px 16px #0a100c; display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(155px, .85fr); gap: clamp(15px, 5vw, 45px); padding: clamp(20px, 5vw, 45px); position: relative; width: 100%; }
       .console::before { background-image: radial-gradient(rgba(225, 238, 194, .15) 1px, transparent 1px); background-size: 7px 7px; border-radius: inherit; content: ""; inset: 0; pointer-events: none; position: absolute; }
@@ -29,7 +29,7 @@
       .error { animation: shake .28s linear; }
       @keyframes rotate { to { transform: rotate(360deg); } }
       @keyframes shake { 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
-      @media (max-width: 700px) { body { padding: 10px; } .console { gap: 18px; grid-template-columns: 1fr; padding: 14px; } .panel { order: 1; padding: 12px; width: 100%; } .mechanism { order: 2; } .gear { max-width: 130px; } .keypad { gap: 9px; width: 100%; } .key { font-size: 1.2rem; min-height: 50px; } }
+      @media (max-width: 700px) { body { align-items: flex-start; padding: 10px 10px 28px; } .console { gap: 18px; grid-template-columns: 1fr; padding: 14px; } .panel { order: 1; padding: 12px; width: 100%; } .mechanism { order: 2; } .gear { max-width: 130px; } .keypad { gap: 9px; width: 100%; } .key { font-size: 1.2rem; min-height: 50px; } }
     </style>
   </head>
   <body>
