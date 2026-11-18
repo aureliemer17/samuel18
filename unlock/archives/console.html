@@ -5,42 +5,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Archives</title>
     <style>
-      :root { --dark: #101614; --steel: #2f3b37; --steel-light: #6d7d72; --paper: #e2d8b8; --amber: #d39c45; --red: #b74338; }
+      :root { --ink: #1b2940; --brass-light: #ffe09a; --brass: #bd7928; --brass-dark: #57300d; --wood-dark: #2a0f08; --wood: #71331d; --paper: #f5edda; }
       * { box-sizing: border-box; }
-      body { align-items: center; background: radial-gradient(circle at 50% 0%, #53635a, #17221d 55%, #09100d); color: var(--paper); display: flex; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; justify-content: center; margin: 0; min-height: 100vh; padding: 20px; }
-      main { width: min(100%, 620px); }
-      .title { color: #edf0d7; font-size: clamp(.9rem, 3vw, 1.25rem); letter-spacing: .2em; margin: 0 0 13px; text-align: center; text-shadow: 0 0 9px rgba(222, 220, 164, .65); text-transform: uppercase; }
-      .archive-console { background: linear-gradient(145deg, #59655d, #1a2721 45%, #35453c); border: 7px solid #0a100d; box-shadow: 0 22px 45px rgba(0, 0, 0, .55), inset 0 2px 2px rgba(255, 255, 255, .22), inset 0 -8px 14px #090e0b; padding: clamp(18px, 5vw, 42px); }
-      .archive-console::before { background-image: radial-gradient(rgba(237, 240, 215, .13) 1px, transparent 1px); background-size: 7px 7px; content: ""; inset: 0; pointer-events: none; position: absolute; }
-      .selector { align-items: center; display: grid; gap: clamp(6px, 2vw, 17px); grid-template-columns: 1fr auto 1fr auto 1fr; position: relative; }
-      .divider { color: var(--amber); font-size: clamp(1.5rem, 6vw, 3rem); text-shadow: 0 0 8px rgba(211, 156, 69, .7); }
-      .wheel-unit { display: grid; gap: 8px; grid-template-rows: auto 1fr auto; justify-items: center; min-width: 0; }
-      .turn { appearance: none; background: transparent; border: 0; cursor: pointer; height: 30px; padding: 0; width: 45px; }
-      .turn::before { border-left: 14px solid transparent; border-right: 14px solid transparent; content: ""; display: block; margin: auto; width: 0; }
-      .turn--up::before { border-bottom: 18px solid #d9b85c; filter: drop-shadow(0 2px 0 #111); }
-      .turn--down::before { border-top: 18px solid #d9b85c; filter: drop-shadow(0 -2px 0 #111); }
-      .turn:active { transform: translateY(1px); }
-      .wheel { align-items: center; aspect-ratio: 1; background: repeating-conic-gradient(#9eae91 0deg 11deg, #334b3c 11deg 22deg); border-radius: 50%; box-shadow: 0 5px 4px #080d0a, inset 0 0 0 8px #1b2b22, inset 0 0 0 11px #829577; display: flex; justify-content: center; max-width: 150px; padding: 17%; position: relative; width: 100%; }
-      .wheel::before { background: radial-gradient(circle at 33% 28%, #f4eed3, #a8a994 38%, #536457 41%, #24362b 72%); border: 3px solid #0b110d; border-radius: 50%; box-shadow: inset 0 0 0 3px #829577; content: ""; inset: 13%; position: absolute; }
-      .wheel-value { color: #fff9d9; font-family: Georgia, serif; font-size: clamp(1.2rem, 6vw, 2.8rem); font-weight: 900; position: relative; text-shadow: 0 2px 2px #111; z-index: 1; }
-      .confirm { appearance: none; background: linear-gradient(145deg, #e1c168, #8d733b 52%, #5c492a); border: 3px solid #15180f; box-shadow: inset 0 1px 2px #ffedab, 0 4px 0 #0a0d09; color: #151b10; cursor: pointer; font-family: inherit; font-size: clamp(.75rem, 2.8vw, 1rem); font-weight: 900; letter-spacing: .14em; margin: 28px auto 0; min-height: 49px; padding: 0 24px; text-transform: uppercase; }
-      .confirm:active { box-shadow: inset 0 2px 5px #5c492a, 0 1px 0 #0a0d09; transform: translateY(3px); }
-      .return-link { color: #e4edc6; display: block; font-family: Arial, sans-serif; font-size: .7rem; font-weight: 900; letter-spacing: .1em; margin-top: 18px; text-align: center; text-decoration: none; text-transform: uppercase; }
-      @media (max-width: 380px) { .archive-console { padding: 16px 10px; } .selector { gap: 3px; } .wheel-unit { gap: 3px; } .wheel { padding: 13%; } .divider { font-size: 1.3rem; } }
+      body { align-items: center; background: radial-gradient(circle at 50% 15%, #71331d, #2a0f08 62%, #120604); color: var(--paper); display: flex; font-family: Georgia, "Times New Roman", serif; justify-content: center; margin: 0; min-height: 100vh; padding: 18px; }
+      main { width: min(100%, 900px); }
+      .title { color: #ffe4a5; font-family: ui-monospace, monospace; font-size: clamp(.65rem, 2vw, .9rem); letter-spacing: .22em; margin: 0 0 16px; text-align: center; text-shadow: 0 2px 3px #120604; text-transform: uppercase; }
+      .archive-console { background: repeating-linear-gradient(94deg, #3d160c 0 4px, #5f2615 5px 14px, #321008 16px 24px); border: clamp(10px, 2.2vw, 19px) solid #271007; border-radius: 12px; box-shadow: inset 0 0 0 3px #a2542c, inset 0 0 25px #190704, 0 25px 50px rgba(0, 0, 0, .55); padding: clamp(15px, 4vw, 40px); }
+      .brass-panel { background: radial-gradient(circle at 32% 20%, #f9ca70, #bd7828 42%, #774012 100%); border: 5px solid var(--brass-light); border-radius: 16px; box-shadow: inset 0 0 0 5px #8c4b17, inset 0 0 33px rgba(60, 25, 2, .42), 0 4px 9px #1b0a03; padding: clamp(36px, 7vw, 70px) clamp(20px, 7vw, 78px) clamp(30px, 6vw, 55px); position: relative; }
+      .brass-panel::before { background-image: radial-gradient(rgba(83, 39, 7, .25) 1px, transparent 1px); background-size: 6px 6px; content: ""; inset: 0; pointer-events: none; position: absolute; }
+      .screw { background: linear-gradient(135deg, #fff1b0, #916020 58%, #3a2109); border: 2px solid #5d330e; border-radius: 50%; box-shadow: 0 2px 3px rgba(0, 0, 0, .45); height: clamp(17px, 3vw, 26px); position: absolute; width: clamp(17px, 3vw, 26px); z-index: 1; }
+      .screw::after { background: #4a290c; content: ""; height: 2px; left: 2px; position: absolute; top: calc(50% - 1px); transform: rotate(-45deg); width: calc(100% - 4px); }
+      .screw--tl { left: 18px; top: 18px; } .screw--tr { right: 18px; top: 18px; } .screw--bl { bottom: 18px; left: 18px; } .screw--br { bottom: 18px; right: 18px; }
+      .selector { display: grid; gap: clamp(10px, 4vw, 42px); grid-template-columns: repeat(3, minmax(0, 1fr)); position: relative; z-index: 1; }
+      .wheel-unit { display: grid; gap: clamp(9px, 2vw, 17px); grid-template-rows: auto 1fr auto; justify-items: center; min-width: 0; }
+      .turn { appearance: none; background: linear-gradient(135deg, #fff1a8 0 12%, #d18a2e 42%, #60310b 100%); border: 2px solid #70400f; clip-path: polygon(50% 0, 100% 100%, 0 100%); cursor: pointer; filter: drop-shadow(0 4px 2px rgba(43, 19, 3, .65)); height: clamp(35px, 7vw, 59px); padding: 0; width: clamp(52px, 10vw, 83px); }
+      .turn--down { transform: rotate(180deg); }
+      .turn:active { filter: drop-shadow(0 1px 1px rgba(43, 19, 3, .65)); transform: translateY(3px); }
+      .turn--down:active { transform: rotate(180deg) translateY(3px); }
+      .wheel { align-items: center; aspect-ratio: 1.15 / 1; background: linear-gradient(135deg, #ffeaa8, #995418 40%, #edb953 64%, #63330d); border: clamp(4px, 1vw, 8px) solid #70400f; border-radius: 10px; box-shadow: inset 0 0 0 clamp(3px, .7vw, 6px) #f7c966, inset 0 0 20px #3b1705, 0 5px 5px rgba(47, 19, 3, .72); display: flex; justify-content: center; padding: clamp(7px, 2vw, 15px); position: relative; width: 100%; }
+      .wheel::before { background: radial-gradient(circle at 34% 23%, #fffdf4, #f5ecdb 58%, #d8c6a9); border: 1px solid #a58653; box-shadow: inset 0 0 18px rgba(73, 42, 11, .16); content: ""; inset: clamp(7px, 1.8vw, 13px); position: absolute; }
+      .wheel-value { color: var(--ink); font-family: Georgia, serif; font-size: clamp(2.1rem, 10vw, 6rem); font-weight: 700; line-height: 1; position: relative; text-shadow: 0 1px 0 #fff; z-index: 1; }
+      .wheel-value.rolling-up { animation: roll-up .22s cubic-bezier(.2, .75, .35, 1); }
+      .wheel-value.rolling-down { animation: roll-down .22s cubic-bezier(.2, .75, .35, 1); }
+      @keyframes roll-up { 0% { opacity: 0; transform: translateY(62%); } 62% { opacity: 1; transform: translateY(-7%); } 100% { opacity: 1; transform: translateY(0); } }
+      @keyframes roll-down { 0% { opacity: 0; transform: translateY(-62%); } 62% { opacity: 1; transform: translateY(7%); } 100% { opacity: 1; transform: translateY(0); } }
+      .confirm { appearance: none; background: linear-gradient(135deg, #ffe7a0, #c47a24 45%, #84501a 100%); border: clamp(4px, .8vw, 7px) solid #77400e; border-radius: 12px; box-shadow: inset 0 0 0 3px #f7cf73, inset 0 -10px 18px rgba(73, 31, 3, .36), 0 6px 2px #3a1806; color: #211205; cursor: pointer; display: block; font-family: Georgia, serif; font-size: clamp(1.25rem, 4.5vw, 2.7rem); font-weight: 700; margin: clamp(25px, 5vw, 48px) auto 0; padding: clamp(13px, 2.5vw, 22px) clamp(26px, 6vw, 65px); position: relative; text-shadow: 0 1px #ffeac0; z-index: 1; }
+      .confirm:active { box-shadow: inset 0 5px 12px rgba(73, 31, 3, .45), 0 2px 1px #3a1806; transform: translateY(4px); }
+      .return-link { color: #ffe3a4; display: block; font-family: ui-monospace, monospace; font-size: .7rem; font-weight: 800; letter-spacing: .1em; margin-top: 18px; text-align: center; text-decoration: none; text-transform: uppercase; }
+      @media (max-width: 430px) { .archive-console { padding: 11px; } .brass-panel { border-width: 3px; padding: 35px 19px 27px; } .selector { gap: 10px; } .confirm { width: 100%; } .screw--tl { left: 10px; top: 10px; } .screw--tr { right: 10px; top: 10px; } .screw--bl { bottom: 10px; left: 10px; } .screw--br { bottom: 10px; right: 10px; } }
     </style>
   </head>
   <body>
     <main>
       <h1 class="title">Entrepôt documentaire</h1>
       <section class="archive-console" aria-label="Sélecteur de dossier">
-        <div class="selector">
-          <div class="wheel-unit"><button class="turn turn--up" type="button" data-wheel="row" data-step="-1" aria-label="Rangée précédente"></button><div class="wheel"><output class="wheel-value" id="row">I</output></div><button class="turn turn--down" type="button" data-wheel="row" data-step="1" aria-label="Rangée suivante"></button></div>
-          <span class="divider" aria-hidden="true">-</span>
-          <div class="wheel-unit"><button class="turn turn--up" type="button" data-wheel="column" data-step="-1" aria-label="Colonne précédente"></button><div class="wheel"><output class="wheel-value" id="column">A</output></div><button class="turn turn--down" type="button" data-wheel="column" data-step="1" aria-label="Colonne suivante"></button></div>
-          <span class="divider" aria-hidden="true">-</span>
-          <div class="wheel-unit"><button class="turn turn--up" type="button" data-wheel="level" data-step="-1" aria-label="Niveau précédent"></button><div class="wheel"><output class="wheel-value" id="level">1</output></div><button class="turn turn--down" type="button" data-wheel="level" data-step="1" aria-label="Niveau suivant"></button></div>
+        <div class="brass-panel"><span class="screw screw--tl" aria-hidden="true"></span><span class="screw screw--tr" aria-hidden="true"></span><span class="screw screw--bl" aria-hidden="true"></span><span class="screw screw--br" aria-hidden="true"></span>
+          <div class="selector">
+            <div class="wheel-unit"><button class="turn turn--up" type="button" data-wheel="row" data-step="-1" aria-label="Rangée précédente"></button><div class="wheel"><output class="wheel-value" id="row">I</output></div><button class="turn turn--down" type="button" data-wheel="row" data-step="1" aria-label="Rangée suivante"></button></div>
+            <div class="wheel-unit"><button class="turn turn--up" type="button" data-wheel="column" data-step="-1" aria-label="Colonne précédente"></button><div class="wheel"><output class="wheel-value" id="column">A</output></div><button class="turn turn--down" type="button" data-wheel="column" data-step="1" aria-label="Colonne suivante"></button></div>
+            <div class="wheel-unit"><button class="turn turn--up" type="button" data-wheel="level" data-step="-1" aria-label="Niveau précédent"></button><div class="wheel"><output class="wheel-value" id="level">1</output></div><button class="turn turn--down" type="button" data-wheel="level" data-step="1" aria-label="Niveau suivant"></button></div>
+          </div>
+          <button class="confirm" id="confirm" type="button">Consulter le dossier</button>
         </div>
-        <button class="confirm" id="confirm" type="button">Consulter le dossier</button>
       </section>
       <a class="return-link" href="../jeu/machine.html">Retour aux machines</a>
     </main>
@@ -50,12 +56,21 @@
       const position = { row: 0, column: 0, level: 0 };
       const archiveConfig = window.ARCHIVE_CONFIG.media;
 
-      function render(wheel) { document.querySelector(`#${wheel}`).textContent = values[wheel][position[wheel]]; }
-      document.querySelectorAll(".turn").forEach((button) => button.addEventListener("click", () => {
-        const wheel = button.dataset.wheel;
-        position[wheel] = (position[wheel] + Number(button.dataset.step) + values[wheel].length) % values[wheel].length;
-        render(wheel);
-      }));
+       function render(wheel, step) {
+         const output = document.querySelector(`#${wheel}`);
+         output.classList.remove("rolling-up", "rolling-down");
+         output.textContent = values[wheel][position[wheel]];
+         if (step) {
+           void output.offsetWidth;
+           output.classList.add(step < 0 ? "rolling-up" : "rolling-down");
+         }
+       }
+       document.querySelectorAll(".turn").forEach((button) => button.addEventListener("click", () => {
+         const wheel = button.dataset.wheel;
+         const step = Number(button.dataset.step);
+         position[wheel] = (position[wheel] + step + values[wheel].length) % values[wheel].length;
+         render(wheel, step);
+       }));
       document.querySelector("#confirm").addEventListener("click", () => {
         const code = `${values.row[position.row]}-${values.column[position.column]}-${values.level[position.level]}`;
         window.location.assign(Object.hasOwn(archiveConfig, code) ? `media.html#code=${encodeURIComponent(code)}` : "acces-refuse.html");
