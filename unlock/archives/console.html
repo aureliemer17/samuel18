@@ -22,9 +22,9 @@
       .turn--down { transform: rotate(180deg); }
       .turn:active { filter: drop-shadow(0 1px 1px rgba(43, 19, 3, .65)); transform: translateY(3px); }
       .turn--down:active { transform: rotate(180deg) translateY(3px); }
-      .wheel { align-items: center; aspect-ratio: 1.15 / 1; background: linear-gradient(135deg, #ffeaa8, #995418 40%, #edb953 64%, #63330d); border: clamp(4px, 1vw, 8px) solid #70400f; border-radius: 10px; box-shadow: inset 0 0 0 clamp(3px, .7vw, 6px) #f7c966, inset 0 0 20px #3b1705, 0 5px 5px rgba(47, 19, 3, .72); display: flex; justify-content: center; padding: clamp(7px, 2vw, 15px); position: relative; width: 100%; }
+      .wheel { align-items: center; aspect-ratio: 1; background: linear-gradient(135deg, #ffeaa8, #995418 40%, #edb953 64%, #63330d); border: clamp(4px, 1vw, 8px) solid #70400f; border-radius: 10px; box-shadow: inset 0 0 0 clamp(3px, .7vw, 6px) #f7c966, inset 0 0 20px #3b1705, 0 5px 5px rgba(47, 19, 3, .72); display: flex; justify-content: center; min-width: 0; overflow: hidden; padding: clamp(7px, 2vw, 15px); position: relative; width: 100%; }
       .wheel::before { background: radial-gradient(circle at 34% 23%, #fffdf4, #f5ecdb 58%, #d8c6a9); border: 1px solid #a58653; box-shadow: inset 0 0 18px rgba(73, 42, 11, .16); content: ""; inset: clamp(7px, 1.8vw, 13px); position: absolute; }
-      .wheel-value { color: var(--ink); font-family: Georgia, serif; font-size: clamp(2.1rem, 10vw, 6rem); font-weight: 700; line-height: 1; position: relative; text-shadow: 0 1px 0 #fff; z-index: 1; }
+      .wheel-value { color: var(--ink); font-family: Georgia, serif; font-size: clamp(2.1rem, 6vw, 4rem); font-weight: 700; line-height: 1; min-width: 0; position: relative; text-align: center; text-shadow: 0 1px 0 #fff; white-space: nowrap; z-index: 1; }
       .wheel-value.rolling-up { animation: roll-up .22s cubic-bezier(.2, .75, .35, 1); }
       .wheel-value.rolling-down { animation: roll-down .22s cubic-bezier(.2, .75, .35, 1); }
       @keyframes roll-up { 0% { opacity: 0; transform: translateY(62%); } 62% { opacity: 1; transform: translateY(-7%); } 100% { opacity: 1; transform: translateY(0); } }

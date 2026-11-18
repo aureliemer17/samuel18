@@ -4,7 +4,7 @@ window.PUZZLE_CONFIG = {
   machines: {
     10: "ascenseur.html",
     11: "cle.html",
-    37: "../archives/console.html",
+    41: "../archives/console.html",
   },
   pages: {
     ascenseur: {
