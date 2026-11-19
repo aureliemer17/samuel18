@@ -46,16 +46,23 @@
       .evidence::before { border: 3px solid #a03b35; border-bottom: 0; border-radius: 12px 12px 0 0; content: ""; height: 34px; position: absolute; right: 18mm; top: -20px; transform: rotate(13deg); width: 14px; }
       .evidence img, .evidence video, .evidence iframe { background: #241a10; display: block; height: auto; max-height: 181mm; max-width: 100%; object-fit: contain; width: 100%; }
       .evidence iframe { background: #fff; border: 1px solid #b8aa8d; height: 181mm; }
+      .evidence--document { max-width: 169mm; }
       .evidence figcaption { color: var(--brown); font-family: "Courier New", monospace; font-size: 9pt; margin-top: 4mm; }
-      .photo-sheet { display: grid; gap: 7mm; grid-template-columns: repeat(2, minmax(0, 1fr)); height: 186mm; margin: 0 auto; max-width: 169mm; }
+      .photo-sheet { display: grid; gap: 4mm; grid-template-columns: repeat(2, minmax(0, 1fr)); height: 205mm; margin: 0 auto; max-width: 180mm; }
       .photo-sheet--1 { grid-template-columns: 1fr; }
       .photo-sheet--3 .photo-evidence:first-child { grid-column: span 2; }
-      .photo-evidence { align-items: center; background: #fffefa; box-shadow: 3px 5px 9px rgba(53, 34, 10, .3); display: flex; justify-content: center; margin: 0; min-height: 0; padding: 5mm 5mm 10mm; position: relative; transform: rotate(-.6deg); }
+      .photo-evidence { align-items: center; background: #fffefa; box-shadow: 3px 5px 9px rgba(53, 34, 10, .3); display: flex; justify-content: center; margin: 0; min-height: 0; padding: 3mm 3mm 8mm; position: relative; transform: rotate(-.6deg); }
       .photo-evidence:nth-child(even) { transform: rotate(.7deg); }
+      .photo-evidence { cursor: zoom-in; }
+      .photo-evidence.expanded { align-items: center; background: #fffefa; cursor: zoom-out; display: flex; height: min(88vh, 260mm); justify-content: center; left: 50%; max-width: min(90vw, 190mm); padding: 8mm 8mm 13mm; position: fixed; top: 50%; transform: translate(-50%, -50%) rotate(0); width: 90vw; z-index: 20; }
+      .photo-evidence.expanded::after { background: rgba(0, 0, 0, .72); content: ""; height: 100vh; left: 50%; pointer-events: none; position: fixed; top: 50%; transform: translate(-50%, -50%); width: 100vw; z-index: -1; }
+      .photo-evidence.expanded img { height: 100%; object-fit: contain; width: 100%; }
       .photo-evidence::before { border: 3px solid #a03b35; border-bottom: 0; border-radius: 10px 10px 0 0; content: ""; height: 25px; position: absolute; right: 12mm; top: -16px; transform: rotate(13deg); width: 11px; z-index: 2; }
       .photo-evidence:nth-child(even)::before { left: 12mm; right: auto; transform: rotate(-13deg); }
       .photo-evidence img { display: block; height: 100%; max-height: 100%; max-width: 100%; object-fit: contain; width: 100%; }
-      .photo-evidence figcaption { bottom: 3mm; left: 5mm; overflow: hidden; position: absolute; right: 5mm; text-overflow: ellipsis; white-space: nowrap; }
+      .photo-evidence figcaption, .video-evidence figcaption { bottom: 2mm; left: 3mm; overflow: hidden; position: absolute; right: 3mm; text-overflow: ellipsis; white-space: nowrap; }
+      .evidence-date { color: var(--red); font-family: "Courier New", monospace; font-size: 8pt; font-weight: 900; }
+      .evidence-name { color: var(--brown); font-family: "Courier New", monospace; font-size: 7pt; margin-left: 5px; }
       .video-sheet { display: grid; gap: 9mm; grid-template-columns: repeat(2, minmax(0, 1fr)); height: 186mm; margin: 0 auto; max-width: 169mm; }
       .video-sheet--1 { grid-template-columns: 1fr; }
       .video-evidence { align-items: center; background: #fffefa; box-shadow: 3px 5px 9px rgba(53, 34, 10, .3); display: flex; flex-direction: column; justify-content: center; margin: 0; min-height: 0; padding: 5mm 5mm 10mm; position: relative; transform: rotate(-.5deg); }
@@ -63,7 +70,6 @@
       .video-evidence::before { border: 3px solid #a03b35; border-bottom: 0; border-radius: 10px 10px 0 0; content: ""; height: 25px; position: absolute; right: 12mm; top: -16px; transform: rotate(13deg); width: 11px; z-index: 2; }
       .video-evidence video { background: #241a10; display: block; max-height: 145mm; max-width: 100%; width: 100%; }
       .video-evidence .video-link { font-size: 8pt; margin-top: 4mm; padding: 7px 9px; }
-      .video-evidence figcaption { bottom: 3mm; left: 5mm; overflow: hidden; position: absolute; right: 5mm; text-overflow: ellipsis; white-space: nowrap; }
       .video-print-note { display: none; }
       .video-link { background: #e8ddb3; border: 1px solid #9a7c41; color: #483318; display: inline-block; font-family: Arial, sans-serif; font-size: 10pt; font-weight: 900; margin-top: 9mm; padding: 10px 14px; text-decoration: none; }
       .video-link:hover { background: #f7edc9; }
@@ -140,7 +146,7 @@
           figure.className = "evidence";
           if (item.type === "image") { const image = document.createElement("img"); image.src = item.source; image.alt = item.title; figure.append(image); }
           else if (item.type === "video") { const video = document.createElement("video"); video.src = item.source; video.controls = true; figure.append(video); const note = document.createElement("p"); note.className = "video-print-note"; note.textContent = "Vidéo disponible via le lien ci-dessous."; figure.append(note); }
-          else { const frame = document.createElement("iframe"); frame.src = item.source; frame.title = item.title; figure.append(frame); }
+          else { figure.classList.add("evidence--document"); const frame = document.createElement("iframe"); frame.src = item.source; frame.title = item.title; if (item.height) frame.style.height = `${item.height}px`; figure.append(frame); }
           const caption = document.createElement("figcaption"); caption.textContent = `PIÈCE JOINTE : ${item.title}`; figure.append(caption);
           page.append(figure);
           if (item.externalUrl) { const link = document.createElement("a"); link.className = "video-link"; link.href = item.externalUrl; link.target = "_blank"; link.rel = "noopener"; link.textContent = "Voir la vidéo"; page.append(link); }
@@ -160,12 +166,13 @@
         items.forEach((item) => {
           const figure = document.createElement("figure");
           figure.className = "photo-evidence";
-          if (item.width && item.height) figure.style.setProperty("--photo-ratio", `${item.width} / ${item.height}`);
           const image = document.createElement("img");
           image.src = item.source;
           image.alt = item.title;
           const caption = document.createElement("figcaption");
-          caption.textContent = item.createdAt ? `${item.title} · ${item.createdAt}` : item.title;
+          caption.innerHTML = `<span class="evidence-date"></span><span class="evidence-name"></span>`;
+          caption.querySelector(".evidence-date").textContent = item.createdAt || "Date inconnue";
+          caption.querySelector(".evidence-name").textContent = item.title;
           figure.append(image, caption);
           sheet.append(figure);
         });
@@ -190,7 +197,9 @@
           video.src = item.source;
           video.controls = true;
           const caption = document.createElement("figcaption");
-          caption.textContent = item.createdAt ? `${item.title} · ${item.createdAt}` : item.title;
+          caption.innerHTML = `<span class="evidence-date"></span><span class="evidence-name"></span>`;
+          caption.querySelector(".evidence-date").textContent = item.createdAt || "Date inconnue";
+          caption.querySelector(".evidence-name").textContent = item.title;
           figure.append(video, caption);
           if (item.externalUrl) { const link = document.createElement("a"); link.className = "video-link"; link.href = item.externalUrl; link.target = "_blank"; link.rel = "noopener"; link.textContent = "Voir la vidéo"; figure.append(link); }
           sheet.append(figure);
@@ -271,6 +280,11 @@
         showPage(firstPageByDossier.get(link.dataset.dossier));
       });
       pages.addEventListener("click", (event) => {
+        const photo = event.target.closest(".photo-evidence");
+        if (photo) {
+          photo.classList.toggle("expanded");
+          return;
+        }
         if (event.target.closest("a, button, video, iframe")) return;
         const bounds = pages.getBoundingClientRect();
         if (event.clientX < bounds.left + bounds.width / 2) turnPage(pageIndex - 1);
