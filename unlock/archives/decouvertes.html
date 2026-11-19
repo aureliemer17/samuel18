@@ -3,59 +3,303 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dossiers à découvrir</title>
+    <title>Dossier S-18</title>
     <style>
-      :root { --ink: #1d2941; --muted: #77829a; --violet: #6950e8; --line: #e2e7f0; }
+      :root { --ink: #172c4a; --brown: #704c2a; --paper: #fffdf7; --paper-shadow: #e8dfc9; --red: #9d3424; --line: #c8b892; }
       * { box-sizing: border-box; }
-      body { background: radial-gradient(circle at 5% 5%, #d9fff1 0, transparent 24%), radial-gradient(circle at 95% 8%, #ffe1c2 0, transparent 29%), #f4f7fc; color: var(--ink); font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; margin: 0; min-height: 100vh; padding: clamp(18px, 5vw, 52px); }
-      main { margin: auto; max-width: 960px; }
-      .board { background: rgba(255, 255, 255, .86); border: 1px solid rgba(255, 255, 255, .9); border-radius: 28px; box-shadow: 0 20px 70px rgba(48, 66, 104, .16); padding: clamp(24px, 5vw, 60px); }
-      .label { color: var(--muted); font-family: ui-monospace, monospace; font-size: .72rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
-      h1 { font-size: clamp(2.2rem, 7vw, 5rem); letter-spacing: -.055em; line-height: .95; margin: 12px 0 14px; }
-      .progress { color: var(--muted); font-size: .95rem; margin: 0 0 32px; }
-      .categories { display: grid; gap: 28px; }
-      .category { border-top: 1px solid var(--line); padding-top: 22px; }
-      .category:first-child { border-top: 0; padding-top: 0; }
-      h2 { font-size: 1.35rem; letter-spacing: -.03em; margin: 0 0 12px; }
-      .list { display: grid; gap: 9px; }
-      .item { align-items: center; background: #f7f8fc; border: 1px solid var(--line); border-radius: 13px; display: flex; font-weight: 700; gap: 12px; padding: 14px 16px; }
-      .item.viewed { background: linear-gradient(135deg, #effaf2, #f8fffa); border-color: #b9e2c5; }
-      .state { align-items: center; border: 1px solid #cdd5e0; border-radius: 50%; color: #9aa6b5; display: inline-flex; flex: 0 0 auto; font-size: .75rem; font-weight: 900; height: 22px; justify-content: center; width: 22px; }
-      .item.viewed .state { background: #43a06a; border-color: #43a06a; color: #fff; }
-      .state-text { color: var(--muted); font-size: .78rem; font-weight: 650; margin-left: auto; }
-      .item.viewed .state-text { color: #287348; }
-      .empty { color: var(--muted); font-size: .9rem; margin: 0; }
+      body { background: repeating-linear-gradient(0deg, #291a11 0 2px, #3a2519 2px 7px); color: var(--ink); font-family: Georgia, "Times New Roman", serif; margin: 0; padding: 28px; }
+      .toolbar { align-items: center; display: flex; gap: 12px; justify-content: center; margin: 0 auto 22px; max-width: 820px; }
+      .toolbar button { background: #f4ead1; border: 1px solid #8b6d42; box-shadow: 2px 3px 0 rgba(0, 0, 0, .3); color: #4b351d; cursor: pointer; font-family: "Courier New", monospace; font-size: .72rem; font-weight: 900; letter-spacing: .06em; padding: 11px 14px; text-transform: uppercase; }
+      .toolbar button:hover { background: #fff9e9; }
+      .book { margin: auto; max-width: 210mm; perspective: 1800px; }
+      .book:not(.open) .pages, .book:not(.open) + .pager { display: none; }
+      .cover { align-items: center; background: linear-gradient(135deg, #d6ba70, #f0d995 52%, #c5a257); box-shadow: 0 24px 45px rgba(0, 0, 0, .55), inset 0 0 0 4px rgba(255, 236, 169, .45); cursor: pointer; display: flex; min-height: 297mm; padding: 22mm; position: relative; text-align: center; transform-origin: left center; transition: transform .85s cubic-bezier(.2, .7, .2, 1), opacity .35s ease; z-index: 2; }
+      .cover::before { border: 2px solid rgba(91, 57, 17, .48); content: ""; inset: 9mm; pointer-events: none; position: absolute; }
+      .cover.open { opacity: 0; pointer-events: none; position: absolute; transform: rotateY(-108deg); }
+      .cover.page-visible { opacity: 1; pointer-events: auto; position: relative; transform: none; }
+      .cover__content { align-items: center; display: flex; flex-direction: column; margin: auto; max-width: 145mm; min-height: 245mm; position: relative; }
+      .logo { display: block; margin: 0 auto 7mm; max-width: 78mm; width: 65%; }
+      .division { color: var(--brown); font-family: Arial, sans-serif; font-size: 8pt; letter-spacing: .07em; text-transform: uppercase; }
+      .cover h1 { font-size: 28pt; margin: 15mm 0 24mm; text-transform: uppercase; }
+      .cover .subtitle { font-size: 20pt; font-style: italic; line-height: 1.25; margin: 0; }
+      .cover .name { display: block; font-size: 37pt; margin-top: 3mm; }
+      .date { color: var(--red); font-family: Arial, sans-serif; font-size: 9pt; font-weight: 900; margin-top: 9mm; text-transform: uppercase; }
+      .cover .quote { color: var(--brown); font-size: 11pt; font-style: italic; margin: auto 0 3mm; }
+      .cover .confidential { color: var(--red); font-family: Arial, sans-serif; font-size: 8pt; font-weight: 900; letter-spacing: .04em; margin: 0; text-transform: uppercase; }
+      .pages { min-height: 297mm; position: relative; }
+      .page { background: repeating-linear-gradient(0deg, transparent 0 27px, rgba(104, 73, 30, .08) 28px 29px), var(--paper); box-shadow: 0 18px 38px rgba(0, 0, 0, .45); min-height: 297mm; overflow: hidden; padding: 15mm; position: relative; }
+      .page[hidden] { display: none; }
+      .page.turn-out-next { animation: turn-out-next .42s ease-in forwards; transform-origin: left center; }
+      .page.turn-out-previous { animation: turn-out-previous .42s ease-in forwards; transform-origin: right center; }
+      @keyframes turn-out-next { to { filter: brightness(.78); opacity: 0; transform: perspective(1600px) rotateY(-88deg); } }
+      @keyframes turn-out-previous { to { filter: brightness(.78); opacity: 0; transform: perspective(1600px) rotateY(88deg); } }
+      .page::after { border: 1px solid var(--line); content: ""; inset: 7mm; pointer-events: none; position: absolute; }
+      .page > * { position: relative; z-index: 1; }
+      .back-cover { background: linear-gradient(135deg, #d6ba70, #f0d995 52%, #c5a257); }
+      .back-cover::after { border-color: rgba(91, 57, 17, .48); }
+      .page-header { border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; padding-bottom: 4mm; }
+      .case { color: var(--red); font-family: "Courier New", monospace; font-size: 9pt; font-weight: 900; }
+      .page h2 { font-size: 23pt; line-height: 1.05; margin: 11mm 0 5mm; text-transform: uppercase; }
+      .page h3 { font-family: "Courier New", monospace; font-size: 10pt; margin: 0 0 8mm; }
+      .status { border: 2px solid var(--red); color: var(--red); display: inline-block; font-family: Arial, sans-serif; font-size: 9pt; font-weight: 900; margin-bottom: 6mm; padding: 3px 7px; text-transform: uppercase; transform: rotate(-3deg); }
+      .evidence { background: #fffefa; box-shadow: 3px 5px 9px rgba(53, 34, 10, .3); margin: 0 auto; max-height: 205mm; max-width: 165mm; padding: 6mm 6mm 13mm; position: relative; transform: rotate(-.5deg); }
+      .evidence::before { border: 3px solid #a03b35; border-bottom: 0; border-radius: 12px 12px 0 0; content: ""; height: 34px; position: absolute; right: 18mm; top: -20px; transform: rotate(13deg); width: 14px; }
+      .evidence img, .evidence video, .evidence iframe { background: #241a10; display: block; height: auto; max-height: 181mm; max-width: 100%; object-fit: contain; width: 100%; }
+      .evidence iframe { background: #fff; border: 1px solid #b8aa8d; height: 181mm; }
+      .evidence figcaption { color: var(--brown); font-family: "Courier New", monospace; font-size: 9pt; margin-top: 4mm; }
+      .photo-sheet { display: grid; gap: 7mm; grid-template-columns: repeat(2, minmax(0, 1fr)); height: 186mm; margin: 0 auto; max-width: 169mm; }
+      .photo-sheet--1 { grid-template-columns: 1fr; }
+      .photo-sheet--3 .photo-evidence:first-child { grid-column: span 2; }
+      .photo-evidence { align-items: center; background: #fffefa; box-shadow: 3px 5px 9px rgba(53, 34, 10, .3); display: flex; justify-content: center; margin: 0; min-height: 0; padding: 5mm 5mm 10mm; position: relative; transform: rotate(-.6deg); }
+      .photo-evidence:nth-child(even) { transform: rotate(.7deg); }
+      .photo-evidence::before { border: 3px solid #a03b35; border-bottom: 0; border-radius: 10px 10px 0 0; content: ""; height: 25px; position: absolute; right: 12mm; top: -16px; transform: rotate(13deg); width: 11px; z-index: 2; }
+      .photo-evidence:nth-child(even)::before { left: 12mm; right: auto; transform: rotate(-13deg); }
+      .photo-evidence img { display: block; height: 100%; max-height: 100%; max-width: 100%; object-fit: contain; width: 100%; }
+      .photo-evidence figcaption { bottom: 3mm; left: 5mm; overflow: hidden; position: absolute; right: 5mm; text-overflow: ellipsis; white-space: nowrap; }
+      .video-sheet { display: grid; gap: 9mm; grid-template-columns: repeat(2, minmax(0, 1fr)); height: 186mm; margin: 0 auto; max-width: 169mm; }
+      .video-sheet--1 { grid-template-columns: 1fr; }
+      .video-evidence { align-items: center; background: #fffefa; box-shadow: 3px 5px 9px rgba(53, 34, 10, .3); display: flex; flex-direction: column; justify-content: center; margin: 0; min-height: 0; padding: 5mm 5mm 10mm; position: relative; transform: rotate(-.5deg); }
+      .video-evidence:nth-child(even) { transform: rotate(.6deg); }
+      .video-evidence::before { border: 3px solid #a03b35; border-bottom: 0; border-radius: 10px 10px 0 0; content: ""; height: 25px; position: absolute; right: 12mm; top: -16px; transform: rotate(13deg); width: 11px; z-index: 2; }
+      .video-evidence video { background: #241a10; display: block; max-height: 145mm; max-width: 100%; width: 100%; }
+      .video-evidence .video-link { font-size: 8pt; margin-top: 4mm; padding: 7px 9px; }
+      .video-evidence figcaption { bottom: 3mm; left: 5mm; overflow: hidden; position: absolute; right: 5mm; text-overflow: ellipsis; white-space: nowrap; }
+      .video-print-note { display: none; }
+      .video-link { background: #e8ddb3; border: 1px solid #9a7c41; color: #483318; display: inline-block; font-family: Arial, sans-serif; font-size: 10pt; font-weight: 900; margin-top: 9mm; padding: 10px 14px; text-decoration: none; }
+      .video-link:hover { background: #f7edc9; }
+      .contents { columns: 2; font-family: "Courier New", monospace; font-size: 10pt; line-height: 1.55; list-style: none; margin: 8mm 0 0; padding: 0; }
+      .contents li { break-inside: avoid; margin-bottom: 3mm; }
+      .contents .seen { color: #4f6a3d; font-weight: 900; }
+      .contents button { background: transparent; border: 0; color: inherit; cursor: pointer; font: inherit; padding: 0; text-align: left; text-decoration: underline; text-decoration-style: dotted; }
+      .pager { align-items: center; background: #f3e5be; border: 1px solid #9b7940; bottom: 15px; box-shadow: 3px 4px 0 rgba(0, 0, 0, .3); display: flex; gap: 9px; justify-content: center; left: 50%; padding: 9px; position: fixed; transform: translateX(-50%); width: max-content; z-index: 4; }
+      .pager button { background: #705127; border: 0; color: #fff9e5; cursor: pointer; font-family: "Courier New", monospace; font-size: .7rem; font-weight: 900; padding: 9px 12px; text-transform: uppercase; }
+      .pager button:disabled { cursor: default; opacity: .4; }
+      .page-count { color: #53391d; font-family: "Courier New", monospace; font-size: .72rem; font-weight: 900; min-width: 92px; text-align: center; }
+      .page-stack { display: inline-block; height: 16px; margin-right: 3px; position: relative; width: 15px; }
+      .page-stack::before, .page-stack::after, .page-stack { background: #fffdf6; border: 1px solid #a58b59; }
+      .page-stack::before, .page-stack::after { content: ""; height: 12px; left: -4px; position: absolute; top: 3px; width: 11px; z-index: -1; }
+      .page-stack::after { left: -7px; top: 6px; }
+      @media (max-width: 700px) { body { padding: 10px; } .cover, .page { min-height: auto; } .cover { min-height: calc(100vh - 135px); padding: 15mm 10mm; } .page { padding: 12mm; } .contents { columns: 1; } }
+      @media print { @page { size: A4 portrait; margin: 0; } body { background: #fff; padding: 0; } .toolbar, .pager { display: none; } .book { max-width: none; } .book:not(.open) .pages { display: block; } .cover, .page { box-shadow: none; break-after: page; display: flex !important; height: 297mm; margin: 0; min-height: 297mm; opacity: 1 !important; page-break-after: always; position: relative !important; transform: none !important; width: 210mm; } .cover { display: flex !important; } .page { display: block !important; } .pages { display: block; } .page:last-child { break-after: auto; page-break-after: auto; } .evidence video { display: none; } .evidence .video-print-note { display: block; } }
     </style>
   </head>
   <body>
-    <main><article class="board"><div class="label">Dossiers à découvrir</div><h1>Les découvertes de Samuel</h1><p class="progress" id="progress"></p><section class="categories" id="categories"></section></article></main>
+    <nav class="toolbar" aria-label="Actions du dossier"><button id="openBook" type="button">Ouvrir le dossier</button><button id="exportPdf" type="button">Exporter en PDF</button><button id="resetProgress" type="button" hidden>Réinitialiser le suivi</button></nav>
+    <main class="book">
+      <section class="cover" id="cover" tabindex="0" role="button" aria-label="Ouvrir le dossier"><div class="cover__content"><img class="logo" src="../assets/bureau-majorite.png" alt="Bureau de la Majorité" /><div class="division">Archives personnelles · Restitution à la majorité</div><h1>Dossier S-18</h1><p class="subtitle">Les 18 premières années de<span class="name">Samuel</span></p><p class="date">29 novembre 2026</p><p class="quote">« Une vie entière de souvenirs à découvrir. »</p><p class="confidential">Document confidentiel</p></div></section>
+      <section class="pages" id="pages"></section>
+      <nav class="pager" id="pager" aria-label="Navigation des pages"><span class="page-stack" aria-hidden="true"></span><button id="previous" type="button">Précédente</button><span class="page-count" id="pageCount"></span><button id="next" type="button">Suivante</button></nav>
+    </main>
     <script src="../config/archive-config.js"></script>
     <script src="../config/progress.js"></script>
     <script>
-      const container = document.querySelector("#categories");
+      const pages = document.querySelector("#pages");
+      const adminMode = new URLSearchParams(window.location.search).get("admin") === "1";
       const viewed = window.ARCHIVE_PROGRESS.viewedCodes();
       const media = window.ARCHIVE_CONFIG.media;
-      const total = Object.keys(media).length;
-      document.querySelector("#progress").textContent = `${viewed.size} découverte${viewed.size > 1 ? "s" : ""} sur ${total}`;
-      Object.entries(window.ARCHIVE_CONFIG.categories).forEach(([code, title]) => {
-        const entries = Object.entries(media).filter(([dossierCode]) => dossierCode.startsWith(`${code}-`));
-        const category = document.createElement("section");
-        category.className = "category";
-        category.innerHTML = `<h2></h2><div class="list"></div>`;
-        category.querySelector("h2").textContent = title;
-        const list = category.querySelector(".list");
-        if (!entries.length) list.innerHTML = '<p class="empty">Aucune découverte pour le moment.</p>';
-        entries.forEach(([dossierCode, item]) => {
-          const seen = viewed.has(dossierCode);
-          const row = document.createElement("div");
-          row.className = `item${seen ? " viewed" : ""}`;
-          row.innerHTML = `<span class="state">${seen ? "✓" : "?"}</span><span></span><span class="state-text"></span>`;
-          row.children[1].textContent = item.title;
-          row.children[2].textContent = seen ? "Découvert" : "À découvrir";
-          list.append(row);
+      const categories = window.ARCHIVE_CONFIG.categories;
+      const firstPageByDossier = new Map();
+      const makePage = (className = "") => {
+        const page = document.createElement("section");
+        page.className = `page ${className}`;
+        return page;
+      };
+      const makeHeader = (code) => {
+        const header = document.createElement("div");
+        header.className = "page-header";
+        header.innerHTML = `<span class="case">BUREAU DE LA MAJORITÉ</span><span class="case"></span>`;
+        header.lastElementChild.textContent = code;
+        return header;
+      };
+      const contents = makePage("contents-page");
+      contents.append(makeHeader("INVENTAIRE"));
+      contents.innerHTML += '<h2>Inventaire des découvertes</h2><span class="status">Dossier en cours</span>';
+      const list = document.createElement("ul");
+      list.className = "contents";
+      Object.entries(categories).forEach(([categoryCode, categoryTitle]) => {
+        const category = document.createElement("li");
+        category.textContent = categoryTitle.toUpperCase();
+        category.style.fontWeight = "900";
+        list.append(category);
+        Object.entries(media).filter(([code]) => code.startsWith(`${categoryCode}-`)).forEach(([code, dossier]) => {
+          const item = document.createElement("li");
+          item.className = viewed.has(code) ? "seen" : "";
+          if (adminMode || viewed.has(code)) {
+            const link = document.createElement("button");
+            link.type = "button";
+            link.dataset.dossier = code;
+            link.textContent = `${viewed.has(code) ? "✓ " : "□ "}${adminMode ? `${code} — ` : ""}${dossier.title}`;
+            item.append(link);
+          } else item.textContent = `□ ${dossier.title}`;
+          list.append(item);
         });
-        container.append(category);
       });
+      contents.append(list);
+      pages.append(contents);
+      function appendSinglePage(code, dossier, item, pageNumber, totalPages) {
+          const page = makePage();
+          page.append(makeHeader(`DOSSIER ${code} · PIÈCE ${pageNumber} / ${totalPages}`));
+          const heading = document.createElement("h2");
+          heading.textContent = dossier.title;
+          const detail = document.createElement("h3");
+          detail.textContent = `${categories[code.split("-")[0]]} · ${item.title}${item.createdAt ? ` · ${item.createdAt}` : ""}`;
+          page.append(heading, detail);
+          const figure = document.createElement("figure");
+          figure.className = "evidence";
+          if (item.type === "image") { const image = document.createElement("img"); image.src = item.source; image.alt = item.title; figure.append(image); }
+          else if (item.type === "video") { const video = document.createElement("video"); video.src = item.source; video.controls = true; figure.append(video); const note = document.createElement("p"); note.className = "video-print-note"; note.textContent = "Vidéo disponible via le lien ci-dessous."; figure.append(note); }
+          else { const frame = document.createElement("iframe"); frame.src = item.source; frame.title = item.title; figure.append(frame); }
+          const caption = document.createElement("figcaption"); caption.textContent = `PIÈCE JOINTE : ${item.title}`; figure.append(caption);
+          page.append(figure);
+          if (item.externalUrl) { const link = document.createElement("a"); link.className = "video-link"; link.href = item.externalUrl; link.target = "_blank"; link.rel = "noopener"; link.textContent = "Voir la vidéo"; page.append(link); }
+          pages.append(page);
+          if (pageNumber === 1) firstPageByDossier.set(code, pages.querySelectorAll(".page").length);
+      }
+      function appendPhotoSheet(code, dossier, items, pageNumber, totalPages) {
+        const page = makePage();
+        page.append(makeHeader(`DOSSIER ${code} · PIÈCE ${pageNumber} / ${totalPages}`));
+        const heading = document.createElement("h2");
+        heading.textContent = dossier.title;
+        const detail = document.createElement("h3");
+        detail.textContent = `${categories[code.split("-")[0]]} · ${items.length} photographie${items.length > 1 ? "s" : ""}`;
+        page.append(heading, detail);
+        const sheet = document.createElement("section");
+        sheet.className = `photo-sheet photo-sheet--${items.length}`;
+        items.forEach((item) => {
+          const figure = document.createElement("figure");
+          figure.className = "photo-evidence";
+          if (item.width && item.height) figure.style.setProperty("--photo-ratio", `${item.width} / ${item.height}`);
+          const image = document.createElement("img");
+          image.src = item.source;
+          image.alt = item.title;
+          const caption = document.createElement("figcaption");
+          caption.textContent = item.createdAt ? `${item.title} · ${item.createdAt}` : item.title;
+          figure.append(image, caption);
+          sheet.append(figure);
+        });
+        page.append(sheet);
+        pages.append(page);
+        if (pageNumber === 1) firstPageByDossier.set(code, pages.querySelectorAll(".page").length);
+      }
+      function appendVideoSheet(code, dossier, items, pageNumber, totalPages) {
+        const page = makePage();
+        page.append(makeHeader(`DOSSIER ${code} · PIÈCE ${pageNumber} / ${totalPages}`));
+        const heading = document.createElement("h2");
+        heading.textContent = dossier.title;
+        const detail = document.createElement("h3");
+        detail.textContent = `${categories[code.split("-")[0]]} · ${items.length} enregistrement${items.length > 1 ? "s" : ""}`;
+        page.append(heading, detail);
+        const sheet = document.createElement("section");
+        sheet.className = `video-sheet video-sheet--${items.length}`;
+        items.forEach((item) => {
+          const figure = document.createElement("figure");
+          figure.className = "video-evidence";
+          const video = document.createElement("video");
+          video.src = item.source;
+          video.controls = true;
+          const caption = document.createElement("figcaption");
+          caption.textContent = item.createdAt ? `${item.title} · ${item.createdAt}` : item.title;
+          figure.append(video, caption);
+          if (item.externalUrl) { const link = document.createElement("a"); link.className = "video-link"; link.href = item.externalUrl; link.target = "_blank"; link.rel = "noopener"; link.textContent = "Voir la vidéo"; figure.append(link); }
+          sheet.append(figure);
+        });
+        page.append(sheet);
+        pages.append(page);
+        if (pageNumber === 1) firstPageByDossier.set(code, pages.querySelectorAll(".page").length);
+      }
+      Object.entries(media).filter(([code]) => adminMode || viewed.has(code)).forEach(([code, dossier]) => {
+        const items = dossier.items || [];
+        const totalPages = Math.ceil(items.filter((item) => item.type === "image").length / 4) + Math.ceil(items.filter((item) => item.type === "video").length / 2) + items.filter((item) => item.type !== "image" && item.type !== "video").length;
+        let dossierPage = 1;
+        for (let index = 0; index < items.length;) {
+          const item = items[index];
+          if (item.type === "video") {
+            const videos = [];
+            while (index < items.length && items[index].type === "video" && videos.length < 2) {
+              videos.push(items[index]);
+              index += 1;
+            }
+            appendVideoSheet(code, dossier, videos, dossierPage, totalPages);
+            dossierPage += 1;
+            continue;
+          }
+          if (item.type !== "image") {
+            appendSinglePage(code, dossier, item, dossierPage, totalPages);
+            dossierPage += 1;
+            index += 1;
+            continue;
+          }
+          const photos = [];
+          while (index < items.length && items[index].type === "image" && photos.length < 4) {
+            photos.push(items[index]);
+            index += 1;
+          }
+          appendPhotoSheet(code, dossier, photos, dossierPage, totalPages);
+          dossierPage += 1;
+        }
+      });
+      pages.append(makePage("back-cover"));
+      const cover = document.querySelector("#cover");
+      if (adminMode) {
+        document.title = "Dossier de la majorité de Samuel";
+        document.querySelector("#resetProgress").hidden = false;
+      }
+      const documentPages = [...pages.querySelectorAll(".page")];
+      const allPages = [cover, ...documentPages];
+      let pageIndex = 0;
+      let turning = false;
+      const previous = document.querySelector("#previous");
+      const next = document.querySelector("#next");
+      const pageCount = document.querySelector("#pageCount");
+      function showPage(index) {
+        pageIndex = Math.max(0, Math.min(index, allPages.length - 1));
+        const showingCover = pageIndex === 0;
+        cover.classList.toggle("page-visible", showingCover);
+        cover.classList.toggle("open", !showingCover);
+        documentPages.forEach((page, current) => { page.hidden = showingCover || current !== pageIndex - 1; });
+        previous.disabled = pageIndex === 0;
+        next.disabled = pageIndex === allPages.length - 1;
+        pageCount.textContent = `PAGE ${pageIndex + 1} / ${allPages.length}`;
+      }
+      function turnPage(index) {
+        const nextIndex = Math.max(0, Math.min(index, allPages.length - 1));
+        if (turning || nextIndex === pageIndex) return;
+        if (pageIndex === 0 || nextIndex === 0) { showPage(nextIndex); return; }
+        turning = true;
+        const direction = nextIndex > pageIndex ? "next" : "previous";
+        const current = documentPages[pageIndex - 1];
+        current.classList.add(`turn-out-${direction}`);
+        window.setTimeout(() => {
+          current.classList.remove(`turn-out-${direction}`);
+          showPage(nextIndex);
+          turning = false;
+        }, 430);
+      }
+      const open = () => { document.querySelector(".book").classList.add("open"); document.querySelector("#openBook").textContent = "Dossier ouvert"; showPage(1); };
+      cover.addEventListener("click", open);
+      cover.addEventListener("keydown", (event) => { if (event.key === "Enter" || event.key === " ") open(); });
+      document.querySelector("#openBook").addEventListener("click", open);
+      previous.addEventListener("click", () => turnPage(pageIndex - 1));
+      next.addEventListener("click", () => turnPage(pageIndex + 1));
+      list.addEventListener("click", (event) => {
+        const link = event.target.closest("button[data-dossier]");
+        if (!link) return;
+        showPage(firstPageByDossier.get(link.dataset.dossier));
+      });
+      pages.addEventListener("click", (event) => {
+        if (event.target.closest("a, button, video, iframe")) return;
+        const bounds = pages.getBoundingClientRect();
+        if (event.clientX < bounds.left + bounds.width / 2) turnPage(pageIndex - 1);
+        else turnPage(pageIndex + 1);
+      });
+      document.querySelector("#exportPdf").addEventListener("click", () => window.print());
+      document.querySelector("#resetProgress").addEventListener("click", () => {
+        if (adminMode && window.confirm("Réinitialiser le suivi des dossiers consultés sur ce navigateur ?")) {
+          window.ARCHIVE_PROGRESS.reset();
+          window.location.reload();
+        }
+      });
+      showPage(0);
     </script>
   </body>
 </html>
