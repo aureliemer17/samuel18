@@ -113,7 +113,8 @@
       };
       const contents = makePage("contents-page");
       contents.append(makeHeader("INVENTAIRE"));
-      contents.innerHTML += '<h2>Inventaire des découvertes</h2><span class="status">Dossier en cours</span>';
+      const inventoryStatus = viewed.size === Object.keys(media).length ? "Dossier complet" : "Dossier en cours";
+      contents.innerHTML += `<h2>Inventaire des découvertes</h2><span class="status">${inventoryStatus}</span>`;
       const list = document.createElement("ul");
       list.className = "contents";
       Object.entries(categories).forEach(([categoryCode, categoryTitle]) => {
@@ -275,7 +276,7 @@
           turning = false;
         }, 430);
       }
-      const open = () => { document.querySelector(".book").classList.add("open"); document.querySelector("#openBook").textContent = "Dossier ouvert"; showPage(1); };
+      const open = () => { document.querySelector(".book").classList.add("open"); document.querySelector("#openBook").textContent = "Inventaire"; showPage(1); };
       cover.addEventListener("click", open);
       cover.addEventListener("keydown", (event) => { if (event.key === "Enter" || event.key === " ") open(); });
       document.querySelector("#openBook").addEventListener("click", open);
