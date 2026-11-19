@@ -5,25 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Accueil</title>
     <style>
-      :root { --ink: #273346; --steel: #dce3ec; --cream: #ffffff; --orange: #ee913f; }
+      :root { --ink: #273346; --orange: #ee913f; }
       * { box-sizing: border-box; }
-      body { align-items: center; background: radial-gradient(circle at 5% 5%, #e1f7ff 0, transparent 25%), radial-gradient(circle at 95% 8%, #ffe7cc 0, transparent 30%), #f7f9fc; display: flex; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; justify-content: center; margin: 0; min-height: 100vh; padding: 24px; }
-      main { display: grid; gap: clamp(30px, 7vw, 76px); grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 680px; width: 100%; }
-      .choice { color: var(--ink); display: grid; font-size: clamp(.8rem, 2.5vw, 1rem); font-weight: 900; gap: 15px; justify-items: center; letter-spacing: .13em; text-decoration: none; text-transform: uppercase; }
-      .button { align-items: center; aspect-ratio: 1; background: linear-gradient(145deg, #fff, #e6ebf1 55%, #c7d0db); border: clamp(5px, 1vw, 8px) solid #c3ccd7; border-radius: 50%; box-shadow: inset 0 3px 3px rgba(255, 255, 255, .9), inset 0 -10px 18px #bec8d4, 0 14px 0 #9faab7, 0 25px 35px rgba(40, 55, 75, .2); display: grid; max-width: 250px; place-items: center; transition: transform .15s, box-shadow .15s; width: 100%; }
-      .choice:hover .button { box-shadow: inset 0 3px 3px rgba(255, 255, 255, 1), inset 0 -10px 18px #bec8d4, 0 10px 0 #9faab7, 0 19px 28px rgba(40, 55, 75, .17); transform: translateY(4px); }
+      body { align-items: center; background: radial-gradient(ellipse at 50% 42%, rgba(227, 190, 110, .31) 0, rgba(128, 82, 33, .14) 26%, transparent 55%), repeating-linear-gradient(5deg, rgba(255, 202, 126, .08) 0 2px, transparent 3px 12px), repeating-linear-gradient(94deg, #2a130b 0 7px, #3f2011 8px 19px, #281109 20px 29px); display: flex; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; justify-content: center; margin: 0; min-height: 100vh; padding: 24px; position: relative; }
+      body::before { background: radial-gradient(ellipse at center, transparent 38%, rgba(10, 4, 2, .5) 100%); content: ""; inset: 0; pointer-events: none; position: fixed; }
+      body::after { background: linear-gradient(115deg, transparent 0 42%, rgba(255, 239, 191, .08) 49%, transparent 56%); content: ""; inset: 0; pointer-events: none; position: fixed; }
+      main { aspect-ratio: 1; background: linear-gradient(145deg, #202321, #090b0a 56%, #171916); border: 3px solid #b48a3e; box-shadow: inset 0 0 0 4px #4b381a, inset 0 0 45px rgba(0, 0, 0, .8), 0 20px 38px rgba(0, 0, 0, .42); max-width: 720px; position: relative; width: min(100%, 720px); }
+      .choice { color: #fff4cf; display: grid; font-size: clamp(.64rem, 1.8vw, .82rem); font-weight: 900; gap: 10px; justify-items: center; letter-spacing: .1em; position: absolute; text-decoration: none; text-shadow: 0 2px 2px rgba(0, 0, 0, .8); text-transform: uppercase; width: 23%; }
+      .choice--indice { left: 38.5%; top: 3%; }
+      .choice--machine { bottom: 7%; left: 4%; }
+      .choice--dossier { bottom: 7%; right: 4%; }
+      .button { aspect-ratio: 1; background: linear-gradient(145deg, #fff, #e6ebf1 55%, #c7d0db); border: clamp(5px, 1vw, 8px) solid #c3ccd7; border-radius: 24%; box-shadow: inset 0 3px 3px rgba(255, 255, 255, .9), inset 0 -8px 13px rgba(124, 139, 155, .42), 0 8px 0 #9faab7, 0 13px 17px rgba(40, 55, 75, .17); display: grid; overflow: hidden; place-items: center; transition: transform .12s, box-shadow .12s; width: 100%; }
+      .choice:hover .button { box-shadow: inset 0 3px 3px rgba(255, 255, 255, 1), inset 0 -8px 13px rgba(124, 139, 155, .42), 0 5px 0 #9faab7, 0 9px 12px rgba(40, 55, 75, .14); transform: translateY(3px); }
+      .choice:active .button { box-shadow: inset 0 5px 12px rgba(87, 101, 118, .45), 0 1px 0 #9faab7, 0 3px 5px rgba(40, 55, 75, .14); transform: translateY(7px); }
       .choice:focus-visible { outline: 3px solid var(--orange); outline-offset: 7px; }
-      .bulb { background: radial-gradient(circle at 38% 31%, #fffbd0, #ffe879 31%, #e3a52a 58%, #8d5d12 100%); border: 5px solid #473b18; border-radius: 50% 50% 43% 43%; box-shadow: 0 0 20px rgba(255, 222, 97, .6); height: 42%; position: relative; width: 34%; }
-      .bulb::before { border-left: 3px solid #644a14; border-right: 3px solid #644a14; content: ""; height: 35%; left: 50%; position: absolute; top: 26%; transform: translateX(-50%); width: 28%; }
-      .bulb::after { background: repeating-linear-gradient(#8d8c81 0 4px, #343833 4px 8px); border: 3px solid #292d28; border-radius: 0 0 8px 8px; bottom: -22%; content: ""; height: 25%; left: 18%; position: absolute; width: 64%; }
-      .gear { aspect-ratio: 1; background: repeating-conic-gradient(#a9c77f 0deg 11deg, #33503b 11deg 22deg); clip-path: polygon(50% 0%, 61% 8%, 75% 3%, 78% 17%, 92% 20%, 85% 32%, 100% 42%, 87% 50%, 100% 60%, 85% 68%, 92% 81%, 77% 83%, 74% 97%, 61% 92%, 50% 100%, 40% 92%, 27% 97%, 23% 83%, 8% 81%, 15% 68%, 0% 60%, 13% 50%, 0% 42%, 15% 32%, 8% 20%, 22% 17%, 25% 3%, 39% 8%); filter: drop-shadow(0 5px 2px rgba(0, 0, 0, .35)); position: relative; width: 52%; }
-      @media (max-width: 400px) { main { gap: 24px; } .choice { font-size: .72rem; } }
+      .button img { display: block; height: 100%; object-fit: contain; pointer-events: none; transform: scale(1.06); transition: transform .12s; width: 100%; }
+      .choice:hover .button img { transform: scale(1.1); }
+      .choice:active .button img { transform: scale(1.05); }
+      .seal { align-items: center; background: #fffdf7; border: clamp(5px, 1vw, 9px) solid #d5c9ae; border-radius: 50%; box-shadow: inset 0 0 0 3px #8d7855, 0 14px 26px rgba(40, 55, 75, .18); display: grid; left: 50%; padding: 5%; place-items: center; position: absolute; top: 56%; transform: translate(-50%, -50%); width: 30%; }
+      .seal img { display: block; height: auto; width: 100%; }
+      @media (max-width: 480px) { body { padding: 14px; } .choice { font-size: .58rem; letter-spacing: .06em; width: 26%; } .choice--indice { left: 37%; } .choice--machine { bottom: 9%; left: 2%; } .choice--dossier { bottom: 9%; right: 2%; } .seal { top: 55%; width: 34%; } }
     </style>
   </head>
   <body>
     <main>
-      <a class="choice" href="jeu/indices.html"><span>Indice</span><span class="button"><span class="bulb" aria-hidden="true"></span></span></a>
-      <a class="choice" href="jeu/machine.html"><span>Machines</span><span class="button"><span class="gear" aria-hidden="true"></span></span></a>
+      <div class="seal"><img src="assets/bureau-majorite.png" alt="Bureau de la Majorité" /></div>
+      <a class="choice choice--indice" href="jeu/indices.html"><span>Indice</span><span class="button"><img src="assets/indice.png" alt="" /></span></a>
+      <a class="choice choice--machine" href="jeu/machine.html"><span>Machine</span><span class="button"><img src="assets/machine.png" alt="" /></span></a>
+      <a class="choice choice--dossier" href="archives/decouvertes.html"><span>Dossier S-18</span><span class="button"><img src="assets/dossier.png" alt="" /></span></a>
     </main>
   </body>
 </html>
