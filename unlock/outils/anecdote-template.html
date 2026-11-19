@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+
+    <!--
+      Hauteur du cadre dans le dossier d'archives.
+
+      Repères approximatifs :
+      - 120 à 160 : titre ou 1 à 3 lignes
+      - 180 à 240 : 4 à 7 lignes
+      - 260 à 340 : 8 à 12 lignes
+      - 360 à 500 : anecdote longue
+
+      Augmenter légèrement si le texte contient un titre, des retours à la ligne
+      ou plusieurs paragraphes.
+    -->
+    <meta name="archive-height" content="220" />
+
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        color: #322515;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 18px;
+        line-height: 1.55;
+        margin: 0;
+        padding: 16px 18px;
+      }
+
+      h2 {
+        font-size: 1.2em;
+        margin: 0 0 10px;
+      }
+
+      p {
+        margin: 0;
+      }
+
+      p + p {
+        margin-top: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Titre de l'anecdote</h2>
+    <p>
+      Écrire l'anecdote ici.
+    </p>
+  </body>
+</html>
