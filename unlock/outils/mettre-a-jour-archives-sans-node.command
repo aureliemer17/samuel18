@@ -112,7 +112,7 @@ for category_dir in "$DOSSIERS_DIR"/*(/); do
       case "$extension" in
         jpg|jpeg|png|gif|webp|avif) type="image" ;;
         heic|heif) continue ;;
-        mp4|mov|m4v|webm) type="video" ;;
+        mp4|mov|m4v|webm|mts) type="video" ;;
         html|htm|txt|pdf) type="document" ;;
         *) print "Ignoré (${code}) : extension non prise en charge pour ${name}"; continue ;;
       esac
