@@ -28,8 +28,19 @@
       .modal h1 { font-size: clamp(1.8rem, 6vw, 3.4rem); letter-spacing: -.05em; line-height: 1; margin: 0 35px 22px 0; }
       .hint-text { background: #f6faf7; border: 1px solid #dcebe0; border-radius: 16px; font-size: clamp(1.05rem, 2.8vw, 1.35rem); line-height: 1.58; min-height: 125px; padding: 22px; white-space: pre-wrap; }
       .hint-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
-      .hint-tab { background: #dce2e8; border: 0; border-radius: 999px; color: #4d5c6c; cursor: pointer; font-family: ui-monospace, monospace; font-size: .82rem; font-weight: 900; height: 32px; min-width: 32px; padding: 0 11px; }
-      .hint-tab.active { background: var(--green); color: #fff; }
+       .hint-tab { background: #dce2e8; border: 0; border-radius: 999px; color: #4d5c6c; cursor: pointer; font-family: ui-monospace, monospace; font-size: .82rem; font-weight: 900; height: 32px; min-width: 32px; padding: 0 11px; }
+       .hint-tab.active { background: var(--green); color: #fff; }
+       .hint-tab.solution { border: 3px solid #e39a3d; height: 38px; min-width: 38px; }
+       .solution-label { color: #b66f1c; font-family: ui-monospace, monospace; font-size: .68rem; font-weight: 900; letter-spacing: .09em; margin: 5px 0 0; text-align: center; text-transform: uppercase; }
+       .solution-confirm { align-items: center; background: rgba(30, 41, 59, .42); display: flex; inset: 0; justify-content: center; padding: 20px; position: absolute; }
+       .solution-confirm[hidden] { display: none; }
+       .solution-confirm__card { background: #fff8ec; border: 2px solid #e4b168; border-radius: 18px; box-shadow: 0 16px 35px rgba(24, 37, 58, .22); max-width: 420px; padding: 25px; text-align: center; }
+       .solution-confirm__card h2 { font-size: 1.45rem; margin: 0 0 12px; }
+       .solution-confirm__card p { line-height: 1.5; margin: 0 0 19px; }
+       .solution-actions { display: flex; gap: 10px; justify-content: center; }
+       .solution-actions button { border: 0; border-radius: 999px; cursor: pointer; font-family: inherit; font-weight: 850; padding: 11px 15px; }
+       .solution-actions__cancel { background: #e7edf0; color: #40505b; }
+       .solution-actions__continue { background: var(--orange); color: #fff; }
       .error { animation: shake .28s linear; }
       @keyframes shake { 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
     </style>
@@ -49,7 +60,7 @@
       <a class="home-link" href="../index.html">Retour à l'accueil</a>
     </main>
     <section class="modal" id="modal" hidden aria-modal="true" role="dialog">
-      <div class="modal__card"><button class="close" id="close" type="button" aria-label="Fermer">×</button><p class="modal__eyebrow" id="modalLabel"></p><h1 id="modalTitle"></h1><div class="hint-text" id="hintText"></div><div class="hint-tabs" id="hintTabs"></div></div>
+       <div class="modal__card"><button class="close" id="close" type="button" aria-label="Fermer">×</button><p class="modal__eyebrow" id="modalLabel"></p><h1 id="modalTitle"></h1><div class="hint-text" id="hintText"></div><div class="hint-tabs" id="hintTabs"></div><section class="solution-confirm" id="solutionConfirm" hidden><div class="solution-confirm__card"><h2>Attention</h2><p>Cela va donner la solution. Êtes-vous sûrs de vouloir continuer ?</p><div class="solution-actions"><button class="solution-actions__cancel" id="solutionCancel" type="button">Non, je veux réfléchir encore</button><button class="solution-actions__continue" id="solutionContinue" type="button">Continuer</button></div></div></section></div>
     </section>
     <script src="../config/hints-config.js"></script>
     <script>
@@ -60,29 +71,45 @@
       const close = document.querySelector("#close");
       const modalLabel = document.querySelector("#modalLabel");
       const modalTitle = document.querySelector("#modalTitle");
-      const hintText = document.querySelector("#hintText");
-      const hintTabs = document.querySelector("#hintTabs");
-      const hints = window.HINTS_CONFIG;
-      let cardNumber = "";
+       const hintText = document.querySelector("#hintText");
+       const hintTabs = document.querySelector("#hintTabs");
+       const solutionConfirm = document.querySelector("#solutionConfirm");
+       const solutionCancel = document.querySelector("#solutionCancel");
+       const solutionContinue = document.querySelector("#solutionContinue");
+       const hints = window.HINTS_CONFIG;
+       let cardNumber = "";
+       let pendingSolution;
 
       function render() { screen.textContent = cardNumber; }
-      function closeModal() { modal.hidden = true; cardNumber = ""; render(); }
-      function showHint(number, list, index = 0) {
-        modalLabel.textContent = `INDICE "${number}"`;
-        modalTitle.textContent = list.length ? `Indice ${index + 1}` : "Rien à signaler";
-        hintText.textContent = list.length ? list[index] : `Il n'y a pas d'indice pour la carte sélectionnée.`;
-        hintTabs.replaceChildren();
-        list.forEach((_, tabIndex) => {
-          const tab = document.createElement("button");
-          tab.className = `hint-tab${tabIndex === index ? " active" : ""}`;
-          tab.type = "button";
-          tab.textContent = tabIndex + 1;
-          tab.addEventListener("click", () => showHint(number, list, tabIndex));
-          hintTabs.append(tab);
-        });
+       function closeModal() { modal.hidden = true; solutionConfirm.hidden = true; cardNumber = ""; render(); }
+       function showHint(number, config, index = 0) {
+         const list = config.hints || [];
+         modalLabel.textContent = `INDICE "${number}"`;
+         modalTitle.textContent = list.length ? `Indice ${index + 1}` : "Rien à signaler";
+         hintText.textContent = list.length ? list[index] : `Il n'y a pas d'indice pour la carte sélectionnée.`;
+         hintTabs.replaceChildren();
+         list.forEach((item, tabIndex) => {
+           const tabIsSolution = config.solution === tabIndex + 1;
+           const tab = document.createElement("button");
+           tab.className = `hint-tab${tabIndex === index ? " active" : ""}${tabIsSolution ? " solution" : ""}`;
+           tab.type = "button";
+           tab.textContent = tabIndex + 1;
+           if (tabIsSolution) {
+             const label = document.createElement("span");
+             label.className = "solution-label";
+             label.textContent = "Solution";
+             const wrapper = document.createElement("div");
+             wrapper.append(tab, label);
+             tab.addEventListener("click", () => { pendingSolution = () => showHint(number, config, tabIndex); solutionConfirm.hidden = false; });
+             hintTabs.append(wrapper);
+             return;
+           }
+           tab.addEventListener("click", () => showHint(number, config, tabIndex));
+           hintTabs.append(tab);
+         });
         modal.hidden = false;
       }
-      function submit() { showHint(cardNumber, hints[cardNumber] || []); }
+       function submit() { showHint(cardNumber, hints[cardNumber] || { hints: [] }); }
       keypad.addEventListener("click", (event) => {
         const key = event.target.closest("button");
         if (!key) return;
@@ -90,8 +117,10 @@
         if (key.dataset.enter) { if (cardNumber) submit(); return; }
         if (cardNumber.length < 8) { cardNumber += key.dataset.key; render(); }
       });
-      close.addEventListener("click", closeModal);
-      modal.addEventListener("click", (event) => { if (event.target === modal) closeModal(); });
+       close.addEventListener("click", closeModal);
+       modal.addEventListener("click", (event) => { if (event.target === modal) closeModal(); });
+       solutionCancel.addEventListener("click", () => { solutionConfirm.hidden = true; pendingSolution = undefined; });
+       solutionContinue.addEventListener("click", () => { solutionConfirm.hidden = true; pendingSolution?.(); pendingSolution = undefined; });
     </script>
   </body>
 </html>
