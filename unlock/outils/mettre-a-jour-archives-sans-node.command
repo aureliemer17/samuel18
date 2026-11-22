@@ -14,9 +14,10 @@ HEIC_ARCHIVE_DIR="${DOSSIERS_DIR}/heic"
 EXAMPLE_CONFIG_FILE="${UNLOCK_DIR}/config/archive-config.example.js"
 CONFIG_FILE="${UNLOCK_DIR}/config/archive-config.local.js"
 BLOCK_FILE="$(mktemp)"
+QR_GENERATOR="$(mktemp -t archive-qr).swift"
 
 cleanup() {
-  rm -f "$BLOCK_FILE"
+  rm -f "$BLOCK_FILE" "$QR_GENERATOR"
 }
 trap cleanup EXIT
 
@@ -65,6 +66,35 @@ url_encode() {
     $value =~ s{([^A-Za-z0-9\-._~/])}{sprintf("%%%02X", ord($1))}ge;
     print $value;
   '
+}
+
+# QR codes are rendered with frameworks supplied by macOS. This keeps PDF
+# exports usable offline and avoids installing a QR generator or using an API.
+cat > "$QR_GENERATOR" <<'SWIFT'
+import AppKit
+import CoreImage
+import Foundation
+
+guard CommandLine.arguments.count == 3,
+      let data = CommandLine.arguments[1].data(using: .utf8),
+      let filter = CIFilter(name: "CIQRCodeGenerator") else {
+  exit(1)
+}
+
+filter.setValue(data, forKey: "inputMessage")
+filter.setValue("M", forKey: "inputCorrectionLevel")
+guard let image = filter.outputImage else { exit(1) }
+
+let scaled = image.transformed(by: CGAffineTransform(scaleX: 16, y: 16))
+let bitmap = NSBitmapImageRep(ciImage: scaled)
+guard let png = bitmap.representation(using: .png, properties: [:]) else { exit(1) }
+try png.write(to: URL(fileURLWithPath: CommandLine.arguments[2]))
+SWIFT
+
+generate_qr_code() {
+  local url="$1"
+  local output_file="$2"
+  /usr/bin/swift "$QR_GENERATOR" "$url" "$output_file"
 }
 
 print '  // BEGIN GENERATED MEDIA - généré par mettre-a-jour-archives-sans-node.command depuis ../dossiers.' > "$BLOCK_FILE"
@@ -154,7 +184,16 @@ for category_dir in "$DOSSIERS_DIR"/*(/); do
       line="        { title: $(json "$media_title"), type: $(json "$type"), source: $(json "$source")"
       if [[ "$type" == "video" && -f "$video_links_file" ]]; then
         video_url="$(VIDEO_NAME="$name" perl -ne 'if (/^\Q$ENV{VIDEO_NAME}\E\s*\|\s*(https?:\/\/\S+)/) { print $1; exit }' "$video_links_file")"
-        [[ -n "$video_url" ]] && line+=", externalUrl: $(json "$video_url")"
+        if [[ -n "$video_url" ]]; then
+          qr_directory="${folder_dir}/qrcodes"
+          qr_file="${qr_directory}/qr-$(printf '%s' "$video_url" | md5 -q).png"
+          if [[ ! -f "$qr_file" || "$video_links_file" -nt "$qr_file" ]]; then
+            mkdir -p "$qr_directory"
+            print "QR code créé : ${category_name}/${folder_name}/${qr_file:t}"
+            generate_qr_code "$video_url" "$qr_file"
+          fi
+          line+=", externalUrl: $(json "$video_url"), qrSource: $(json "$(source_path "$category_name" "$folder_name" "qrcodes/${qr_file:t}")")"
+        fi
       fi
       if [[ "$type" == "image" ]]; then
         dimensions="$(sips -g pixelWidth -g pixelHeight "$media_file" 2>/dev/null || true)"

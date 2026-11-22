@@ -70,16 +70,21 @@
       .video-evidence::before { border: 3px solid #a03b35; border-bottom: 0; border-radius: 10px 10px 0 0; content: ""; height: 25px; position: absolute; right: 12mm; top: -16px; transform: rotate(13deg); width: 11px; z-index: 2; }
       .video-evidence video { background: #241a10; display: block; max-height: 145mm; max-width: 100%; width: 100%; }
       .video-evidence .video-link { font-size: 8pt; margin-top: 4mm; padding: 7px 9px; }
-      .video-print-note { display: none; }
+      .video-print-note, .video-qr { display: none; }
       .video-link { background: #e8ddb3; border: 1px solid #9a7c41; color: #483318; display: inline-block; font-family: Arial, sans-serif; font-size: 10pt; font-weight: 900; margin-top: 9mm; padding: 10px 14px; text-decoration: none; }
       .video-link:hover { background: #f7edc9; }
+      .video-access { align-items: center; display: flex; gap: 4mm; justify-content: center; margin-top: 4mm; }
+      .video-access .video-link { margin-top: 0; }
+      .video-qr { background: #fff; border: 1px solid #9a7c41; padding: 2mm; text-align: center; }
+      .video-qr img { display: block; height: 28mm; image-rendering: pixelated; width: 28mm; }
+      .video-qr span { color: #483318; display: block; font-family: Arial, sans-serif; font-size: 6pt; font-weight: 900; margin-top: 1mm; text-transform: uppercase; }
       .contents { columns: 2; font-family: "Courier New", monospace; font-size: 10pt; line-height: 1.55; list-style: none; margin: 8mm 0 0; padding: 0; }
       .contents li { break-inside: avoid; margin-bottom: 3mm; }
       .contents .seen { color: #4f6a3d; font-weight: 900; }
       .contents button { background: transparent; border: 0; color: inherit; cursor: pointer; font: inherit; padding: 0; text-align: left; text-decoration: underline; text-decoration-style: dotted; }
       .contents .export-dossier { background: #eadbb0; border: 1px solid #9b7940; color: #4b351d; font-family: "Courier New", monospace; font-size: 7pt; font-weight: 900; margin-left: 7px; padding: 3px 5px; text-decoration: none; }
       @media (max-width: 700px) { body { padding: 10px; } .cover, .page { min-height: auto; } .cover { min-height: calc(100vh - 135px); padding: 15mm 10mm; } .page { padding: 12mm; } .contents { columns: 1; } }
-      @media print { @page { size: A4 portrait; margin: 0; } body { background: #fff; padding: 0; } .toolbar { display: none; } .book { max-width: none; } .book:not(.open) .pages { display: block; } .cover, .page { box-shadow: none; break-after: page; display: flex !important; height: 297mm; margin: 0; min-height: 297mm; opacity: 1 !important; page-break-after: always; position: relative !important; transform: none !important; width: 210mm; } .cover { display: flex !important; } .page { display: block !important; } .pages { display: block; } .page:last-child { break-after: auto; page-break-after: auto; } .evidence video { display: none; } .evidence .video-print-note { display: block; } body.exporting-dossier .cover, body.exporting-dossier .page:not(.export-selected) { display: none !important; } }
+      @media print { @page { size: A4 portrait; margin: 0; } body { background: #fff; padding: 0; } .toolbar { display: none; } .book { max-width: none; } .book:not(.open) .pages { display: block; } .cover, .page { box-shadow: none; break-after: page; display: flex !important; height: 297mm; margin: 0; min-height: 297mm; opacity: 1 !important; page-break-after: always; position: relative !important; transform: none !important; width: 210mm; } .cover { display: flex !important; } .page { display: block !important; } .pages { display: block; } .page:last-child { break-after: auto; page-break-after: auto; } .evidence video, .video-evidence video { display: none; } .evidence .video-print-note, .video-qr { display: block; } body.exporting-dossier .cover, body.exporting-dossier .page:not(.export-selected) { display: none !important; } }
     </style>
   </head>
   <body>
@@ -113,6 +118,30 @@
       const dossierHeader = (code, pageNumber, totalPages) => adminMode
         ? `DOSSIER ${code} · PIÈCE ${pageNumber} / ${totalPages}`
         : `DOSSIER PERSONNEL · PIÈCE ${pageNumber} / ${totalPages}`;
+      const appendVideoAccess = (container, item) => {
+        if (!item.externalUrl) return;
+        const access = document.createElement("div");
+        access.className = "video-access";
+        const link = document.createElement("a");
+        link.className = "video-link";
+        link.href = item.externalUrl;
+        link.target = "_blank";
+        link.rel = "noopener";
+        link.textContent = "Voir la vidéo";
+        access.append(link);
+        if (item.qrSource) {
+          const qr = document.createElement("div");
+          qr.className = "video-qr";
+          const image = document.createElement("img");
+          image.src = item.qrSource;
+          image.alt = `QR code vers ${item.title}`;
+          const label = document.createElement("span");
+          label.textContent = "Scanner pour voir la vidéo";
+          qr.append(image, label);
+          access.append(qr);
+        }
+        container.append(access);
+      };
       const contents = makePage("contents-page");
       contents.append(makeHeader("INVENTAIRE"));
       const inventoryStatus = viewed.size === Object.keys(media).length ? "Dossier complet" : "Dossier en cours";
@@ -164,7 +193,7 @@
           else { figure.classList.add("evidence--document"); const frame = document.createElement("iframe"); frame.src = item.source; frame.title = item.title; if (item.height) frame.style.height = `${item.height}px`; figure.append(frame); }
           const caption = document.createElement("figcaption"); caption.textContent = `PIÈCE JOINTE : ${item.title}`; figure.append(caption);
           page.append(figure);
-          if (item.externalUrl) { const link = document.createElement("a"); link.className = "video-link"; link.href = item.externalUrl; link.target = "_blank"; link.rel = "noopener"; link.textContent = "Voir la vidéo"; page.append(link); }
+          appendVideoAccess(page, item);
           pages.append(page);
           if (pageNumber === 1) firstPageByDossier.set(code, pages.querySelectorAll(".page").length);
       }
@@ -218,7 +247,7 @@
           caption.querySelector(".evidence-date").textContent = item.createdAt || "Date inconnue";
           caption.querySelector(".evidence-name").textContent = item.title;
           figure.append(video, caption);
-          if (item.externalUrl) { const link = document.createElement("a"); link.className = "video-link"; link.href = item.externalUrl; link.target = "_blank"; link.rel = "noopener"; link.textContent = "Voir la vidéo"; figure.append(link); }
+           appendVideoAccess(figure, item);
           sheet.append(figure);
         });
         page.append(sheet);
