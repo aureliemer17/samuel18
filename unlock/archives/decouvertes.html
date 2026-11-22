@@ -109,6 +109,9 @@
         header.lastElementChild.textContent = code;
         return header;
       };
+      const dossierHeader = (code, pageNumber, totalPages) => adminMode
+        ? `DOSSIER ${code} · PIÈCE ${pageNumber} / ${totalPages}`
+        : `DOSSIER PERSONNEL · PIÈCE ${pageNumber} / ${totalPages}`;
       const contents = makePage("contents-page");
       contents.append(makeHeader("INVENTAIRE"));
       const inventoryStatus = viewed.size === Object.keys(media).length ? "Dossier complet" : "Dossier en cours";
@@ -147,7 +150,7 @@
       function appendSinglePage(code, dossier, item, pageNumber, totalPages) {
           const page = makePage();
           page.dataset.dossier = code;
-          page.append(makeHeader(`DOSSIER ${code} · PIÈCE ${pageNumber} / ${totalPages}`));
+          page.append(makeHeader(dossierHeader(code, pageNumber, totalPages)));
           const heading = document.createElement("h2");
           heading.textContent = dossier.title;
           const detail = document.createElement("h3");
@@ -167,7 +170,7 @@
       function appendPhotoSheet(code, dossier, items, pageNumber, totalPages) {
         const page = makePage();
         page.dataset.dossier = code;
-        page.append(makeHeader(`DOSSIER ${code} · PIÈCE ${pageNumber} / ${totalPages}`));
+        page.append(makeHeader(dossierHeader(code, pageNumber, totalPages)));
         const heading = document.createElement("h2");
         heading.textContent = dossier.title;
         const detail = document.createElement("h3");
@@ -195,7 +198,7 @@
       function appendVideoSheet(code, dossier, items, pageNumber, totalPages) {
         const page = makePage();
         page.dataset.dossier = code;
-        page.append(makeHeader(`DOSSIER ${code} · PIÈCE ${pageNumber} / ${totalPages}`));
+        page.append(makeHeader(dossierHeader(code, pageNumber, totalPages)));
         const heading = document.createElement("h2");
         heading.textContent = dossier.title;
         const detail = document.createElement("h3");

@@ -69,6 +69,16 @@ for category_dir in "$DOSSIERS_DIR"/*(/); do
       continue
     fi
 
+    folder_title="${folder_name#${code} - }"
+    if [[ "$folder_title" == "$folder_name" ]]; then
+      folder_title="Dossier ${code}"
+    fi
+
+    if [[ ! -f "$folder_dir/titre.html" && ! -f "$folder_dir/titre.htm" && ! -f "$folder_dir/titre.txt" ]]; then
+      print -r -- "$folder_title" > "$folder_dir/titre.txt"
+      print "Titre créé : ${category_name}/${folder_name}/titre.txt"
+    fi
+
     title=""
     for title_file in "$folder_dir/titre.html" "$folder_dir/titre.htm" "$folder_dir/titre.txt"; do
       if [[ -f "$title_file" ]]; then
@@ -76,7 +86,7 @@ for category_dir in "$DOSSIERS_DIR"/*(/); do
         break
       fi
     done
-    [[ -z "$title" ]] && title="Dossier $code"
+    [[ -z "$title" ]] && title="$folder_title"
 
     # Convert HEIC files before listing media so each photo is referenced once as JPEG.
     for heic_file in "$folder_dir"/*.(#i)(heic|heif)(.N); do
