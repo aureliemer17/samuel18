@@ -77,12 +77,13 @@
       .contents li { break-inside: avoid; margin-bottom: 3mm; }
       .contents .seen { color: #4f6a3d; font-weight: 900; }
       .contents button { background: transparent; border: 0; color: inherit; cursor: pointer; font: inherit; padding: 0; text-align: left; text-decoration: underline; text-decoration-style: dotted; }
+      .contents .export-dossier { background: #eadbb0; border: 1px solid #9b7940; color: #4b351d; font-family: "Courier New", monospace; font-size: 7pt; font-weight: 900; margin-left: 7px; padding: 3px 5px; text-decoration: none; }
       @media (max-width: 700px) { body { padding: 10px; } .cover, .page { min-height: auto; } .cover { min-height: calc(100vh - 135px); padding: 15mm 10mm; } .page { padding: 12mm; } .contents { columns: 1; } }
-      @media print { @page { size: A4 portrait; margin: 0; } body { background: #fff; padding: 0; } .toolbar { display: none; } .book { max-width: none; } .book:not(.open) .pages { display: block; } .cover, .page { box-shadow: none; break-after: page; display: flex !important; height: 297mm; margin: 0; min-height: 297mm; opacity: 1 !important; page-break-after: always; position: relative !important; transform: none !important; width: 210mm; } .cover { display: flex !important; } .page { display: block !important; } .pages { display: block; } .page:last-child { break-after: auto; page-break-after: auto; } .evidence video { display: none; } .evidence .video-print-note { display: block; } }
+      @media print { @page { size: A4 portrait; margin: 0; } body { background: #fff; padding: 0; } .toolbar { display: none; } .book { max-width: none; } .book:not(.open) .pages { display: block; } .cover, .page { box-shadow: none; break-after: page; display: flex !important; height: 297mm; margin: 0; min-height: 297mm; opacity: 1 !important; page-break-after: always; position: relative !important; transform: none !important; width: 210mm; } .cover { display: flex !important; } .page { display: block !important; } .pages { display: block; } .page:last-child { break-after: auto; page-break-after: auto; } .evidence video { display: none; } .evidence .video-print-note { display: block; } body.exporting-dossier .cover, body.exporting-dossier .page:not(.export-selected) { display: none !important; } }
     </style>
   </head>
   <body>
-    <nav class="toolbar" aria-label="Actions du dossier"><a class="toolbar-link" href="../index.html">Accueil</a><button id="inventory" type="button">Inventaire</button><button id="exportPdf" type="button" hidden>Exporter en PDF</button><button id="resetProgress" type="button" hidden>Réinitialiser le suivi</button></nav>
+    <nav class="toolbar" aria-label="Actions du dossier"><a class="toolbar-link" href="../index.html">Accueil</a><button id="inventory" type="button">Inventaire</button><button id="resetProgress" type="button" hidden>Réinitialiser le suivi</button></nav>
     <main class="book">
       <section class="cover" id="cover" tabindex="0" role="button" aria-label="Ouvrir le dossier"><div class="cover__content"><img class="logo" src="../assets/bureau-majorite.png" alt="Bureau de la Majorité" /><div class="division">Archives personnelles · Restitution à la majorité</div><h1>Dossier S-18</h1><p class="subtitle">Les 18 premières années de<span class="name">Samuel</span></p><p class="date">29 novembre 2026</p><p class="quote">« Une vie entière de souvenirs à découvrir. »</p><p class="confidential">Document confidentiel</p></div></section>
       <section class="pages" id="pages"></section>
@@ -128,6 +129,15 @@
             link.dataset.dossier = code;
             link.textContent = `${viewed.has(code) ? "✓ " : "□ "}${adminMode ? `${code} — ` : ""}${dossier.title}`;
             item.append(link);
+            if (adminMode) {
+              const exportButton = document.createElement("button");
+              exportButton.className = "export-dossier";
+              exportButton.dataset.export = code;
+              exportButton.type = "button";
+              exportButton.textContent = "PDF";
+              exportButton.setAttribute("aria-label", `Exporter ${dossier.title} en PDF`);
+              item.append(exportButton);
+            }
           } else item.textContent = `□ ${dossier.title}`;
           list.append(item);
         });
@@ -136,6 +146,7 @@
       pages.append(contents);
       function appendSinglePage(code, dossier, item, pageNumber, totalPages) {
           const page = makePage();
+          page.dataset.dossier = code;
           page.append(makeHeader(`DOSSIER ${code} · PIÈCE ${pageNumber} / ${totalPages}`));
           const heading = document.createElement("h2");
           heading.textContent = dossier.title;
@@ -155,6 +166,7 @@
       }
       function appendPhotoSheet(code, dossier, items, pageNumber, totalPages) {
         const page = makePage();
+        page.dataset.dossier = code;
         page.append(makeHeader(`DOSSIER ${code} · PIÈCE ${pageNumber} / ${totalPages}`));
         const heading = document.createElement("h2");
         heading.textContent = dossier.title;
@@ -182,6 +194,7 @@
       }
       function appendVideoSheet(code, dossier, items, pageNumber, totalPages) {
         const page = makePage();
+        page.dataset.dossier = code;
         page.append(makeHeader(`DOSSIER ${code} · PIÈCE ${pageNumber} / ${totalPages}`));
         const heading = document.createElement("h2");
         heading.textContent = dossier.title;
@@ -243,7 +256,6 @@
       const cover = document.querySelector("#cover");
       if (adminMode) {
         document.title = "Dossier de la majorité de Samuel";
-        document.querySelector("#exportPdf").hidden = false;
         document.querySelector("#resetProgress").hidden = false;
       }
       const documentPages = [...pages.querySelectorAll(".page")];
@@ -275,6 +287,11 @@
       cover.addEventListener("keydown", (event) => { if (event.key === "Enter" || event.key === " ") open(); });
       document.querySelector("#inventory").addEventListener("click", () => open());
       list.addEventListener("click", (event) => {
+        const exportButton = event.target.closest("button[data-export]");
+        if (exportButton) {
+          exportDossier(exportButton.dataset.export);
+          return;
+        }
         const link = event.target.closest("button[data-dossier]");
         if (!link) return;
         showPage(firstPageByDossier.get(link.dataset.dossier));
@@ -290,7 +307,17 @@
         if (event.clientX < bounds.left + bounds.width / 2) turnPage(pageIndex - 1);
         else turnPage(pageIndex + 1);
       });
-      document.querySelector("#exportPdf").addEventListener("click", () => window.print());
+      function exportDossier(selected) {
+        document.body.classList.add("exporting-dossier");
+        document.querySelectorAll(".page[data-dossier]").forEach((page) => {
+          page.classList.toggle("export-selected", page.dataset.dossier === selected);
+        });
+        window.print();
+        document.querySelectorAll(".page[data-dossier]").forEach((page) => {
+          page.classList.remove("export-selected");
+        });
+        document.body.classList.remove("exporting-dossier");
+      }
       document.querySelector("#resetProgress").addEventListener("click", () => {
         if (adminMode && window.confirm("Réinitialiser le suivi des dossiers consultés sur ce navigateur ?")) {
           window.ARCHIVE_PROGRESS.reset();
