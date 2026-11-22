@@ -3,7 +3,7 @@
 # Génère la liste des archives sans Node.js.
 # Requiert seulement zsh et perl, fournis avec macOS.
 set -e
-setopt null_glob
+setopt null_glob extended_glob
 export LANG="en_US.UTF-8"
 export LC_ALL="en_US.UTF-8"
 
