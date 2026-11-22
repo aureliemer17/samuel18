@@ -4,7 +4,7 @@
 # Ne modifie aucun fichier. Deux tableaux CSV sont enregistrés dans ../dossiers/ :
 # - rapport-liens-videos.csv : inventaire complet, réécrit à chaque lancement.
 # - liens-videos-a-completer.csv : uniquement les vidéos sans lien, à compléter
-#   puis importer avec importer-liens-videos-csv.command.
+#   puis importer avec 03-importer-liens-videos-csv.command.
 set -e
 setopt null_glob extended_glob
 export LANG="en_US.UTF-8"

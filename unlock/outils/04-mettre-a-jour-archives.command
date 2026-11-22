@@ -97,7 +97,7 @@ generate_qr_code() {
   /usr/bin/swift "$QR_GENERATOR" "$url" "$output_file"
 }
 
-print '  // BEGIN GENERATED MEDIA - généré par mettre-a-jour-archives-sans-node.command depuis ../dossiers.' > "$BLOCK_FILE"
+print '  // BEGIN GENERATED MEDIA - généré par 04-mettre-a-jour-archives.command depuis ../dossiers.' > "$BLOCK_FILE"
 print '  media: {' >> "$BLOCK_FILE"
 
 count=0

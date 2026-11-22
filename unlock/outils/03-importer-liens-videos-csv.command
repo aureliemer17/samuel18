@@ -14,7 +14,7 @@ CSV_FILE="${DOSSIERS_DIR}/liens-videos-a-completer.csv"
 
 if [[ ! -f "$CSV_FILE" ]]; then
   print -u2 "Tableau introuvable : $CSV_FILE"
-  print -u2 "Lancez d'abord verifier-liens-videos.command."
+  print -u2 "Lancez d'abord 02-verifier-liens-videos.command."
   exit 1
 fi
 
@@ -56,6 +56,6 @@ done < <(perl -MEncode=decode -ne '
 
 print ""
 print "Liens importés : ${imported} | Lignes ignorées : ${skipped}"
-print "Lancez ensuite mettre-a-jour-archives-sans-node.command."
+print "Lancez ensuite 04-mettre-a-jour-archives.command."
 print ""
 read "?Appuyez sur Entree pour fermer cette fenetre..."
