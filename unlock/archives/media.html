@@ -108,7 +108,7 @@
         return card;
       }
 
-      const items = item.items || [];
+      const items = [...(item.items || [])].sort((left, right) => (left.createdAtEpoch ?? Infinity) - (right.createdAtEpoch ?? Infinity));
       for (let index = 0; index < items.length;) {
         const mediaItem = items[index];
         if (mediaItem.type !== "image") {

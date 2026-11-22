@@ -34,11 +34,18 @@ if [[ ! -f "$CONFIG_FILE" ]]; then
 fi
 
 json() {
-  printf '%s' "$1" | perl -MJSON::PP=encode_json -0777 -ne 'print encode_json($_)'
+  printf '%s' "$1" | perl -MEncode=decode -MJSON::PP=encode_json -0777 -ne 'print encode_json(decode("UTF-8", $_))'
 }
 
 clean_title() {
-  perl -pe 's/<[^>]*>/ /g' "$1" | tr '\n' ' ' | tr -s ' ' | sed 's/^ *//; s/ *$//'
+  perl -MEncode=decode,encode -0777 -ne 'print encode("UTF-8", (decode("UTF-8", $_) =~ s/<[^>]*>/ /gr))' "$1" | tr '\n' ' ' | tr -s ' ' | sed 's/^ *//; s/ *$//'
+}
+
+french_date() {
+  local day month year
+  local -a months=(janvier février mars avril mai juin juillet août septembre octobre novembre décembre)
+  read -r day month year <<< "$1"
+  print "${day} ${months[10#$month]} ${year}"
 }
 
 declared_height() {
@@ -159,8 +166,9 @@ for category_dir in "$DOSSIERS_DIR"/*(/); do
         fi
       fi
       if [[ "$type" == "image" || "$type" == "video" ]]; then
-        created="$(LC_ALL=fr_FR.UTF-8 stat -f '%SB' -t '%d %B %Y' "$media_file")"
-        line+=", createdAt: $(json "$created")"
+        created="$(french_date "$(stat -f '%SB' -t '%d %m %Y' "$media_file")")"
+        created_at_epoch="$(stat -f '%B' "$media_file")"
+        line+=", createdAt: $(json "$created"), createdAtEpoch: ${created_at_epoch}"
       fi
       print "${line} }," >> "$BLOCK_FILE"
     done
