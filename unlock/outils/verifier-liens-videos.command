@@ -36,7 +36,7 @@ print "$header" > "$IMPORT_FILE"
 
 for category_dir in "$DOSSIERS_DIR"/*(/N); do
   category_name="${category_dir:t}"
-  [[ "$category_name" == "heic" ]] && continue
+  [[ "$category_name" == "heic" || "$category_name" == "videos" ]] && continue
   for folder_dir in "$category_dir"/*(/N); do
     folder_name="${folder_dir:t}"
     links_file="${folder_dir}/video-urls.txt"
@@ -58,12 +58,12 @@ for category_dir in "$DOSSIERS_DIR"/*(/N); do
       (( total_size_bytes += size_bytes ))
       if [[ -n "$link" ]]; then
         (( configured += 1 ))
-        status="Configuré"
+        link_status="Configuré"
       else
         (( missing += 1 ))
-        status="À compléter"
+        link_status="À compléter"
       fi
-      row="$(csv_escape "$category_name"),$(csv_escape "$folder_name"),$(csv_escape "$video_name"),$(csv_escape "$link"),${size_mo},$(csv_escape "$status")"
+      row="$(csv_escape "$category_name"),$(csv_escape "$folder_name"),$(csv_escape "$video_name"),$(csv_escape "$link"),${size_mo},$(csv_escape "$link_status")"
       print "$row" >> "$REPORT_FILE"
       [[ -z "$link" ]] && print "$row" >> "$IMPORT_FILE"
     done

@@ -18,6 +18,7 @@ fi
 
 video_files=()
 for category_dir in "$DOSSIERS_DIR"/*(/); do
+  [[ "${category_dir:t}" == "heic" || "${category_dir:t}" == "videos" ]] && continue
   for folder_dir in "$category_dir"/*(/); do
     print "Recherche de vidéos dans : $folder_dir"
     for video_file in "$folder_dir"/*.(#i)(mp4|mov|m4v|webm|mts)(.N); do
