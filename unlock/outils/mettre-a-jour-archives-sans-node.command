@@ -10,6 +10,7 @@ export LC_ALL="en_US.UTF-8"
 OUTILS_DIR="${0:A:h}"
 UNLOCK_DIR="${OUTILS_DIR:h}"
 DOSSIERS_DIR="${UNLOCK_DIR:h}/dossiers"
+HEIC_ARCHIVE_DIR="${DOSSIERS_DIR}/heic"
 EXAMPLE_CONFIG_FILE="${UNLOCK_DIR}/config/archive-config.example.js"
 CONFIG_FILE="${UNLOCK_DIR}/config/archive-config.local.js"
 BLOCK_FILE="$(mktemp)"
@@ -72,6 +73,7 @@ print '  media: {' >> "$BLOCK_FILE"
 count=0
 for category_dir in "$DOSSIERS_DIR"/*(/); do
   category_name="${category_dir:t}"
+  [[ "$category_name" == "heic" ]] && continue
   for folder_dir in "$category_dir"/*(/); do
     folder_name="${folder_dir:t}"
     if [[ "$folder_name" =~ '^((I|II|III|IV|V|VI|VII)-[A-J]-[1-8])( - .+)?$' ]]; then
@@ -101,12 +103,19 @@ for category_dir in "$DOSSIERS_DIR"/*(/); do
     [[ -z "$title" ]] && title="$folder_title"
 
     # Convert HEIC files before listing media so each photo is referenced once as JPEG.
+    # Archive originals outside the scanned tree while preserving their source hierarchy.
     for heic_file in "$folder_dir"/*.(#i)(heic|heif)(.N); do
       converted_file="${heic_file:r}.jpg"
       if [[ ! -f "$converted_file" || "$heic_file" -nt "$converted_file" ]]; then
         print "Conversion HEIC en JPEG : ${heic_file:t}"
         sips -s format jpeg -s formatOptions 85 "$heic_file" --out "$converted_file" >/dev/null
       fi
+      SetFile -d "$(stat -f '%SB' -t '%m/%d/%Y %H:%M:%S' "$heic_file")" "$converted_file"
+      SetFile -m "$(stat -f '%Sm' -t '%m/%d/%Y %H:%M:%S' "$heic_file")" "$converted_file"
+      archive_folder="${HEIC_ARCHIVE_DIR}/${category_name}/${folder_name}"
+      mkdir -p "$archive_folder"
+      print "Archivage HEIC : ${heic_file:t}"
+      mv "$heic_file" "$archive_folder/${heic_file:t}"
     done
 
     instruction=""
