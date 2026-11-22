@@ -23,7 +23,8 @@
   </head>
   <body>
     <main><header><div class="category-code" id="code"></div><h1 id="title"></h1></header><section class="grid" id="grid"></section><a class="return" href="dossier-majorite.html">Retour au dossier de la majorité</a></main>
-    <script src="../config/archive-config.js"></script>
+    <script src="../config/archive-config.example.js"></script>
+    <script src="../config/archive-config.local.js"></script>
     <script>
       const category = new URLSearchParams(window.location.hash.slice(1)).get("categorie");
       const archives = window.ARCHIVE_CONFIG;

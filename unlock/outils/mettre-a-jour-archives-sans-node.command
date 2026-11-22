@@ -10,7 +10,8 @@ export LC_ALL="en_US.UTF-8"
 OUTILS_DIR="${0:A:h}"
 UNLOCK_DIR="${OUTILS_DIR:h}"
 DOSSIERS_DIR="${UNLOCK_DIR:h}/dossiers"
-CONFIG_FILE="${UNLOCK_DIR}/config/archive-config.js"
+EXAMPLE_CONFIG_FILE="${UNLOCK_DIR}/config/archive-config.example.js"
+CONFIG_FILE="${UNLOCK_DIR}/config/archive-config.local.js"
 BLOCK_FILE="$(mktemp)"
 
 cleanup() {
@@ -23,9 +24,13 @@ if [[ ! -d "$DOSSIERS_DIR" ]]; then
   exit 1
 fi
 
-if [[ ! -f "$CONFIG_FILE" ]]; then
-  print -u2 "Configuration introuvable : $CONFIG_FILE"
+if [[ ! -f "$EXAMPLE_CONFIG_FILE" ]]; then
+  print -u2 "Configuration exemple introuvable : $EXAMPLE_CONFIG_FILE"
   exit 1
+fi
+
+if [[ ! -f "$CONFIG_FILE" ]]; then
+  cp "$EXAMPLE_CONFIG_FILE" "$CONFIG_FILE"
 fi
 
 json() {
@@ -176,17 +181,17 @@ BLOCK_FILE="$BLOCK_FILE" perl -0777 -i -pe '
     $replacement = <$fh>;
   }
   s{  // BEGIN GENERATED MEDIA[^\n]*\n[\s\S]*?  // END GENERATED MEDIA}{$replacement}s
-    or die "Bloc généré introuvable dans archive-config.js\n";
+    or die "Bloc généré introuvable dans archive-config.local.js\n";
 ' "$CONFIG_FILE"
 
 # Each regenerated archive list starts a new local progress session.
 perl -0777 -i -pe '
   s/(progressResetKey:\s*")([0-9]+)(")/$1 . ($2 + 1) . $3/e
-    or die "progressResetKey introuvable dans archive-config.js\n";
+    or die "progressResetKey introuvable dans archive-config.local.js\n";
 ' "$CONFIG_FILE"
 
 print ""
-print "Configuration générée : ${count} dossier(s) d'archive trouvé(s). Suivi réinitialisé."
+print "Configuration locale générée : ${count} dossier(s) d'archive trouvé(s). Suivi réinitialisé."
 print ""
 read "?Appuyez sur Entree pour fermer cette fenetre..."
 
