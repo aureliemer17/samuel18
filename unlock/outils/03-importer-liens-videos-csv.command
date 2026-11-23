@@ -4,7 +4,7 @@
 # ../dossiers/liens-videos-a-completer.csv.
 # Chaque ligne non vide est écrite dans le video-urls.txt du bon dossier.
 set -e
-setopt null_glob
+setopt null_glob extended_glob
 export LANG="en_US.UTF-8"
 export LC_ALL="en_US.UTF-8"
 
@@ -22,6 +22,53 @@ imported=0
 skipped=0
 detected=0
 data_rows=()
+
+# Numbers exports Unicode differently from APFS for accented characters.
+# Compare decomposed Unicode names and trim invisible CSV whitespace first.
+normalise_name() {
+  printf '%s' "$1" | perl -MUnicode::Normalize=NFD -CSDA -0777 -pe '
+    s/^\x{FEFF}//;
+    s/\r$//;
+    s/^\s+|\s+$//g;
+    s/\x{00A0}/ /g;
+    $_ = NFD($_);
+  '
+}
+
+resolve_directory() {
+  local parent="$1"
+  local expected="$2"
+  local expected_normalised="$(normalise_name "$expected")"
+  local candidate
+  for candidate in "$parent"/*(/N); do
+    [[ "$(normalise_name "${candidate:t}")" == "$expected_normalised" ]] && {
+      print -r -- "$candidate"
+      return 0
+    }
+  done
+  return 1
+}
+
+resolve_video() {
+  local folder="$1"
+  local expected="$2"
+  local expected_normalised="$(normalise_name "$expected")"
+  local candidate
+  for candidate in "$folder"/*.(#i)(mp4|mov|m4v|webm|mts)(.N); do
+    [[ "$(normalise_name "${candidate:t}")" == "$expected_normalised" ]] && {
+      print -r -- "$candidate"
+      return 0
+    }
+  done
+  return 1
+}
+
+available_videos() {
+  local folder="$1"
+  local -a videos
+  videos=("$folder"/*.(#i)(mp4|mov|m4v|webm|mts)(.N))
+  print -r -- "${(j:, :)videos:t}"
+}
 
 print "Fichier CSV trouvé : ${CSV_FILE}"
 print "Taille : $(stat -f '%z' "$CSV_FILE") octets | Modifié : $(stat -f '%Sm' -t '%d/%m/%Y %H:%M' "$CSV_FILE")"
@@ -55,6 +102,7 @@ if (( detected == 0 )); then
 fi
 
 print "Lignes de vidéo détectées : ${detected}"
+print "Les noms sont comparés aux fichiers présents, y compris pour les accents macOS/Numbers."
 print ""
 
 for row in "${data_rows[@]}"; do
@@ -69,20 +117,31 @@ for row in "${data_rows[@]}"; do
     (( skipped += 1 ))
     continue
   fi
-  folder_dir="${DOSSIERS_DIR}/${category_name}/${folder_name}"
-  if [[ ! -d "$folder_dir" ]]; then
-    print "Ignoré (dossier introuvable) : ${folder_dir}"
+  category_dir="$(resolve_directory "$DOSSIERS_DIR" "$category_name")" || {
+    print "Ignoré (thème introuvable) : ${category_name}"
     (( skipped += 1 ))
     continue
-  fi
+  }
+  folder_dir="$(resolve_directory "$category_dir" "$folder_name")" || {
+    print "Ignoré (dossier introuvable) : ${category_name}/${folder_name}"
+    (( skipped += 1 ))
+    continue
+  }
+  video_file="$(resolve_video "$folder_dir" "$video_name")" || {
+    print "Ignoré (vidéo introuvable) : ${category_name}/${folder_name}/${video_name}"
+    print "  Vidéos disponibles : $(available_videos "$folder_dir")"
+    (( skipped += 1 ))
+    continue
+  }
+  actual_video_name="${video_file:t}"
   links_file="${folder_dir}/video-urls.txt"
   temp_file="$(mktemp)"
   if [[ -f "$links_file" ]]; then
-    VIDEO_NAME="$video_name" perl -ne 'print unless /^\Q$ENV{VIDEO_NAME}\E\s*\|/' "$links_file" > "$temp_file"
+    VIDEO_NAME="$actual_video_name" perl -ne 'print unless /^\Q$ENV{VIDEO_NAME}\E\s*\|/' "$links_file" > "$temp_file"
   fi
-  print -r -- "${video_name} | ${link}" >> "$temp_file"
+  print -r -- "${actual_video_name} | ${link}" >> "$temp_file"
   mv "$temp_file" "$links_file"
-  print "Importé : ${category_name}/${folder_name}/${video_name}"
+  print "Importé : ${category_dir:t}/${folder_dir:t}/${actual_video_name}"
   (( imported += 1 ))
 done
 

@@ -26,6 +26,8 @@ Ordre habituel pour les vidéos : 00, puis 01 OU 02 + 03, puis 04.
   Génère ou met à jour : ../../dossiers/<Thème>/<Dossier>/video-urls.txt
   Numbers : exporter en CSV, remplacer ce fichier, puis lancer l'outil.
   Un fichier .numbers ne peut pas être importé directement.
+  Les accents et apostrophes sont pris en charge ; l'outil vérifie le nom réel
+  de chaque vidéo et indique les fichiers disponibles en cas de différence.
 
 04-mettre-a-jour-liens-videos.command
   Mise à jour rapide après avoir ajouté ou modifié des liens Google Drive.
@@ -44,6 +46,13 @@ Ordre habituel pour les vidéos : 00, puis 01 OU 02 + 03, puis 04.
   Convertit : les .heic/.heif en .jpg dans leur dossier d'origine
   Déplace les originaux HEIC : ../../dossiers/heic/<Thème>/<Dossier>/
   Ne génère pas les QR codes : ils sont créés au moment de l'export PDF.
+
+06-preparer-images-pour-pdf.command
+  Crée des copies JPEG allégées des photos pour un PDF complet plus rapide
+  et plus petit, sans modifier les originaux.
+  Nécessite : les photos dans ../../dossiers/<Thème>/<Dossier>/
+  Génère : ../../dossiers/pdf-images/<Thème>/<Dossier>/*.jpg
+  Puis ouvrir : ../archives/decouvertes.html?admin=1 et cliquer PDF COMPLET.
 
 90-exporter-arborescence-archives.command
   Exporte la liste des dossiers et fichiers d'archives.

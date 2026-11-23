@@ -12,7 +12,7 @@ Alternative pratique pour beaucoup de vidéos :
 
 1. `02-verifier-liens-videos.command` : lit les vidéos dans `../../dossiers/<Thème>/<Dossier>/`, ainsi que les éventuels `video-urls.txt`, puis crée `../../dossiers/rapport-liens-videos.csv` et `../../dossiers/liens-videos-a-completer.csv`.
 2. Compléter la colonne `Lien Google Drive` dans `../../dossiers/liens-videos-a-completer.csv`.
-3. `03-importer-liens-videos-csv.command` : lit `../../dossiers/liens-videos-a-completer.csv` et importe les liens dans `../../dossiers/<Thème>/<Dossier>/video-urls.txt`. Depuis Numbers, exporter d'abord en CSV et remplacer ce fichier ; un fichier `.numbers` ne peut pas être importé directement.
+3. `03-importer-liens-videos-csv.command` : lit `../../dossiers/liens-videos-a-completer.csv` et importe les liens dans `../../dossiers/<Thème>/<Dossier>/video-urls.txt`. Depuis Numbers, exporter d'abord en CSV et remplacer ce fichier ; un fichier `.numbers` ne peut pas être importé directement. Les accents et apostrophes sont normalisés et l’outil signale les vidéos introuvables avec la liste des noms réellement présents.
 
 ## Mettre à jour les liens vidéo
 
@@ -21,6 +21,11 @@ Alternative pratique pour beaucoup de vidéos :
 ## Mettre à jour tout le livret
 
 5. `05-mettre-a-jour-archives.command` : à lancer après un ajout ou une modification de photo, HEIC, document, titre ou dossier. Il lit `../../dossiers/<Thème>/<Dossier>/`, génère `../config/archive-config.local.js`, convertit les HEIC en JPEG et archive les originaux dans `../../dossiers/heic/<Thème>/<Dossier>/`. Il n'est pas nécessaire après un simple lien vidéo. Les QR codes sont créés au moment de l'export PDF.
+
+## Exporter un PDF complet
+
+6. `06-preparer-images-pour-pdf.command` : crée des copies JPEG imprimables, limitées à 1800 pixels et compressées, dans `../../dossiers/pdf-images/<Thème>/<Dossier>/`. Les originaux restent intacts. Cette commande peut être relancée : seules les photos nouvelles ou modifiées sont traitées.
+7. Ouvrir `../archives/decouvertes.html?admin=1`, puis cliquer sur `PDF COMPLET`. L’export emploie automatiquement les images allégées quand elles existent. Si elles n’ont pas été préparées, il utilise les originaux.
 
 ## Outils occasionnels
 

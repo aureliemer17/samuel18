@@ -73,7 +73,7 @@ print '  media: {' >> "$BLOCK_FILE"
 count=0
 for category_dir in "$DOSSIERS_DIR"/*(/); do
   category_name="${category_dir:t}"
-  [[ "$category_name" == "heic" || "$category_name" == "videos" ]] && continue
+  [[ "$category_name" == "heic" || "$category_name" == "videos" || "$category_name" == "pdf-images" ]] && continue
   for folder_dir in "$category_dir"/*(/); do
     folder_name="${folder_dir:t}"
     if [[ "$folder_name" =~ '^((I|II|III|IV|V|VI|VII)-[A-J]-[1-8])( - .+)?$' ]]; then

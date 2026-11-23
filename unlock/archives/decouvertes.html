@@ -84,11 +84,11 @@
       .contents button { background: transparent; border: 0; color: inherit; cursor: pointer; font: inherit; padding: 0; text-align: left; text-decoration: underline; text-decoration-style: dotted; }
       .contents .export-dossier { background: #eadbb0; border: 1px solid #9b7940; color: #4b351d; font-family: "Courier New", monospace; font-size: 7pt; font-weight: 900; margin-left: 7px; padding: 3px 5px; text-decoration: none; }
       @media (max-width: 700px) { body { padding: 10px; } .cover, .page { min-height: auto; } .cover { min-height: calc(100vh - 135px); padding: 15mm 10mm; } .page { padding: 12mm; } .contents { columns: 1; } }
-      @media print { @page { size: A4 portrait; margin: 0; } body { background: #fff; padding: 0; } .toolbar { display: none; } .book { max-width: none; } .book:not(.open) .pages { display: block; } .cover, .page { box-shadow: none; break-after: page; display: flex !important; height: 297mm; margin: 0; min-height: 297mm; opacity: 1 !important; page-break-after: always; position: relative !important; transform: none !important; width: 210mm; } .cover { display: flex !important; } .page { display: block !important; } .pages { display: block; } .page:last-child { break-after: auto; page-break-after: auto; } .evidence video, .video-evidence video { display: none; } .evidence .video-print-note, .video-qr { display: block; } body.exporting-dossier .cover, body.exporting-dossier .page:not(.export-selected) { display: none !important; } }
+      @media print { @page { size: A4 portrait; margin: 0; } body { background: #fff; padding: 0; } .toolbar { display: none; } .book { max-width: none; } .book:not(.open) .pages { display: block; } .cover, .page { box-shadow: none; break-after: page; display: flex !important; height: 297mm; margin: 0; min-height: 297mm; opacity: 1 !important; page-break-after: always; position: relative !important; transform: none !important; width: 210mm; } .cover { display: flex !important; } .page { display: block !important; } .pages { display: block; } .page:last-child { break-after: auto; page-break-after: auto; } .evidence video, .video-evidence video { display: none; } .evidence .video-print-note, .video-qr { display: block; } body.exporting-dossier .cover, body.exporting-dossier .page:not(.export-selected) { display: none !important; } body.exporting-complete .contents .export-dossier { display: none; } }
     </style>
   </head>
   <body>
-    <nav class="toolbar" aria-label="Actions du dossier"><a class="toolbar-link" href="../index.html">Accueil</a><button id="inventory" type="button">Inventaire</button><button id="resetProgress" type="button" hidden>Réinitialiser le suivi</button></nav>
+    <nav class="toolbar" aria-label="Actions du dossier"><a class="toolbar-link" href="../index.html">Accueil</a><button id="inventory" type="button">Inventaire</button><button id="exportAll" type="button" hidden>PDF complet</button><button id="resetProgress" type="button" hidden>Réinitialiser le suivi</button></nav>
     <main class="book">
       <section class="cover" id="cover" tabindex="0" role="button" aria-label="Ouvrir le dossier"><div class="cover__content"><img class="logo" src="../assets/bureau-majorite.png" alt="Bureau de la Majorité" /><div class="division">Archives personnelles · Restitution à la majorité</div><h1>Dossier S-18</h1><p class="subtitle">Les 18 premières années de<span class="name">Samuel</span></p><p class="date">29 novembre 2026</p><p class="quote">« Une vie entière de souvenirs à découvrir. »</p><p class="confidential">Document confidentiel</p></div></section>
       <section class="pages" id="pages"></section>
@@ -164,8 +164,9 @@
       };
       const contents = makePage("contents-page");
       contents.append(makeHeader("INVENTAIRE"));
-      const inventoryStatus = viewed.size === Object.keys(media).length ? "Dossier complet" : "Dossier en cours";
-      contents.innerHTML += `<h2>Inventaire des découvertes</h2><span class="status">${inventoryStatus}</span>`;
+       const inventoryStatus = viewed.size === Object.keys(media).length ? "Dossier complet" : "Dossier en cours";
+       contents.innerHTML += `<h2>Inventaire des découvertes</h2><span class="status">${inventoryStatus}</span>`;
+       const inventoryStatusElement = contents.querySelector(".status");
       const list = document.createElement("ul");
       list.className = "contents";
       Object.entries(categories).forEach(([categoryCode, categoryTitle]) => {
@@ -208,7 +209,7 @@
           page.append(heading, detail);
           const figure = document.createElement("figure");
           figure.className = "evidence";
-          if (item.type === "image") { const image = document.createElement("img"); image.src = item.source; image.alt = item.title; figure.append(image); }
+           if (item.type === "image") { const image = document.createElement("img"); image.src = item.source; image.dataset.pdfSource = item.source; image.alt = item.title; figure.append(image); }
           else if (item.type === "video") { const video = document.createElement("video"); video.src = item.source; video.controls = true; figure.append(video); const note = document.createElement("p"); note.className = "video-print-note"; note.textContent = "Vidéo disponible via le lien ci-dessous."; figure.append(note); }
           else { figure.classList.add("evidence--document"); const frame = document.createElement("iframe"); frame.src = item.source; frame.title = item.title; if (item.height) frame.style.height = `${item.height}px`; figure.append(frame); }
           const caption = document.createElement("figcaption"); caption.textContent = `PIÈCE JOINTE : ${item.title}`; figure.append(caption);
@@ -231,9 +232,10 @@
         items.forEach((item) => {
           const figure = document.createElement("figure");
           figure.className = "photo-evidence";
-          const image = document.createElement("img");
-          image.src = item.source;
-          image.alt = item.title;
+           const image = document.createElement("img");
+           image.src = item.source;
+           image.dataset.pdfSource = item.source;
+           image.alt = item.title;
           const caption = document.createElement("figcaption");
           caption.innerHTML = `<span class="evidence-date"></span><span class="evidence-name"></span>`;
           caption.querySelector(".evidence-date").textContent = item.createdAt || "Date inconnue";
@@ -307,9 +309,10 @@
       });
       pages.append(makePage("back-cover"));
       const cover = document.querySelector("#cover");
-      if (adminMode) {
-        document.title = "Dossier S-18 - Admin";
-        document.querySelector("#resetProgress").hidden = false;
+       if (adminMode) {
+         document.title = "Dossier S-18 - Admin";
+         document.querySelector("#exportAll").hidden = false;
+         document.querySelector("#resetProgress").hidden = false;
       }
       const documentPages = [...pages.querySelectorAll(".page")];
       const allPages = [cover, ...documentPages];
@@ -360,29 +363,64 @@
         if (event.clientX < bounds.left + bounds.width / 2) turnPage(pageIndex - 1);
         else turnPage(pageIndex + 1);
       });
+       const pdfImageSource = (source) => source.replace("../../dossiers/", "../../dossiers/pdf-images/").replace(/\.[^.]+$/, ".jpg");
+       const loadImage = (image) => new Promise((resolve) => {
+         if (image.complete) return resolve();
+         image.addEventListener("load", resolve, { once: true });
+         image.addEventListener("error", resolve, { once: true });
+       });
+       async function usePdfImages() {
+         const images = [...document.querySelectorAll("img[data-pdf-source]")];
+         images.forEach((image) => {
+           image.dataset.originalSource = image.src;
+           image.onerror = () => { image.onerror = null; image.src = image.dataset.originalSource; };
+           image.src = pdfImageSource(image.dataset.pdfSource);
+         });
+         await Promise.all(images.map(loadImage));
+       }
+       function restoreOriginalImages() {
+         document.querySelectorAll("img[data-original-source]").forEach((image) => {
+           image.onerror = null;
+           image.src = image.dataset.originalSource;
+           delete image.dataset.originalSource;
+         });
+       }
+       async function waitForQrCodes(scope) {
+         const qrImages = [...scope.querySelectorAll(".video-qr img")];
+         await Promise.all(qrImages.map(loadImage));
+       }
+       function resetExport(previousTitle, previousInventoryStatus = null) {
+         document.title = previousTitle;
+         document.body.classList.remove("exporting-dossier");
+         document.body.classList.remove("exporting-complete");
+         document.querySelectorAll(".page[data-dossier]").forEach((page) => page.classList.remove("export-selected"));
+         if (previousInventoryStatus !== null) inventoryStatusElement.textContent = previousInventoryStatus;
+         restoreOriginalImages();
+       }
        async function exportDossier(selected) {
-        const previousTitle = document.title;
-        document.title = `${selected} - ${media[selected].title}`;
+         const previousTitle = document.title;
+         document.title = `${selected} - ${media[selected].title}`;
         document.body.classList.add("exporting-dossier");
         document.querySelectorAll(".page[data-dossier]").forEach((page) => {
           page.classList.toggle("export-selected", page.dataset.dossier === selected);
         });
-        window.addEventListener("afterprint", () => {
-          document.title = previousTitle;
-          document.body.classList.remove("exporting-dossier");
-          document.querySelectorAll(".page[data-dossier]").forEach((page) => {
-            page.classList.remove("export-selected");
-          });
-        }, { once: true });
-         const qrImages = [...document.querySelectorAll(".export-selected .video-qr img")];
-         await Promise.all(qrImages.map((image) => image.complete
-           ? Promise.resolve()
-           : new Promise((resolve) => {
-             image.addEventListener("load", resolve, { once: true });
-             image.addEventListener("error", resolve, { once: true });
-           })));
+         window.addEventListener("afterprint", () => resetExport(previousTitle), { once: true });
+         await usePdfImages();
+         await waitForQrCodes(document.querySelector("#pages"));
          window.print();
-      }
+       }
+       async function exportComplete() {
+         const previousTitle = document.title;
+         const previousInventoryStatus = inventoryStatusElement.textContent;
+         document.title = "Dossier S-18 - Archives complètes";
+         document.body.classList.add("exporting-complete");
+         inventoryStatusElement.textContent = "Dossier complet";
+         window.addEventListener("afterprint", () => resetExport(previousTitle, previousInventoryStatus), { once: true });
+         await usePdfImages();
+         await waitForQrCodes(document.querySelector("#pages"));
+         window.print();
+       }
+       document.querySelector("#exportAll").addEventListener("click", () => exportComplete());
       document.querySelector("#resetProgress").addEventListener("click", () => {
         if (adminMode && window.confirm("Réinitialiser le suivi des dossiers consultés sur ce navigateur ?")) {
           window.ARCHIVE_PROGRESS.reset();
