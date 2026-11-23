@@ -112,6 +112,12 @@
         }
       }));
       const categories = window.ARCHIVE_CONFIG.categories;
+      const sortArchiveItems = (items) => [...items].sort((left, right) => {
+        const leftIsAnecdote = /(?:^|\/)anecdote\.(?:html?|txt)$/i.test(left.source);
+        const rightIsAnecdote = /(?:^|\/)anecdote\.(?:html?|txt)$/i.test(right.source);
+        if (leftIsAnecdote !== rightIsAnecdote) return leftIsAnecdote ? -1 : 1;
+        return (left.createdAtEpoch ?? Infinity) - (right.createdAtEpoch ?? Infinity);
+      });
       const firstPageByDossier = new Map();
       const makePage = (className = "") => {
         const page = document.createElement("section");
@@ -287,7 +293,7 @@
         if (pageNumber === 1) firstPageByDossier.set(code, pages.querySelectorAll(".page").length);
       }
       Object.entries(media).filter(([code]) => adminMode || viewed.has(code)).forEach(([code, dossier]) => {
-        const items = [...(dossier.items || [])].sort((left, right) => (left.createdAtEpoch ?? Infinity) - (right.createdAtEpoch ?? Infinity));
+        const items = sortArchiveItems(dossier.items || []);
         const totalPages = Math.ceil(items.filter((item) => item.type === "image").length / 4) + Math.ceil(items.filter((item) => item.type === "video").length / 2) + items.filter((item) => item.type !== "image" && item.type !== "video").length;
         let dossierPage = 1;
         for (let index = 0; index < items.length;) {

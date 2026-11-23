@@ -63,8 +63,14 @@
       document.querySelector("#code").textContent = `DOSSIER ${code}`;
       document.querySelector("#title").textContent = item.title;
       const content = document.querySelector("#content");
-      const instructionSlot = document.querySelector("#instructions");
-      const returnLink = document.querySelector("#returnLink");
+       const instructionSlot = document.querySelector("#instructions");
+       const returnLink = document.querySelector("#returnLink");
+       const sortArchiveItems = (items) => [...items].sort((left, right) => {
+         const leftIsAnecdote = /(?:^|\/)anecdote\.(?:html?|txt)$/i.test(left.source);
+         const rightIsAnecdote = /(?:^|\/)anecdote\.(?:html?|txt)$/i.test(right.source);
+         if (leftIsAnecdote !== rightIsAnecdote) return leftIsAnecdote ? -1 : 1;
+         return (left.createdAtEpoch ?? Infinity) - (right.createdAtEpoch ?? Infinity);
+       });
       if (source === "majorite") {
         returnLink.href = "dossier-majorite.html";
         returnLink.textContent = "Retour au dossier de la majorité";
@@ -114,7 +120,7 @@
         return card;
       }
 
-      const items = [...(item.items || [])].sort((left, right) => (left.createdAtEpoch ?? Infinity) - (right.createdAtEpoch ?? Infinity));
+       const items = sortArchiveItems(item.items || []);
       for (let index = 0; index < items.length;) {
         const mediaItem = items[index];
         if (mediaItem.type !== "image") {
