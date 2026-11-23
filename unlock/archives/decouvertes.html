@@ -380,7 +380,7 @@
            : new Promise((resolve) => {
              image.addEventListener("load", resolve, { once: true });
              image.addEventListener("error", resolve, { once: true });
-           }))));
+           })));
          window.print();
       }
       document.querySelector("#resetProgress").addEventListener("click", () => {
