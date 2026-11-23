@@ -83,8 +83,9 @@
       .contents .seen { color: #4f6a3d; font-weight: 900; }
       .contents button { background: transparent; border: 0; color: inherit; cursor: pointer; font: inherit; padding: 0; text-align: left; text-decoration: underline; text-decoration-style: dotted; }
       .contents .export-dossier { background: #eadbb0; border: 1px solid #9b7940; color: #4b351d; font-family: "Courier New", monospace; font-size: 7pt; font-weight: 900; margin-left: 7px; padding: 3px 5px; text-decoration: none; }
+      .contents .export-theme { background: #9d3424; border: 1px solid #6d2017; color: #fff8e2; font-family: "Courier New", monospace; font-size: 7pt; font-weight: 900; margin-left: 7px; padding: 3px 5px; text-decoration: none; }
       @media (max-width: 700px) { body { padding: 10px; } .cover, .page { min-height: auto; } .cover { min-height: calc(100vh - 135px); padding: 15mm 10mm; } .page { padding: 12mm; } .contents { columns: 1; } }
-      @media print { @page { size: A4 portrait; margin: 0; } body { background: #fff; padding: 0; } .toolbar { display: none; } .book { max-width: none; } .book:not(.open) .pages { display: block; } .cover, .page { box-shadow: none; break-after: page; display: flex !important; height: 297mm; margin: 0; min-height: 297mm; opacity: 1 !important; page-break-after: always; position: relative !important; transform: none !important; width: 210mm; } .cover { display: flex !important; } .page { display: block !important; } .pages { display: block; } .page:last-child { break-after: auto; page-break-after: auto; } .evidence video, .video-evidence video { display: none; } .evidence .video-print-note, .video-qr { display: block; } body.exporting-dossier .cover, body.exporting-dossier .page:not(.export-selected) { display: none !important; } body.exporting-complete .contents .export-dossier { display: none; } }
+      @media print { @page { size: A4 portrait; margin: 0; } body { background: #fff; padding: 0; } .toolbar { display: none; } .book { max-width: none; } .book:not(.open) .pages { display: block; } .cover, .page { box-shadow: none; break-after: page; display: flex !important; height: 297mm; margin: 0; min-height: 297mm; opacity: 1 !important; page-break-after: always; position: relative !important; transform: none !important; width: 210mm; } .cover { display: flex !important; } .page { display: block !important; } .pages { display: block; } .page:last-child { break-after: auto; page-break-after: auto; } .evidence video, .video-evidence video { display: none; } .evidence .video-print-note, .video-qr { display: block; } body.exporting-dossier .cover, body.exporting-dossier .page:not(.export-selected), body.exporting-theme .cover, body.exporting-theme .page:not(.export-selected) { display: none !important; } body.exporting-complete .contents .export-dossier, body.exporting-complete .contents .export-theme, body.exporting-theme .contents .export-dossier, body.exporting-theme .contents .export-theme { display: none; } }
     </style>
   </head>
   <body>
@@ -173,6 +174,15 @@
         const category = document.createElement("li");
         category.textContent = categoryTitle.toUpperCase();
         category.style.fontWeight = "900";
+        if (adminMode) {
+          const exportButton = document.createElement("button");
+          exportButton.className = "export-theme";
+          exportButton.dataset.exportTheme = categoryCode;
+          exportButton.type = "button";
+          exportButton.textContent = "PDF";
+          exportButton.setAttribute("aria-label", `Exporter ${categoryTitle} en PDF`);
+          category.append(exportButton);
+        }
         list.append(category);
         Object.entries(media).filter(([code]) => code.startsWith(`${categoryCode}-`)).forEach(([code, dossier]) => {
           const item = document.createElement("li");
@@ -341,9 +351,14 @@
       const open = () => { document.querySelector(".book").classList.add("open"); showPage(1); };
       cover.addEventListener("click", open);
       cover.addEventListener("keydown", (event) => { if (event.key === "Enter" || event.key === " ") open(); });
-      document.querySelector("#inventory").addEventListener("click", () => open());
-      list.addEventListener("click", (event) => {
-        const exportButton = event.target.closest("button[data-export]");
+       document.querySelector("#inventory").addEventListener("click", () => open());
+       list.addEventListener("click", (event) => {
+         const exportThemeButton = event.target.closest("button[data-export-theme]");
+         if (exportThemeButton) {
+           exportTheme(exportThemeButton.dataset.exportTheme);
+           return;
+         }
+         const exportButton = event.target.closest("button[data-export]");
         if (exportButton) {
           exportDossier(exportButton.dataset.export);
           return;
@@ -389,10 +404,11 @@
          const qrImages = [...scope.querySelectorAll(".video-qr img")];
          await Promise.all(qrImages.map(loadImage));
        }
-       function resetExport(previousTitle, previousInventoryStatus = null) {
-         document.title = previousTitle;
-         document.body.classList.remove("exporting-dossier");
-         document.body.classList.remove("exporting-complete");
+        function resetExport(previousTitle, previousInventoryStatus = null) {
+          document.title = previousTitle;
+          document.body.classList.remove("exporting-dossier");
+          document.body.classList.remove("exporting-complete");
+          document.body.classList.remove("exporting-theme");
          document.querySelectorAll(".page[data-dossier]").forEach((page) => page.classList.remove("export-selected"));
          if (previousInventoryStatus !== null) inventoryStatusElement.textContent = previousInventoryStatus;
          restoreOriginalImages();
@@ -409,7 +425,7 @@
          await waitForQrCodes(document.querySelector("#pages"));
          window.print();
        }
-       async function exportComplete() {
+        async function exportComplete() {
          const previousTitle = document.title;
          const previousInventoryStatus = inventoryStatusElement.textContent;
          document.title = "Dossier S-18 - Archives complètes";
@@ -418,9 +434,23 @@
          window.addEventListener("afterprint", () => resetExport(previousTitle, previousInventoryStatus), { once: true });
          await usePdfImages();
          await waitForQrCodes(document.querySelector("#pages"));
-         window.print();
-       }
-       document.querySelector("#exportAll").addEventListener("click", () => exportComplete());
+          window.print();
+        }
+        async function exportTheme(categoryCode) {
+          const previousTitle = document.title;
+          const previousInventoryStatus = inventoryStatusElement.textContent;
+          document.title = `${categoryCode} - ${categories[categoryCode]}`;
+          document.body.classList.add("exporting-theme");
+          inventoryStatusElement.textContent = "Dossier complet";
+          document.querySelectorAll(".page[data-dossier]").forEach((page) => {
+            page.classList.toggle("export-selected", page.dataset.dossier.startsWith(`${categoryCode}-`));
+          });
+          window.addEventListener("afterprint", () => resetExport(previousTitle, previousInventoryStatus), { once: true });
+          await usePdfImages();
+          await waitForQrCodes(document.querySelector("#pages"));
+          window.print();
+        }
+        document.querySelector("#exportAll").addEventListener("click", () => exportComplete());
       document.querySelector("#resetProgress").addEventListener("click", () => {
         if (adminMode && window.confirm("Réinitialiser le suivi des dossiers consultés sur ce navigateur ?")) {
           window.ARCHIVE_PROGRESS.reset();

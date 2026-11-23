@@ -21,7 +21,11 @@ fi
 imported=0
 skipped=0
 detected=0
+physical_rows=0
+blank_rows=0
+malformed_rows=0
 data_rows=()
+malformed_line_numbers=()
 
 # Numbers exports Unicode differently from APFS for accented characters.
 # Compare decomposed Unicode names and trim invisible CSV whitespace first.
@@ -74,21 +78,41 @@ print "Fichier CSV trouvé : ${CSV_FILE}"
 print "Taille : $(stat -f '%z' "$CSV_FILE") octets | Modifié : $(stat -f '%Sm' -t '%d/%m/%Y %H:%M' "$CSV_FILE")"
 print ""
 
-while IFS=$'\t' read -r category_name folder_name video_name link; do
-  (( detected += 1 ))
-  data_rows+=("${category_name}"$'\t'"${folder_name}"$'\t'"${video_name}"$'\t'"${link}")
-done < <(perl -MEncode=decode -ne '
+separator="$(perl -MEncode=decode -ne 'if ($. == 1) { $line = $_; $line =~ s/^\x{FEFF}//; print(index($line, ";") > index($line, ",") ? ";" : ","); exit }' "$CSV_FILE")"
+
+while IFS=$'\t' read -r row_type category_name folder_name video_name link; do
+  case "$row_type" in
+    DATA)
+      (( detected += 1 ))
+      data_rows+=("${category_name}"$'\t'"${folder_name}"$'\t'"${video_name}"$'\t'"${link}")
+      ;;
+    BLANK) (( blank_rows += 1 )) ;;
+    MALFORMED)
+      (( malformed_rows += 1 ))
+      malformed_line_numbers+=("$category_name")
+      ;;
+  esac
+done < <(SEPARATOR="$separator" perl -MEncode=decode -ne '
   next if $. == 1;
-  my $separator = index($_, ";") >= 0 && index($_, ",") < 0 ? ";" : ",";
+  $separator = $ENV{SEPARATOR};
+  $line = $_;
+  $line =~ s/\r?\n$//;
+  if ($line =~ /^\s*$/) { print "BLANK\n"; next; }
   my @fields;
-  while (/\G(?:\A|\Q$separator\E)(?:"((?:[^"]|"")*)"|([^\Q$separator\E]*))/gc) {
+  while ($line =~ /\G(?:\A|\Q$separator\E)(?:"((?:[^"]|"")*)"|([^\Q$separator\E]*))/gc) {
     my $value = defined $1 ? $1 : $2;
     $value =~ s/""/"/g;
-    $value =~ s/\r$//;
+    $value =~ s/^\s+|\s+$//g;
     push @fields, $value;
   }
-  print join("\t", @fields[0..3]), "\n" if @fields >= 4;
+  if (@fields < 4) { print "MALFORMED\t$.\n"; next; }
+  print "DATA\t", join("\t", @fields[0..3]), "\n";
 ' "$CSV_FILE")
+
+physical_rows="$(perl -ne 'END { print $. - 1 }' "$CSV_FILE")"
+print "Séparateur détecté : ${separator}"
+print "Lignes de données dans le fichier : ${physical_rows} | Vides : ${blank_rows} | Mal formées : ${malformed_rows}"
+(( malformed_rows > 0 )) && print "Lignes mal formées ignorées : ${(j:, :)malformed_line_numbers}"
 
 if (( detected == 0 )); then
   print "Aucune ligne de vidéo trouvée dans ce CSV : il contient probablement seulement l'en-tête."
