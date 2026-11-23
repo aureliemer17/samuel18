@@ -20,9 +20,50 @@ fi
 
 imported=0
 skipped=0
+detected=0
+data_rows=()
+
+print "Fichier CSV trouvé : ${CSV_FILE}"
+print "Taille : $(stat -f '%z' "$CSV_FILE") octets | Modifié : $(stat -f '%Sm' -t '%d/%m/%Y %H:%M' "$CSV_FILE")"
+print ""
 
 while IFS=$'\t' read -r category_name folder_name video_name link; do
-  [[ -z "$link" ]] && { (( skipped += 1 )); continue; }
+  (( detected += 1 ))
+  data_rows+=("${category_name}"$'\t'"${folder_name}"$'\t'"${video_name}"$'\t'"${link}")
+done < <(perl -MEncode=decode -ne '
+  next if $. == 1;
+  my $separator = index($_, ";") >= 0 && index($_, ",") < 0 ? ";" : ",";
+  my @fields;
+  while (/\G(?:\A|\Q$separator\E)(?:"((?:[^"]|"")*)"|([^\Q$separator\E]*))/gc) {
+    my $value = defined $1 ? $1 : $2;
+    $value =~ s/""/"/g;
+    $value =~ s/\r$//;
+    push @fields, $value;
+  }
+  print join("\t", @fields[0..3]), "\n" if @fields >= 4;
+' "$CSV_FILE")
+
+if (( detected == 0 )); then
+  print "Aucune ligne de vidéo trouvée dans ce CSV : il contient probablement seulement l'en-tête."
+  print ""
+  print "Avec Numbers : Fichier > Exporter vers > CSV... puis enregistrez le fichier sous ce nom exact :"
+  print "${CSV_FILE}"
+  print "Remplacez le fichier existant quand Numbers le propose. Un fichier .numbers ne peut pas être importé directement."
+  print ""
+  read "?Appuyez sur Entree pour fermer cette fenetre..."
+  exit 0
+fi
+
+print "Lignes de vidéo détectées : ${detected}"
+print ""
+
+for row in "${data_rows[@]}"; do
+  IFS=$'\t' read -r category_name folder_name video_name link <<< "$row"
+  if [[ -z "$link" ]]; then
+    print "Ignoré (lien vide) : ${category_name}/${folder_name}/${video_name}"
+    (( skipped += 1 ))
+    continue
+  fi
   if [[ ! "$link" =~ '^https?://' ]]; then
     print "Ignoré (lien invalide) : ${category_name}/${folder_name}/${video_name}"
     (( skipped += 1 ))
@@ -43,16 +84,7 @@ while IFS=$'\t' read -r category_name folder_name video_name link; do
   mv "$temp_file" "$links_file"
   print "Importé : ${category_name}/${folder_name}/${video_name}"
   (( imported += 1 ))
-done < <(perl -MEncode=decode -ne '
-  next if $. == 1;
-  my @fields;
-  while (/\G(?:\A|,)(?:"((?:[^"]|"")*)"|([^,]*))/gc) {
-    my $value = defined $1 ? $1 : $2;
-    $value =~ s/""/"/g;
-    push @fields, $value;
-  }
-  print join("\t", @fields[0..3]), "\n" if @fields >= 4;
-' "$CSV_FILE")
+done
 
 print ""
 print "Liens importés : ${imported} | Lignes ignorées : ${skipped}"
