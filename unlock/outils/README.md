@@ -14,9 +14,13 @@ Alternative pratique pour beaucoup de vidéos :
 2. Compléter la colonne `Lien Google Drive` dans `../../dossiers/liens-videos-a-completer.csv`.
 3. `03-importer-liens-videos-csv.command` : lit `../../dossiers/liens-videos-a-completer.csv` et importe les liens dans `../../dossiers/<Thème>/<Dossier>/video-urls.txt`. Depuis Numbers, exporter d'abord en CSV et remplacer ce fichier ; un fichier `.numbers` ne peut pas être importé directement.
 
-## Mettre à jour le livret
+## Mettre à jour les liens vidéo
 
-4. `04-mettre-a-jour-archives.command` : à lancer après tout ajout ou modification de média, titre, vidéo ou lien Google Drive. Il lit `../../dossiers/<Thème>/<Dossier>/`, génère `../config/archive-config.local.js`, convertit les HEIC en JPEG, archive les originaux dans `../../dossiers/heic/<Thème>/<Dossier>/` et crée les QR codes vidéo dans `../../dossiers/<Thème>/<Dossier>/qrcodes/`.
+4. `04-mettre-a-jour-liens-videos.command` : à lancer après un ajout ou une modification de lien Google Drive. Il lit seulement les `../../dossiers/<Thème>/<Dossier>/video-urls.txt` et génère `../config/archive-video-config.local.js`. Il ne convertit aucune photo, ne traite aucun HEIC et ne réinitialise pas la progression. Les QR codes sont créés au moment de l'export PDF, avec une connexion Internet, sans installer d'outil sur le Mac.
+
+## Mettre à jour tout le livret
+
+5. `05-mettre-a-jour-archives.command` : à lancer après un ajout ou une modification de photo, HEIC, document, titre ou dossier. Il lit `../../dossiers/<Thème>/<Dossier>/`, génère `../config/archive-config.local.js`, convertit les HEIC en JPEG et archive les originaux dans `../../dossiers/heic/<Thème>/<Dossier>/`. Il n'est pas nécessaire après un simple lien vidéo. Les QR codes sont créés au moment de l'export PDF.
 
 ## Outils occasionnels
 

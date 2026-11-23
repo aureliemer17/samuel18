@@ -95,12 +95,21 @@
     </main>
     <script src="../config/archive-config.example.js"></script>
     <script src="../config/archive-config.local.js"></script>
+    <script src="../config/archive-video-config.example.js"></script>
+    <script src="../config/archive-video-config.local.js"></script>
     <script src="../config/progress.js"></script>
     <script>
       const pages = document.querySelector("#pages");
       const adminMode = new URLSearchParams(window.location.search).get("admin") === "1";
       const viewed = window.ARCHIVE_PROGRESS.viewedCodes();
       const media = window.ARCHIVE_CONFIG.media;
+      const videoLinks = window.ARCHIVE_VIDEO_LINKS || {};
+      Object.values(media).forEach((dossier) => (dossier.items || []).forEach((item) => {
+        if (videoLinks[item.source]) {
+          item.externalUrl = videoLinks[item.source];
+          delete item.qrSource;
+        }
+      }));
       const categories = window.ARCHIVE_CONFIG.categories;
       const firstPageByDossier = new Map();
       const makePage = (className = "") => {
@@ -134,6 +143,17 @@
           qr.className = "video-qr";
           const image = document.createElement("img");
           image.src = item.qrSource;
+          image.alt = `QR code vers ${item.title}`;
+          const label = document.createElement("span");
+          label.textContent = "Scanner pour voir la vidéo";
+          qr.append(image, label);
+          access.append(qr);
+        } else {
+          const qr = document.createElement("div");
+          qr.className = "video-qr";
+          const image = document.createElement("img");
+          // A web QR service avoids requiring Swift or developer tools on macOS.
+          image.src = `https://api.qrserver.com/v1/create-qr-code/?size=496x496&data=${encodeURIComponent(item.externalUrl)}`;
           image.alt = `QR code vers ${item.title}`;
           const label = document.createElement("span");
           label.textContent = "Scanner pour voir la vidéo";
@@ -340,7 +360,7 @@
         if (event.clientX < bounds.left + bounds.width / 2) turnPage(pageIndex - 1);
         else turnPage(pageIndex + 1);
       });
-      function exportDossier(selected) {
+       async function exportDossier(selected) {
         const previousTitle = document.title;
         document.title = `${selected} - ${media[selected].title}`;
         document.body.classList.add("exporting-dossier");
@@ -354,7 +374,14 @@
             page.classList.remove("export-selected");
           });
         }, { once: true });
-        window.print();
+         const qrImages = [...document.querySelectorAll(".export-selected .video-qr img")];
+         await Promise.all(qrImages.map((image) => image.complete
+           ? Promise.resolve()
+           : new Promise((resolve) => {
+             image.addEventListener("load", resolve, { once: true });
+             image.addEventListener("error", resolve, { once: true });
+           }))));
+         window.print();
       }
       document.querySelector("#resetProgress").addEventListener("click", () => {
         if (adminMode && window.confirm("Réinitialiser le suivi des dossiers consultés sur ce navigateur ?")) {

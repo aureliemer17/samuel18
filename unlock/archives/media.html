@@ -46,11 +46,17 @@
     <main><article class="folder"><div class="code" id="code"></div><h1 id="title"></h1><div id="content"></div></article><footer class="folder-footer"><a class="return" id="returnLink" href="console.html">Retour aux archives</a><div id="instructions"></div></footer></main>
     <script src="../config/archive-config.example.js"></script>
     <script src="../config/archive-config.local.js"></script>
+    <script src="../config/archive-video-config.example.js"></script>
+    <script src="../config/archive-video-config.local.js"></script>
     <script src="../config/progress.js"></script>
     <script>
       const code = new URLSearchParams(window.location.hash.slice(1)).get("code");
       const source = new URLSearchParams(window.location.hash.slice(1)).get("from");
-      const item = window.ARCHIVE_CONFIG.media[code];
+       const item = window.ARCHIVE_CONFIG.media[code];
+       const videoLinks = window.ARCHIVE_VIDEO_LINKS || {};
+       (item?.items || []).forEach((mediaItem) => {
+         if (videoLinks[mediaItem.source]) mediaItem.externalUrl = videoLinks[mediaItem.source];
+       });
       if (!item) window.location.replace("acces-refuse.html");
       window.ARCHIVE_PROGRESS.markViewed(code);
       document.title = item.title;

@@ -27,15 +27,23 @@ Ordre habituel pour les vidéos : 00, puis 01 OU 02 + 03, puis 04.
   Numbers : exporter en CSV, remplacer ce fichier, puis lancer l'outil.
   Un fichier .numbers ne peut pas être importé directement.
 
-04-mettre-a-jour-archives.command
+04-mettre-a-jour-liens-videos.command
+  Mise à jour rapide après avoir ajouté ou modifié des liens Google Drive.
+  Ne convertit pas les HEIC et ne modifie pas les photos ou la progression.
+  Nécessite : ../../dossiers/<Thème>/<Dossier>/video-urls.txt
+  Génère : ../config/archive-video-config.local.js
+  Les QR codes sont créés au moment de l'export PDF ; une connexion Internet
+  est nécessaire à cet instant, mais aucun outil supplémentaire n'est requis.
+
+05-mettre-a-jour-archives.command
   À lancer après toute modification : actualise le livret, convertit les HEIC
-  et génère les QR codes vidéo pour les exports PDF.
-  Nécessite : ../../dossiers/<Thème>/<Dossier>/ et, pour les QR codes,
-  ../../dossiers/<Thème>/<Dossier>/video-urls.txt
+  et actualise toutes les archives. À utiliser après ajout de photos, HEIC,
+  documents, titres ou dossiers ; pas nécessaire après un simple lien vidéo.
+  Nécessite : ../../dossiers/<Thème>/<Dossier>/
   Génère : ../config/archive-config.local.js
-  Génère : ../../dossiers/<Thème>/<Dossier>/qrcodes/qr-<identifiant>.png
   Convertit : les .heic/.heif en .jpg dans leur dossier d'origine
   Déplace les originaux HEIC : ../../dossiers/heic/<Thème>/<Dossier>/
+  Ne génère pas les QR codes : ils sont créés au moment de l'export PDF.
 
 90-exporter-arborescence-archives.command
   Exporte la liste des dossiers et fichiers d'archives.

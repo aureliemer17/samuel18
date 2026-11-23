@@ -11,7 +11,7 @@ window.ARCHIVE_CONFIG = {
     VI: "Liens indéfectibles",
     VII: "Affaires non classées",
   },
-  // BEGIN GENERATED MEDIA - généré par 04-mettre-a-jour-archives.command depuis ../dossiers.
+  // BEGIN GENERATED MEDIA - généré par 05-mettre-a-jour-archives.command depuis ../dossiers.
   media: {
     "I-A-1": {
       title: "Les 18 ans de Samuel !",

@@ -88,6 +88,6 @@ done
 
 print ""
 print "Liens importés : ${imported} | Lignes ignorées : ${skipped}"
-print "Lancez ensuite 04-mettre-a-jour-archives.command."
+print "Lancez ensuite 04-mettre-a-jour-liens-videos.command."
 print ""
 read "?Appuyez sur Entree pour fermer cette fenetre..."
