@@ -49,6 +49,9 @@ Ordre habituel pour les vidéos : 00, puis 01 OU 02 + 03, puis 04.
   Vidéo récapitulative : commencer son nom par recap ou récap, par exemple
   recap-anniversaire.mp4. Elle sera affichée avant les photos ; les autres
   vidéos iront à la fin dans une liste spéciale avec QR codes.
+  Vidéo principale sans renommage : créer video-affichage.txt avec une ligne
+  Nom exact de la vidéo.mov | principale. Elle suivra les photos et vidéos
+  principales dans l'ordre chronologique ; les vidéos non listées restent à la fin.
 
 06-preparer-images-pour-pdf.command
   Crée des copies JPEG allégées des photos pour un PDF complet plus rapide

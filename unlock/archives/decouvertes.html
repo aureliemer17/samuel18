@@ -365,15 +365,15 @@
           appendStandardItems(code, dossier, items, 1, standardPageCount(items));
           return;
         }
-        const otherVideos = items.filter((item) => item.type === "video" && !item.isRecapVideo);
-        const nonVideoItems = items.filter((item) => item.type !== "video");
-        const totalPages = recapVideos.length + standardPageCount(nonVideoItems) + Math.ceil(otherVideos.length / 4);
+        const otherVideos = items.filter((item) => item.type === "video" && !item.isRecapVideo && !item.isFeaturedVideo);
+        const chronologicalItems = items.filter((item) => item.type !== "video" || item.isFeaturedVideo);
+        const totalPages = recapVideos.length + standardPageCount(chronologicalItems) + Math.ceil(otherVideos.length / 4);
         let dossierPage = 1;
         recapVideos.forEach((item) => {
           appendSinglePage(code, dossier, item, dossierPage, totalPages);
           dossierPage += 1;
         });
-        dossierPage = appendStandardItems(code, dossier, nonVideoItems, dossierPage, totalPages);
+        dossierPage = appendStandardItems(code, dossier, chronologicalItems, dossierPage, totalPages);
         for (let index = 0; index < otherVideos.length; index += 4) {
           appendVideoQrList(code, dossier, otherVideos.slice(index, index + 4), dossierPage, totalPages);
           dossierPage += 1;

@@ -127,6 +127,7 @@ for category_dir in "$DOSSIERS_DIR"/*(/); do
     done
 
     video_links_file="${folder_dir}/video-urls.txt"
+    video_display_file="${folder_dir}/video-affichage.txt"
 
     print "    $(json "$code"): {" >> "$BLOCK_FILE"
     print "      title: $(json "$title")," >> "$BLOCK_FILE"
@@ -136,7 +137,7 @@ for category_dir in "$DOSSIERS_DIR"/*(/); do
     for media_file in "$folder_dir"/*(.N); do
       name="${media_file:t}"
       case "$name" in
-        .DS_Store|README.md|titre.txt|titre.html|titre.htm|instruction.txt|instruction.html|instruction.htm|video-urls.txt) continue ;;
+        .DS_Store|README.md|titre.txt|titre.html|titre.htm|instruction.txt|instruction.html|instruction.htm|video-urls.txt|video-affichage.txt) continue ;;
       esac
 
       extension="${name:e:l}"
@@ -152,8 +153,14 @@ for category_dir in "$DOSSIERS_DIR"/*(/); do
       media_title="${media_title//[-_]/ }"
       source="$(source_path "$category_name" "$folder_name" "$name")"
       line="        { title: $(json "$media_title"), type: $(json "$type"), source: $(json "$source")"
-      if [[ "$type" == "video" && "$name" =~ '^(recap|récap)[ _.-]' ]]; then
-        line+=", isRecapVideo: true"
+      if [[ "$type" == "video" ]]; then
+        display_mode=""
+        if [[ -f "$video_display_file" ]]; then
+          display_mode="$(VIDEO_NAME="$name" perl -MEncode=decode -ne 'if (/^\Q$ENV{VIDEO_NAME}\E\s*\|\s*(recap|principale)\s*$/i) { print lc $1; exit }' "$video_display_file")"
+        fi
+        [[ -z "$display_mode" && "$name" =~ '^(recap|récap)[ _.-]' ]] && display_mode="recap"
+        [[ "$display_mode" == "recap" ]] && line+=", isRecapVideo: true"
+        [[ "$display_mode" == "principale" ]] && line+=", isFeaturedVideo: true"
       fi
       if [[ "$type" == "video" && -f "$video_links_file" ]]; then
         video_url="$(VIDEO_NAME="$name" perl -ne 'if (/^\Q$ENV{VIDEO_NAME}\E\s*\|\s*(https?:\/\/\S+)/) { print $1; exit }' "$video_links_file")"

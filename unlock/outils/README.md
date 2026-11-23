@@ -24,6 +24,8 @@ Alternative pratique pour beaucoup de vidéos :
 
 Pour un dossier comprenant une vidéo récapitulative, commencer son nom par `recap` ou `récap`, par exemple `recap-anniversaire.mp4`. Après la mise à jour complète, cette vidéo est placée en premier, les photos suivent, puis les autres vidéos sont regroupées à la fin dans une section spéciale avec leurs QR codes.
 
+Pour afficher certaines vidéos dans le déroulé chronologique sans modifier leurs noms ni leurs liens Google Drive, créer `../../dossiers/<Thème>/<Dossier>/video-affichage.txt`. Ajouter une ligne par vidéo : `Nom exact de la vidéo.mov | principale`. Ces vidéos apparaissent avec les photos et les autres vidéos principales par date de création ; celles qui ne sont pas listées restent dans la section finale avec QR codes. Le même fichier peut aussi déclarer `Nom exact de la vidéo.mov | recap`.
+
 ## Exporter un PDF complet
 
 6. `06-preparer-images-pour-pdf.command` : crée des copies JPEG imprimables, limitées à 1800 pixels et compressées, dans `../../dossiers/pdf-images/<Thème>/<Dossier>/`. Les originaux restent intacts. Cette commande peut être relancée : seules les photos nouvelles ou modifiées sont traitées.
