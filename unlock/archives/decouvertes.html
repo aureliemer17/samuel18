@@ -67,6 +67,14 @@
       .video-sheet { display: grid; gap: 9mm; grid-template-columns: repeat(2, minmax(0, 1fr)); height: 186mm; margin: 0 auto; max-width: 169mm; }
       .video-sheet--1 { grid-template-columns: 1fr; }
       .video-sheet--2 { height: 100mm; }
+      .video-qr-sheet { display: grid; gap: 7mm; grid-template-columns: repeat(2, minmax(0, 1fr)); margin: 0 auto; max-width: 169mm; }
+      .video-qr-entry { align-items: center; background: #fffefa; box-shadow: 3px 5px 9px rgba(53, 34, 10, .3); display: flex; flex-direction: column; justify-content: center; min-height: 75mm; padding: 5mm; text-align: center; }
+      .video-qr-entry .video-access { margin: 0; }
+      .video-qr-entry .video-link { font-size: 8pt; }
+      .video-qr-entry .video-qr { display: block; }
+      .video-qr-entry .video-qr img { height: 35mm; width: 35mm; }
+      .video-qr-entry__title { color: var(--brown); font-family: "Courier New", monospace; font-size: 8pt; font-weight: 900; margin: 0 0 3mm; }
+      .video-qr-intro { color: var(--brown); font-size: 11pt; font-style: italic; margin: 0 0 8mm; }
       .video-evidence { align-items: center; background: #fffefa; box-shadow: 3px 5px 9px rgba(53, 34, 10, .3); display: flex; flex-direction: column; justify-content: center; margin: 0; min-height: 0; padding: 5mm 5mm 10mm; position: relative; transform: rotate(-.5deg); }
       .video-evidence:nth-child(even) { transform: rotate(.6deg); }
       .video-evidence::before { border: 3px solid #a03b35; border-bottom: 0; border-radius: 10px 10px 0 0; content: ""; height: 25px; position: absolute; right: 12mm; top: -16px; transform: rotate(13deg); width: 11px; z-index: 2; }
@@ -115,6 +123,7 @@
       }));
       const categories = window.ARCHIVE_CONFIG.categories;
       const sortArchiveItems = (items) => [...items].sort((left, right) => {
+        if (left.isRecapVideo !== right.isRecapVideo) return left.isRecapVideo ? -1 : 1;
         const leftIsAnecdote = /(?:^|\/)anecdote\.(?:html?|txt)$/i.test(left.source);
         const rightIsAnecdote = /(?:^|\/)anecdote\.(?:html?|txt)$/i.test(right.source);
         if (leftIsAnecdote !== rightIsAnecdote) return leftIsAnecdote ? -1 : 1;
@@ -294,10 +303,32 @@
         pages.append(page);
         if (pageNumber === 1) firstPageByDossier.set(code, pages.querySelectorAll(".page").length);
       }
-      Object.entries(media).filter(([code]) => adminMode || viewed.has(code)).forEach(([code, dossier]) => {
-        const items = sortArchiveItems(dossier.items || []);
-        const totalPages = Math.ceil(items.filter((item) => item.type === "image").length / 4) + Math.ceil(items.filter((item) => item.type === "video").length / 2) + items.filter((item) => item.type !== "image" && item.type !== "video").length;
-        let dossierPage = 1;
+      function appendVideoQrList(code, dossier, items, pageNumber, totalPages) {
+        const page = makePage();
+        page.dataset.dossier = code;
+        page.append(makeHeader(dossierHeader(code, pageNumber, totalPages)));
+        const heading = document.createElement("h2");
+        heading.textContent = `${dossier.title} · vidéos à consulter`;
+        const intro = document.createElement("p");
+        intro.className = "video-qr-intro";
+        intro.textContent = "À regarder à votre rythme : scannez le QR code de la vidéo de votre choix.";
+        const sheet = document.createElement("section");
+        sheet.className = "video-qr-sheet";
+        items.forEach((item) => {
+          const entry = document.createElement("article");
+          entry.className = "video-qr-entry";
+          const title = document.createElement("p");
+          title.className = "video-qr-entry__title";
+          title.textContent = item.title;
+          entry.append(title);
+          appendVideoAccess(entry, item);
+          sheet.append(entry);
+        });
+        page.append(heading, intro, sheet);
+        pages.append(page);
+      }
+      function appendStandardItems(code, dossier, items, startPage, totalPages) {
+        let dossierPage = startPage;
         for (let index = 0; index < items.length;) {
           const item = items[index];
           if (item.type === "video") {
@@ -322,6 +353,29 @@
             index += 1;
           }
           appendPhotoSheet(code, dossier, photos, dossierPage, totalPages);
+          dossierPage += 1;
+        }
+        return dossierPage;
+      }
+      const standardPageCount = (items) => Math.ceil(items.filter((item) => item.type === "image").length / 4) + Math.ceil(items.filter((item) => item.type === "video").length / 2) + items.filter((item) => item.type !== "image" && item.type !== "video").length;
+      Object.entries(media).filter(([code]) => adminMode || viewed.has(code)).forEach(([code, dossier]) => {
+        const items = sortArchiveItems(dossier.items || []);
+        const recapVideos = items.filter((item) => item.isRecapVideo);
+        if (recapVideos.length === 0) {
+          appendStandardItems(code, dossier, items, 1, standardPageCount(items));
+          return;
+        }
+        const otherVideos = items.filter((item) => item.type === "video" && !item.isRecapVideo);
+        const nonVideoItems = items.filter((item) => item.type !== "video");
+        const totalPages = recapVideos.length + standardPageCount(nonVideoItems) + Math.ceil(otherVideos.length / 4);
+        let dossierPage = 1;
+        recapVideos.forEach((item) => {
+          appendSinglePage(code, dossier, item, dossierPage, totalPages);
+          dossierPage += 1;
+        });
+        dossierPage = appendStandardItems(code, dossier, nonVideoItems, dossierPage, totalPages);
+        for (let index = 0; index < otherVideos.length; index += 4) {
+          appendVideoQrList(code, dossier, otherVideos.slice(index, index + 4), dossierPage, totalPages);
           dossierPage += 1;
         }
       });

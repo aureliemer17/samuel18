@@ -46,6 +46,9 @@ Ordre habituel pour les vidéos : 00, puis 01 OU 02 + 03, puis 04.
   Convertit : les .heic/.heif en .jpg dans leur dossier d'origine
   Déplace les originaux HEIC : ../../dossiers/heic/<Thème>/<Dossier>/
   Ne génère pas les QR codes : ils sont créés au moment de l'export PDF.
+  Vidéo récapitulative : commencer son nom par recap ou récap, par exemple
+  recap-anniversaire.mp4. Elle sera affichée avant les photos ; les autres
+  vidéos iront à la fin dans une liste spéciale avec QR codes.
 
 06-preparer-images-pour-pdf.command
   Crée des copies JPEG allégées des photos pour un PDF complet plus rapide

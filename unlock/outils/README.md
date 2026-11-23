@@ -22,6 +22,8 @@ Alternative pratique pour beaucoup de vidéos :
 
 5. `05-mettre-a-jour-archives.command` : à lancer après un ajout ou une modification de photo, HEIC, document, titre ou dossier. Il lit `../../dossiers/<Thème>/<Dossier>/`, génère `../config/archive-config.local.js`, convertit les HEIC en JPEG et archive les originaux dans `../../dossiers/heic/<Thème>/<Dossier>/`. Il n'est pas nécessaire après un simple lien vidéo. Les QR codes sont créés au moment de l'export PDF.
 
+Pour un dossier comprenant une vidéo récapitulative, commencer son nom par `recap` ou `récap`, par exemple `recap-anniversaire.mp4`. Après la mise à jour complète, cette vidéo est placée en premier, les photos suivent, puis les autres vidéos sont regroupées à la fin dans une section spéciale avec leurs QR codes.
+
 ## Exporter un PDF complet
 
 6. `06-preparer-images-pour-pdf.command` : crée des copies JPEG imprimables, limitées à 1800 pixels et compressées, dans `../../dossiers/pdf-images/<Thème>/<Dossier>/`. Les originaux restent intacts. Cette commande peut être relancée : seules les photos nouvelles ou modifiées sont traitées.

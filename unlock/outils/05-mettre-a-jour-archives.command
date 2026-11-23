@@ -152,6 +152,9 @@ for category_dir in "$DOSSIERS_DIR"/*(/); do
       media_title="${media_title//[-_]/ }"
       source="$(source_path "$category_name" "$folder_name" "$name")"
       line="        { title: $(json "$media_title"), type: $(json "$type"), source: $(json "$source")"
+      if [[ "$type" == "video" && "$name" =~ '^(recap|récap)[ _.-]' ]]; then
+        line+=", isRecapVideo: true"
+      fi
       if [[ "$type" == "video" && -f "$video_links_file" ]]; then
         video_url="$(VIDEO_NAME="$name" perl -ne 'if (/^\Q$ENV{VIDEO_NAME}\E\s*\|\s*(https?:\/\/\S+)/) { print $1; exit }' "$video_links_file")"
         if [[ -n "$video_url" ]]; then
