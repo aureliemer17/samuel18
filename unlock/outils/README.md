@@ -41,6 +41,10 @@ Pour afficher certaines vidéos dans le déroulé chronologique sans modifier le
 10. `google-drive-inventorier-photos.gs` : créer un projet sur [script.google.com](https://script.google.com), coller le script, renseigner l’ID du dossier Drive test dans `ROOT_FOLDER_ID`, puis exécuter `inventorierPhotos`. Le script crée `photos-google-drive-inventaire.csv` dans ce dossier avec les IDs et les liens de toutes les photos trouvées.
 11. Télécharger ce CSV depuis Drive vers `../../dossiers/photos-google-drive-inventaire.csv`, puis lancer `09-importer-liens-photos-google-drive.command`. Il crée `../config/archive-photo-drive-config.js`, qui est versionné par Git. Les archives l’utilisent uniquement quand elles sont ouvertes en ligne, afin que la consultation locale sur Mac et les exports PDF continuent d’utiliser les fichiers locaux.
 
+## Publier les anecdotes et textes
+
+12. `10-copier-contenu-archives-pour-site.command` : copie les anecdotes, instructions et documents HTML/TXT/PDF vers `../contenu-archives/<Thème>/<Dossier>/`. Les photos et vidéos ne sont jamais copiées. Les titres, `video-urls.txt` et `video-affichage.txt` sont exclus. Pour versionner le contenu produit : `git add -A unlock/contenu-archives`.
+
 ## Outils occasionnels
 
 - `90-exporter-arborescence-archives.command` : lit `../../dossiers/` et exporte l'arborescence dans `../../dossiers/arborescence-archives.txt` pour la partager ou la faire analyser.

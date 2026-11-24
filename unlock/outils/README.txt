@@ -81,6 +81,12 @@ google-drive-inventorier-photos.gs
   Les liens photo sont utilisés seulement quand les archives sont ouvertes en ligne,
   pas lors de la consultation locale sur Mac.
 
+10-copier-contenu-archives-pour-site.command
+  Copie anecdotes, instructions et documents HTML/TXT/PDF vers le site publié.
+  Génère ou met à jour : ../contenu-archives/<Thème>/<Dossier>/
+  Exclut titres et fichiers de configuration vidéo. Après exécution :
+  git add -A unlock/contenu-archives
+
 90-exporter-arborescence-archives.command
   Exporte la liste des dossiers et fichiers d'archives.
   Nécessite : ../../dossiers/
