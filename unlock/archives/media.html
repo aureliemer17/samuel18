@@ -65,10 +65,14 @@
          }
        };
        const photoLinkIndex = new Map(Object.entries(photoLinks).map(([source, url]) => [photoKey(source), url]));
-       const publishedContentSource = (mediaSource) => {
-         if (isLocalArchive || !mediaSource.startsWith("../../dossiers/")) return mediaSource;
-         return mediaSource.replace("../../dossiers/", "../contenu-archives/");
-       };
+        const publishedContentSource = (mediaSource) => {
+          if (isLocalArchive || !mediaSource.startsWith("../../dossiers/")) return mediaSource;
+          return mediaSource
+            .replace("../../dossiers/", "../contenu-archives/")
+            .split("/")
+            .map((segment) => encodeURIComponent(decodeURIComponent(segment).normalize("NFC")))
+            .join("/");
+        };
        (item?.items || []).forEach((mediaItem) => {
          if (videoLinks[mediaItem.source]) mediaItem.externalUrl = videoLinks[mediaItem.source];
          if (!isLocalArchive && mediaItem.type === "image" && photoLinkIndex.has(photoKey(mediaItem.source))) mediaItem.source = photoLinkIndex.get(photoKey(mediaItem.source));
