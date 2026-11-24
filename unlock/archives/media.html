@@ -28,7 +28,7 @@
       .media-card:has(img) .media { border: 0; box-shadow: none; }
       .photo-gallery { border-top: 1px dashed var(--line); display: grid; gap: 24px; grid-auto-flow: dense; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 34px; padding-top: 28px; }
       .photo-gallery .media-card { border: 0; margin: 0; min-width: 0; padding: 15px 15px 18px; }
-      .photo-gallery img.media { aspect-ratio: var(--photo-ratio, 1); height: auto; max-height: none; object-fit: cover; }
+       .photo-gallery img.media { aspect-ratio: var(--photo-ratio, 1); height: auto; max-height: none; object-fit: contain; }
       .photo-gallery--1 { grid-template-columns: minmax(0, 1fr); }
       .photo-gallery--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .photo-gallery:not(.photo-gallery--1):not(.photo-gallery--2) .photo--landscape { grid-column: span 2; }
