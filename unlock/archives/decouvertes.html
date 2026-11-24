@@ -521,11 +521,15 @@
         else turnPage(pageIndex + 1);
       });
        const pdfImageSource = (source) => source.replace("../../dossiers/", "../../dossiers/pdf-images/").replace(/\.[^.]+$/, ".jpg");
-        const loadImage = (image) => new Promise((resolve) => {
-         if (image.complete) return resolve();
-         image.addEventListener("load", resolve, { once: true });
-         image.addEventListener("error", resolve, { once: true });
-       });
+         const loadImage = (image) => new Promise((resolve) => {
+          if (image.complete) return resolve();
+          image.addEventListener("load", resolve, { once: true });
+          image.addEventListener("error", resolve, { once: true });
+        });
+        const loadFrame = (frame) => new Promise((resolve) => {
+          frame.addEventListener("load", resolve, { once: true });
+          frame.addEventListener("error", resolve, { once: true });
+        });
         async function usePdfImages() {
           documentPages.forEach(loadPageMedia);
           const images = [...document.querySelectorAll("img[data-pdf-source]")];
@@ -543,10 +547,20 @@
            delete image.dataset.originalSource;
          });
        }
-       async function waitForQrCodes(scope) {
-         const qrImages = [...scope.querySelectorAll(".video-qr img")];
-         await Promise.all(qrImages.map(loadImage));
-       }
+        async function waitForQrCodes(scope) {
+          const qrImages = [...scope.querySelectorAll(".video-qr img")];
+          await Promise.all(qrImages.map(loadImage));
+        }
+        async function preparePdf() {
+          const documentFrames = [...document.querySelectorAll("iframe[data-src]:not(.drive-video)")]
+            .filter((frame) => !frame.getAttribute("src"));
+          const documentsReady = Promise.all(documentFrames.map(loadFrame));
+          await usePdfImages();
+          await Promise.all([
+            waitForQrCodes(document.querySelector("#pages")),
+            documentsReady,
+          ]);
+        }
         function resetExport(previousTitle, previousInventoryStatus = null) {
           document.title = previousTitle;
           document.body.classList.remove("exporting-dossier");
@@ -566,8 +580,7 @@
           page.classList.toggle("export-selected", page.dataset.dossier === selected);
         });
          window.addEventListener("afterprint", () => resetExport(previousTitle), { once: true });
-         await usePdfImages();
-         await waitForQrCodes(document.querySelector("#pages"));
+          await preparePdf();
          window.print();
        }
         async function exportComplete() {
@@ -577,8 +590,7 @@
          document.body.classList.add("exporting-complete");
          inventoryStatusElement.textContent = "Dossier complet";
          window.addEventListener("afterprint", () => resetExport(previousTitle, previousInventoryStatus), { once: true });
-         await usePdfImages();
-         await waitForQrCodes(document.querySelector("#pages"));
+           await preparePdf();
           window.print();
         }
         async function exportTheme(categoryCode) {
@@ -591,8 +603,7 @@
             page.classList.toggle("export-selected", page.dataset.dossier.startsWith(`${categoryCode}-`));
           });
           window.addEventListener("afterprint", () => resetExport(previousTitle, previousInventoryStatus), { once: true });
-          await usePdfImages();
-          await waitForQrCodes(document.querySelector("#pages"));
+          await preparePdf();
           window.print();
         }
         document.querySelector("#exportAll").addEventListener("click", () => exportComplete());
