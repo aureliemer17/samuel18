@@ -118,6 +118,15 @@
       const videoLinks = window.ARCHIVE_VIDEO_LINKS || {};
       const photoLinks = window.ARCHIVE_PHOTO_DRIVE_LINKS || {};
       const isLocalArchive = window.location.protocol === "file:";
+      const photoKey = (source) => {
+        try {
+          return decodeURIComponent(source).normalize("NFD").replace(/\.[^/.]+$/, "").toLowerCase();
+        } catch {
+          return source.replace(/\.[^/.]+$/, "").toLowerCase();
+        }
+      };
+      // PDF copies can change .jpeg/.png to .jpg; match the file path without its extension.
+      const photoLinkIndex = new Map(Object.entries(photoLinks).map(([source, url]) => [photoKey(source), url]));
       const publishedContentSource = (source) => {
         if (isLocalArchive || !source.startsWith("../../dossiers/")) return source;
         return source.replace("../../dossiers/", "../contenu-archives/");
@@ -127,7 +136,7 @@
           item.externalUrl = videoLinks[item.source];
           delete item.qrSource;
         }
-        if (!isLocalArchive && item.type === "image" && photoLinks[item.source]) item.source = photoLinks[item.source];
+        if (!isLocalArchive && item.type === "image" && photoLinkIndex.has(photoKey(item.source))) item.source = photoLinkIndex.get(photoKey(item.source));
         if (!isLocalArchive && item.type === "document") item.source = publishedContentSource(item.source);
         if (!isLocalArchive && dossier.instruction) dossier.instruction = publishedContentSource(dossier.instruction);
       }));

@@ -57,13 +57,21 @@
        const videoLinks = window.ARCHIVE_VIDEO_LINKS || {};
        const photoLinks = window.ARCHIVE_PHOTO_DRIVE_LINKS || {};
        const isLocalArchive = window.location.protocol === "file:";
+       const photoKey = (source) => {
+         try {
+           return decodeURIComponent(source).normalize("NFD").replace(/\.[^/.]+$/, "").toLowerCase();
+         } catch {
+           return source.replace(/\.[^/.]+$/, "").toLowerCase();
+         }
+       };
+       const photoLinkIndex = new Map(Object.entries(photoLinks).map(([source, url]) => [photoKey(source), url]));
        const publishedContentSource = (mediaSource) => {
          if (isLocalArchive || !mediaSource.startsWith("../../dossiers/")) return mediaSource;
          return mediaSource.replace("../../dossiers/", "../contenu-archives/");
        };
        (item?.items || []).forEach((mediaItem) => {
          if (videoLinks[mediaItem.source]) mediaItem.externalUrl = videoLinks[mediaItem.source];
-         if (!isLocalArchive && mediaItem.type === "image" && photoLinks[mediaItem.source]) mediaItem.source = photoLinks[mediaItem.source];
+         if (!isLocalArchive && mediaItem.type === "image" && photoLinkIndex.has(photoKey(mediaItem.source))) mediaItem.source = photoLinkIndex.get(photoKey(mediaItem.source));
          if (!isLocalArchive && mediaItem.type === "document") mediaItem.source = publishedContentSource(mediaItem.source);
        });
        if (!isLocalArchive && item?.instruction) item.instruction = publishedContentSource(item.instruction);
