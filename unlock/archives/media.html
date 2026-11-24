@@ -65,7 +65,7 @@
          }
        };
        const photoLinkIndex = new Map(Object.entries(photoLinks).map(([source, url]) => [photoKey(source), url]));
-        const publishedContentSource = (mediaSource) => {
+       const publishedContentSource = (mediaSource) => {
           if (isLocalArchive || !mediaSource.startsWith("../../dossiers/")) return mediaSource;
           return mediaSource
             .replace("../../dossiers/", "../contenu-archives/")
@@ -73,6 +73,15 @@
             .map((segment) => encodeURIComponent(decodeURIComponent(segment).normalize("NFC")))
             .join("/");
         };
+       const googleDrivePreviewUrl = (externalUrl) => {
+         try {
+           const url = new URL(externalUrl);
+           const match = url.hostname === "drive.google.com" && url.pathname.match(/^\/file\/d\/([^/]+)/);
+           return match ? `https://drive.google.com/file/d/${match[1]}/preview` : null;
+         } catch {
+           return null;
+         }
+       };
        (item?.items || []).forEach((mediaItem) => {
          if (videoLinks[mediaItem.source]) mediaItem.externalUrl = videoLinks[mediaItem.source];
          if (!isLocalArchive && mediaItem.type === "image" && photoLinkIndex.has(photoKey(mediaItem.source))) mediaItem.source = photoLinkIndex.get(photoKey(mediaItem.source));
@@ -121,12 +130,23 @@
           if (mediaItem.orientation) card.classList.add(`photo--${mediaItem.orientation}`);
           if (mediaItem.width && mediaItem.height) card.style.setProperty("--photo-ratio", `${mediaItem.width} / ${mediaItem.height}`);
           card.append(image);
-        } else if (mediaItem.type === "video") {
-          const video = document.createElement("video");
-          video.className = "media";
-          video.controls = true;
-          video.src = mediaItem.source;
-          card.append(video);
+         } else if (mediaItem.type === "video") {
+           const drivePreview = !isLocalArchive && googleDrivePreviewUrl(mediaItem.externalUrl);
+           if (drivePreview) {
+             const frame = document.createElement("iframe");
+             frame.className = "media drive-video";
+             frame.src = drivePreview;
+             frame.title = mediaItem.title;
+             frame.allow = "autoplay; encrypted-media; picture-in-picture";
+             frame.allowFullscreen = true;
+             card.append(frame);
+           } else {
+             const video = document.createElement("video");
+             video.className = "media";
+             video.controls = true;
+             video.src = mediaItem.source;
+             card.append(video);
+           }
         } else {
           const frame = document.createElement("iframe");
           frame.className = "media";

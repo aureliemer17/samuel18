@@ -44,8 +44,9 @@
       .status { border: 2px solid var(--red); color: var(--red); display: inline-block; font-family: Arial, sans-serif; font-size: 9pt; font-weight: 900; margin-bottom: 6mm; padding: 3px 7px; text-transform: uppercase; transform: rotate(-3deg); }
       .evidence { background: #fffefa; box-shadow: 3px 5px 9px rgba(53, 34, 10, .3); margin: 0 auto; max-height: 205mm; max-width: 165mm; padding: 6mm 6mm 13mm; position: relative; transform: rotate(-.5deg); }
       .evidence::before { border: 3px solid #a03b35; border-bottom: 0; border-radius: 12px 12px 0 0; content: ""; height: 34px; position: absolute; right: 18mm; top: -20px; transform: rotate(13deg); width: 14px; }
-      .evidence img, .evidence video, .evidence iframe { background: #241a10; display: block; height: auto; max-height: 181mm; max-width: 100%; object-fit: contain; width: 100%; }
-      .evidence iframe { background: #fff; border: 1px solid #b8aa8d; height: 181mm; }
+       .evidence img, .evidence video, .evidence iframe { background: #241a10; display: block; height: auto; max-height: 181mm; max-width: 100%; object-fit: contain; width: 100%; }
+       .evidence iframe { background: #fff; border: 1px solid #b8aa8d; height: 181mm; }
+       .evidence .drive-video { background: #241a10; border: 0; height: auto; }
       .evidence--document { max-width: 169mm; }
       .evidence figcaption { color: var(--brown); font-family: "Courier New", monospace; font-size: 9pt; margin-top: 4mm; }
       .photo-sheet { display: grid; gap: 4mm; grid-template-columns: repeat(2, minmax(0, 1fr)); height: 205mm; margin: 0 auto; max-width: 180mm; }
@@ -78,7 +79,8 @@
       .video-evidence { align-items: center; background: #fffefa; box-shadow: 3px 5px 9px rgba(53, 34, 10, .3); display: flex; flex-direction: column; justify-content: center; margin: 0; min-height: 0; padding: 5mm 5mm 10mm; position: relative; transform: rotate(-.5deg); }
       .video-evidence:nth-child(even) { transform: rotate(.6deg); }
       .video-evidence::before { border: 3px solid #a03b35; border-bottom: 0; border-radius: 10px 10px 0 0; content: ""; height: 25px; position: absolute; right: 12mm; top: -16px; transform: rotate(13deg); width: 11px; z-index: 2; }
-      .video-evidence video { background: #241a10; display: block; max-height: 145mm; max-width: 100%; width: 100%; }
+       .video-evidence video, .video-evidence .drive-video { background: #241a10; display: block; max-height: 145mm; max-width: 100%; width: 100%; }
+       .drive-video { aspect-ratio: 16 / 9; border: 0; height: auto; }
       .video-evidence .video-link { font-size: 8pt; margin-top: 4mm; padding: 7px 9px; }
       .video-print-note, .video-qr { display: none; }
       .video-link { background: #e8ddb3; border: 1px solid #9a7c41; color: #483318; display: inline-block; font-family: Arial, sans-serif; font-size: 10pt; font-weight: 900; margin-top: 9mm; padding: 10px 14px; text-decoration: none; }
@@ -95,7 +97,7 @@
       .contents .export-dossier { background: #eadbb0; border: 1px solid #9b7940; color: #4b351d; font-family: "Courier New", monospace; font-size: 7pt; font-weight: 900; margin-left: 7px; padding: 3px 5px; text-decoration: none; }
       .contents .export-theme { background: #9d3424; border: 1px solid #6d2017; color: #fff8e2; font-family: "Courier New", monospace; font-size: 7pt; font-weight: 900; margin-left: 7px; padding: 3px 5px; text-decoration: none; }
       @media (max-width: 700px) { body { padding: 10px; } .cover, .page { min-height: auto; } .cover { min-height: calc(100vh - 135px); padding: 15mm 10mm; } .page { padding: 12mm; } .contents { columns: 1; } }
-      @media print { @page { size: A4 portrait; margin: 0; } body { background: #fff; padding: 0; } .toolbar { display: none; } .book { max-width: none; } .book:not(.open) .pages { display: block; } .cover, .page { box-shadow: none; break-after: page; display: flex !important; height: 297mm; margin: 0; min-height: 297mm; opacity: 1 !important; page-break-after: always; position: relative !important; transform: none !important; width: 210mm; } .cover { display: flex !important; } .page { display: block !important; } .pages { display: block; } .page:last-child { break-after: auto; page-break-after: auto; } .evidence video, .video-evidence video { display: none; } .evidence .video-print-note, .video-qr { display: block; } body.exporting-dossier .cover, body.exporting-dossier .page:not(.export-selected), body.exporting-theme .cover, body.exporting-theme .page:not(.export-selected) { display: none !important; } body.exporting-complete .contents .export-dossier, body.exporting-complete .contents .export-theme, body.exporting-theme .contents .export-dossier, body.exporting-theme .contents .export-theme { display: none; } }
+       @media print { @page { size: A4 portrait; margin: 0; } body { background: #fff; padding: 0; } .toolbar { display: none; } .book { max-width: none; } .book:not(.open) .pages { display: block; } .cover, .page { box-shadow: none; break-after: page; display: flex !important; height: 297mm; margin: 0; min-height: 297mm; opacity: 1 !important; page-break-after: always; position: relative !important; transform: none !important; width: 210mm; } .cover { display: flex !important; } .page { display: block !important; } .pages { display: block; } .page:last-child { break-after: auto; page-break-after: auto; } .evidence video, .video-evidence video, .drive-video { display: none; } .evidence .video-print-note, .video-qr { display: block; } body.exporting-dossier .cover, body.exporting-dossier .page:not(.export-selected), body.exporting-theme .cover, body.exporting-theme .page:not(.export-selected) { display: none !important; } body.exporting-complete .contents .export-dossier, body.exporting-complete .contents .export-theme, body.exporting-theme .contents .export-dossier, body.exporting-theme .contents .export-theme { display: none; } }
     </style>
   </head>
   <body>
@@ -135,6 +137,15 @@
            .map((segment) => encodeURIComponent(decodeURIComponent(segment).normalize("NFC")))
            .join("/");
        };
+       const googleDrivePreviewUrl = (externalUrl) => {
+         try {
+           const url = new URL(externalUrl);
+           const match = url.hostname === "drive.google.com" && url.pathname.match(/^\/file\/d\/([^/]+)/);
+           return match ? `https://drive.google.com/file/d/${match[1]}/preview` : null;
+         } catch {
+           return null;
+         }
+       };
       Object.values(media).forEach((dossier) => (dossier.items || []).forEach((item) => {
         if (videoLinks[item.source]) {
           item.externalUrl = videoLinks[item.source];
@@ -168,17 +179,20 @@
       const dossierHeader = (code, pageNumber, totalPages) => adminMode
         ? `DOSSIER ${code} · PIÈCE ${pageNumber} / ${totalPages}`
         : `DOSSIER PERSONNEL · PIÈCE ${pageNumber} / ${totalPages}`;
-      const appendVideoAccess = (container, item) => {
-        if (!item.externalUrl) return;
-        const access = document.createElement("div");
-        access.className = "video-access";
-        const link = document.createElement("a");
-        link.className = "video-link";
-        link.href = item.externalUrl;
-        link.target = "_blank";
-        link.rel = "noopener";
-        link.textContent = "Voir la vidéo";
-        access.append(link);
+       const appendVideoAccess = (container, item, includeLink = false) => {
+         if (!item.externalUrl) return;
+         const embedded = !isLocalArchive && googleDrivePreviewUrl(item.externalUrl);
+         const access = document.createElement("div");
+         access.className = "video-access";
+         if (!embedded || includeLink) {
+           const link = document.createElement("a");
+           link.className = "video-link";
+           link.href = item.externalUrl;
+           link.target = "_blank";
+           link.rel = "noopener";
+           link.textContent = "Voir la vidéo";
+           access.append(link);
+         }
         if (item.qrSource) {
           const qr = document.createElement("div");
           qr.className = "video-qr";
@@ -202,7 +216,24 @@
           access.append(qr);
         }
         container.append(access);
-      };
+       };
+       const appendVideoPlayer = (container, item) => {
+         const drivePreview = !isLocalArchive && googleDrivePreviewUrl(item.externalUrl);
+         if (drivePreview) {
+           const frame = document.createElement("iframe");
+           frame.className = "drive-video";
+           frame.src = drivePreview;
+           frame.title = item.title;
+           frame.allow = "autoplay; encrypted-media; picture-in-picture";
+           frame.allowFullscreen = true;
+           container.append(frame);
+           return;
+         }
+         const video = document.createElement("video");
+         video.src = item.source;
+         video.controls = true;
+         container.append(video);
+       };
       const contents = makePage("contents-page");
       contents.append(makeHeader("INVENTAIRE"));
        const inventoryStatus = viewed.size === Object.keys(media).length ? "Dossier complet" : "Dossier en cours";
@@ -260,7 +291,7 @@
           const figure = document.createElement("figure");
           figure.className = "evidence";
            if (item.type === "image") { const image = document.createElement("img"); image.src = item.source; image.dataset.pdfSource = item.source; image.alt = item.title; figure.append(image); }
-          else if (item.type === "video") { const video = document.createElement("video"); video.src = item.source; video.controls = true; figure.append(video); const note = document.createElement("p"); note.className = "video-print-note"; note.textContent = "Vidéo disponible via le lien ci-dessous."; figure.append(note); }
+           else if (item.type === "video") { appendVideoPlayer(figure, item); const note = document.createElement("p"); note.className = "video-print-note"; note.textContent = "Vidéo disponible via le lien ci-dessous."; figure.append(note); }
           else { figure.classList.add("evidence--document"); const frame = document.createElement("iframe"); frame.src = item.source; frame.title = item.title; if (item.height) frame.style.height = `${item.height}px`; figure.append(frame); }
           const caption = document.createElement("figcaption"); caption.textContent = `PIÈCE JOINTE : ${item.title}`; figure.append(caption);
           page.append(figure);
@@ -311,14 +342,12 @@
         items.forEach((item) => {
           const figure = document.createElement("figure");
           figure.className = "video-evidence";
-          const video = document.createElement("video");
-          video.src = item.source;
-          video.controls = true;
-          const caption = document.createElement("figcaption");
+           const caption = document.createElement("figcaption");
           caption.innerHTML = `<span class="evidence-date"></span><span class="evidence-name"></span>`;
           caption.querySelector(".evidence-date").textContent = item.createdAt || "Date inconnue";
           caption.querySelector(".evidence-name").textContent = item.title;
-          figure.append(video, caption);
+           appendVideoPlayer(figure, item);
+           figure.append(caption);
            appendVideoAccess(figure, item);
           sheet.append(figure);
         });
@@ -344,7 +373,7 @@
           title.className = "video-qr-entry__title";
           title.textContent = item.title;
           entry.append(title);
-          appendVideoAccess(entry, item);
+           appendVideoAccess(entry, item, true);
           sheet.append(entry);
         });
         page.append(heading, intro, sheet);
