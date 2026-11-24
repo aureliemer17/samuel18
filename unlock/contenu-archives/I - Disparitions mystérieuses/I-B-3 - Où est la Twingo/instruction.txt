@@ -1,0 +1,6 @@
+Vous pouvez maintenant résoudre l’énigme « Où est la Twingo ? ». L’emplacement de la Twingo vous donnera un code d’archive.
+
+Sur la carte, il y a trois bonus à trouver :
+- Samuel qui vient de faire un achat.
+- Samuel qui recharge son téléphone.
+- Samuel qui cherche la voiture dans la rue.

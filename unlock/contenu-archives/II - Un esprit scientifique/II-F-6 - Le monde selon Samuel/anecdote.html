@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+
+    <!--
+      Hauteur du cadre dans le dossier d'archives.
+
+      Repères approximatifs :
+      - 140 à 180 : titre, source et 1 à 3 lignes
+      - 200 à 260 : titre, source et 4 à 7 lignes
+      - 280 à 360 : titre, source et 8 à 12 lignes
+      - 360 à 500 : anecdote longue
+
+      Augmenter légèrement si le texte contient un titre, des retours à la ligne
+      ou plusieurs paragraphes.
+    -->
+    <meta name="archive-height" content="685" />
+
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        color: #322515;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 14px;
+        line-height: 1.55;
+        margin: 0;
+        padding: 16px 18px;
+      }
+
+      h2 {
+        font-size: 1.2em;
+        margin: 0 0 10px;
+      }
+
+      .source {
+        color: #786d59;
+        font-family: "Courier New", monospace;
+        font-size: .72em;
+        font-weight: bold;
+        letter-spacing: .04em;
+        margin: -5px 0 14px;
+        text-transform: uppercase;
+      }
+
+      p {
+        margin: 0;
+      }
+
+      p + p {
+        margin-top: 12px;
+      }
+      h3 { font-size: 1em; margin: 18px 0 9px; }
+      .date { color: #786d59; font-size: .88em; }
+    </style>
+  </head>
+  <body>
+    <h2>Le monde selon Samuel</h2>
+    <p class="source">Souvenir confié par : Maman</p>
+    <p>Samuel me pose parfois des questions auxquelles je n’aurais jamais pensé. En voici quelques-unes que j’ai notées.</p>
+    <ul>
+      <li>« Est-ce que les poissons ils voient l’eau ? »</li>
+      <li>« Est-ce que le chantage c’est pas une forme d’échange ? »</li>
+      <li>Après le repas, alors qu’il vient de finir de débarrasser, il me demande : « Mais maman, l’électricité on devrait la fabriquer dans l’espace, tu crois pas ? » Son idée : sans les frottements de l’air, on pourrait peut-être se rapprocher d’un mouvement perpétuel et produire de l’électricité presque à l’infini <span class="date">(17 janvier 2025)</span>.</li>
+      <li>« Pourquoi est-ce que la pomme c’est pas un fruit rouge ? » <span class="date">(29 août 2026)</span></li>
+      <li>« Les poissons, est-ce qu’ils ont l’impression de voler ? » <span class="date">(29 août 2026)</span></li>
+      <li>Dans un film, on entend : « Sylia est une femme de goût. » Samuel demande : « Mais pourquoi il lui dit qu’elle est une femme debout ??? » <span class="date">(10 novembre 2026)</span></li>
+    </ul>
+  </body>
+</html>

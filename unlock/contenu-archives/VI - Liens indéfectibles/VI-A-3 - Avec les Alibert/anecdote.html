@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+
+    <!--
+      Hauteur du cadre dans le dossier d'archives.
+
+      Repères approximatifs :
+      - 140 à 180 : titre, source et 1 à 3 lignes
+      - 200 à 260 : titre, source et 4 à 7 lignes
+      - 280 à 360 : titre, source et 8 à 12 lignes
+      - 360 à 500 : anecdote longue
+
+      Augmenter légèrement si le texte contient un titre, des retours à la ligne
+      ou plusieurs paragraphes.
+    -->
+    <meta name="archive-height" content="460" />
+
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        color: #322515;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 14px;
+        line-height: 1.55;
+        margin: 0;
+        padding: 16px 18px;
+      }
+
+      h2 {
+        font-size: 1.2em;
+        margin: 0 0 10px;
+      }
+
+      .source {
+        color: #786d59;
+        font-family: "Courier New", monospace;
+        font-size: .72em;
+        font-weight: bold;
+        letter-spacing: .04em;
+        margin: -5px 0 14px;
+        text-transform: uppercase;
+      }
+
+      p {
+        margin: 0;
+      }
+
+      p + p {
+        margin-top: 12px;
+      }
+      h3 { font-size: 1em; margin: 18px 0 9px; }
+    </style>
+  </head>
+  <body>
+    <h2>Avec les Alibert</h2>
+    <h3>Mister BoudeMan</h3>
+    <p class="source">Souvenir de Brice</p>
+    <p>Je me souviens de Mister BoudeMan. J’ai encore en tête la petite trogne trop mignonne de Samuel quand il boudait… et son papa qui pestait !</p>
+    <h3>Nouvel An et whisky</h3>
+    <p class="source">Souvenir avec Annabelle</p>
+    <p>Samuel a fêté le Nouvel An à Montpellier avec Annabelle et ses amis. C’était sa première soirée où il y avait de l’alcool. Il s’est servi un whisky-coca, mais il a eu la main un peu lourde sur le whisky et a fini la soirée bien éméché !</p>
+  </body>
+</html>
