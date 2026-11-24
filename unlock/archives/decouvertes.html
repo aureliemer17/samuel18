@@ -146,6 +146,10 @@
            return null;
          }
        };
+       const deferSource = (element, source) => {
+         element.dataset.src = source;
+         return element;
+       };
       Object.values(media).forEach((dossier) => (dossier.items || []).forEach((item) => {
         if (videoLinks[item.source]) {
           item.externalUrl = videoLinks[item.source];
@@ -197,7 +201,7 @@
           const qr = document.createElement("div");
           qr.className = "video-qr";
           const image = document.createElement("img");
-          image.src = item.qrSource;
+           deferSource(image, item.qrSource);
           image.alt = `QR code vers ${item.title}`;
           const label = document.createElement("span");
           label.textContent = "Scanner pour voir la vidéo";
@@ -208,7 +212,7 @@
           qr.className = "video-qr";
           const image = document.createElement("img");
           // A web QR service avoids requiring Swift or developer tools on macOS.
-          image.src = `https://api.qrserver.com/v1/create-qr-code/?size=496x496&data=${encodeURIComponent(item.externalUrl)}`;
+           deferSource(image, `https://api.qrserver.com/v1/create-qr-code/?size=496x496&data=${encodeURIComponent(item.externalUrl)}`);
           image.alt = `QR code vers ${item.title}`;
           const label = document.createElement("span");
           label.textContent = "Scanner pour voir la vidéo";
@@ -222,7 +226,7 @@
          if (drivePreview) {
            const frame = document.createElement("iframe");
            frame.className = "drive-video";
-           frame.src = drivePreview;
+           deferSource(frame, drivePreview);
            frame.title = item.title;
            frame.allow = "autoplay; encrypted-media; picture-in-picture";
            frame.allowFullscreen = true;
@@ -230,7 +234,7 @@
            return;
          }
          const video = document.createElement("video");
-         video.src = item.source;
+         deferSource(video, item.source);
          video.controls = true;
          container.append(video);
        };
@@ -290,9 +294,9 @@
           page.append(heading, detail);
           const figure = document.createElement("figure");
           figure.className = "evidence";
-           if (item.type === "image") { const image = document.createElement("img"); image.src = item.source; image.dataset.pdfSource = item.source; image.alt = item.title; figure.append(image); }
+            if (item.type === "image") { const image = document.createElement("img"); deferSource(image, item.source); image.dataset.pdfSource = item.source; image.alt = item.title; figure.append(image); }
            else if (item.type === "video") { appendVideoPlayer(figure, item); const note = document.createElement("p"); note.className = "video-print-note"; note.textContent = "Vidéo disponible via le lien ci-dessous."; figure.append(note); }
-          else { figure.classList.add("evidence--document"); const frame = document.createElement("iframe"); frame.src = item.source; frame.title = item.title; if (item.height) frame.style.height = `${item.height}px`; figure.append(frame); }
+           else { figure.classList.add("evidence--document"); const frame = document.createElement("iframe"); deferSource(frame, item.source); frame.title = item.title; if (item.height) frame.style.height = `${item.height}px`; figure.append(frame); }
           const caption = document.createElement("figcaption"); caption.textContent = `PIÈCE JOINTE : ${item.title}`; figure.append(caption);
           page.append(figure);
           appendVideoAccess(page, item);
@@ -314,7 +318,7 @@
           const figure = document.createElement("figure");
           figure.className = "photo-evidence";
            const image = document.createElement("img");
-           image.src = item.source;
+            deferSource(image, item.source);
            image.dataset.pdfSource = item.source;
            image.alt = item.title;
           const caption = document.createElement("figcaption");
@@ -438,16 +442,40 @@
          document.querySelector("#exportAll").hidden = false;
          document.querySelector("#resetProgress").hidden = false;
       }
-      const documentPages = [...pages.querySelectorAll(".page")];
-      const allPages = [cover, ...documentPages];
-      let pageIndex = 0;
-      let turning = false;
-      function showPage(index) {
+       const documentPages = [...pages.querySelectorAll(".page")];
+       const allPages = [cover, ...documentPages];
+       let pageIndex = 0;
+       let turning = false;
+       const loadPageMedia = (page) => {
+         if (!page) return;
+         page.querySelectorAll("[data-src]").forEach((element) => {
+           if (element.closest(".video-qr") && !element.closest(".video-qr-entry") && !document.body.matches(".exporting-dossier, .exporting-complete, .exporting-theme")) return;
+           if (!element.getAttribute("src")) element.src = element.dataset.src;
+         });
+       };
+       const unloadPageMedia = (page) => {
+         if (!page) return;
+         page.querySelectorAll("[data-src]").forEach((element) => {
+           if (element.matches("video")) element.pause();
+           element.removeAttribute("src");
+         });
+       };
+       const loadVisiblePageMedia = () => {
+         loadPageMedia(documentPages[pageIndex - 1]);
+       };
+       const unloadHiddenPageMedia = () => {
+         documentPages.forEach((page, index) => {
+           if (index !== pageIndex - 1) unloadPageMedia(page);
+         });
+       };
+       function showPage(index) {
         pageIndex = Math.max(0, Math.min(index, allPages.length - 1));
         const showingCover = pageIndex === 0;
-        cover.classList.toggle("page-visible", showingCover);
-        cover.classList.toggle("open", !showingCover);
-        documentPages.forEach((page, current) => { page.hidden = showingCover || current !== pageIndex - 1; });
+         cover.classList.toggle("page-visible", showingCover);
+         cover.classList.toggle("open", !showingCover);
+         documentPages.forEach((page, current) => { page.hidden = showingCover || current !== pageIndex - 1; });
+         unloadHiddenPageMedia();
+         if (!showingCover) loadVisiblePageMedia();
       }
       function turnPage(index) {
         const nextIndex = Math.max(0, Math.min(index, allPages.length - 1));
@@ -493,13 +521,14 @@
         else turnPage(pageIndex + 1);
       });
        const pdfImageSource = (source) => source.replace("../../dossiers/", "../../dossiers/pdf-images/").replace(/\.[^.]+$/, ".jpg");
-       const loadImage = (image) => new Promise((resolve) => {
+        const loadImage = (image) => new Promise((resolve) => {
          if (image.complete) return resolve();
          image.addEventListener("load", resolve, { once: true });
          image.addEventListener("error", resolve, { once: true });
        });
-       async function usePdfImages() {
-         const images = [...document.querySelectorAll("img[data-pdf-source]")];
+        async function usePdfImages() {
+          documentPages.forEach(loadPageMedia);
+          const images = [...document.querySelectorAll("img[data-pdf-source]")];
          images.forEach((image) => {
            image.dataset.originalSource = image.src;
            image.onerror = () => { image.onerror = null; image.src = image.dataset.originalSource; };
@@ -507,7 +536,7 @@
          });
          await Promise.all(images.map(loadImage));
        }
-       function restoreOriginalImages() {
+        function restoreOriginalImages() {
          document.querySelectorAll("img[data-original-source]").forEach((image) => {
            image.onerror = null;
            image.src = image.dataset.originalSource;
@@ -524,8 +553,10 @@
           document.body.classList.remove("exporting-complete");
           document.body.classList.remove("exporting-theme");
          document.querySelectorAll(".page[data-dossier]").forEach((page) => page.classList.remove("export-selected"));
-         if (previousInventoryStatus !== null) inventoryStatusElement.textContent = previousInventoryStatus;
-         restoreOriginalImages();
+          if (previousInventoryStatus !== null) inventoryStatusElement.textContent = previousInventoryStatus;
+          restoreOriginalImages();
+          unloadHiddenPageMedia();
+          loadVisiblePageMedia();
        }
        async function exportDossier(selected) {
          const previousTitle = document.title;
