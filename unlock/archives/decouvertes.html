@@ -247,7 +247,7 @@
       list.className = "contents";
       Object.entries(categories).forEach(([categoryCode, categoryTitle]) => {
         const category = document.createElement("li");
-        category.textContent = categoryTitle.toUpperCase();
+         category.textContent = `${categoryCode}. ${categoryTitle.toUpperCase()}`;
         category.style.fontWeight = "900";
         if (adminMode) {
           const exportButton = document.createElement("button");
