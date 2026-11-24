@@ -31,6 +31,10 @@ Pour afficher certaines vidéos dans le déroulé chronologique sans modifier le
 6. `06-preparer-images-pour-pdf.command` : crée des copies JPEG imprimables, limitées à 1800 pixels et compressées, dans `../../dossiers/pdf-images/<Thème>/<Dossier>/`. Les originaux restent intacts. Cette commande peut être relancée : seules les photos nouvelles ou modifiées sont traitées.
 7. Ouvrir `../archives/decouvertes.html?admin=1`, puis cliquer sur `PDF COMPLET`. L’export emploie automatiquement les images allégées quand elles existent. Si elles n’ont pas été préparées, il utilise les originaux.
 
+## Inventorier les photos pour Google Drive
+
+8. `07-inventorier-photos-pour-google-drive.command` : crée `../../dossiers/photos-google-drive-a-completer.csv`, avec une ligne par photo et son thème, dossier, nom exact, format, taille et date. Ce fichier est uniquement un inventaire à compléter dans Numbers avec les liens Google Drive ; l’outil ne modifie aucun média ni aucune configuration.
+
 ## Outils occasionnels
 
 - `90-exporter-arborescence-archives.command` : lit `../../dossiers/` et exporte l'arborescence dans `../../dossiers/arborescence-archives.txt` pour la partager ou la faire analyser.

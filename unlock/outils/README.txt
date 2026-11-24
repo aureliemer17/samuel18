@@ -60,6 +60,12 @@ Ordre habituel pour les vidéos : 00, puis 01 OU 02 + 03, puis 04.
   Génère : ../../dossiers/pdf-images/<Thème>/<Dossier>/*.jpg
   Puis ouvrir : ../archives/decouvertes.html?admin=1 et cliquer PDF COMPLET.
 
+07-inventorier-photos-pour-google-drive.command
+  Crée un inventaire séparé des photos pour préparer leur mise sur Google Drive.
+  Nécessite : les photos dans ../../dossiers/<Thème>/<Dossier>/
+  Génère : ../../dossiers/photos-google-drive-a-completer.csv
+  Ne modifie pas les photos, les vidéos ou les configurations d'archives.
+
 90-exporter-arborescence-archives.command
   Exporte la liste des dossiers et fichiers d'archives.
   Nécessite : ../../dossiers/

@@ -1,7 +1,6 @@
 /dossiers/
 .DS_Store
 /unlock/config/archive-config.local.js
-/unlock/config/archive-video-config.local.js
 /dossiers/heic/
 /dossiers/videos/
 /dossiers/pdf-images/
