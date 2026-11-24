@@ -35,6 +35,12 @@ Pour afficher certaines vidéos dans le déroulé chronologique sans modifier le
 
 8. `07-inventorier-photos-pour-google-drive.command` : crée `../../dossiers/photos-google-drive-a-completer.csv`, avec une ligne par photo et son thème, dossier, nom exact, format, taille et date. Ce fichier est uniquement un inventaire à compléter dans Numbers avec les liens Google Drive ; l’outil ne modifie aucun média ni aucune configuration.
 
+## Tester Google Drive pour les photos
+
+9. `08-copier-photos-pour-google-drive.command` : crée `../../dossiers/photos/`, avec les copies des photos rangées comme les archives. Pour un essai, déposer seulement un petit sous-dossier dans Google Drive.
+10. `google-drive-inventorier-photos.gs` : créer un projet sur [script.google.com](https://script.google.com), coller le script, renseigner l’ID du dossier Drive test dans `ROOT_FOLDER_ID`, puis exécuter `inventorierPhotos`. Le script crée `photos-google-drive-inventaire.csv` dans ce dossier avec les IDs et les liens de toutes les photos trouvées.
+11. Télécharger ce CSV depuis Drive vers `../../dossiers/photos-google-drive-inventaire.csv`, puis lancer `09-importer-liens-photos-google-drive.command`. Il crée `../config/archive-photo-drive-config.js`, qui est versionné par Git. Les archives l’utilisent uniquement quand elles sont ouvertes en ligne, afin que la consultation locale sur Mac et les exports PDF continuent d’utiliser les fichiers locaux.
+
 ## Outils occasionnels
 
 - `90-exporter-arborescence-archives.command` : lit `../../dossiers/` et exporte l'arborescence dans `../../dossiers/arborescence-archives.txt` pour la partager ou la faire analyser.

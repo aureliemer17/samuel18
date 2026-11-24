@@ -66,6 +66,21 @@ Ordre habituel pour les vidéos : 00, puis 01 OU 02 + 03, puis 04.
   Génère : ../../dossiers/photos-google-drive-a-completer.csv
   Ne modifie pas les photos, les vidéos ou les configurations d'archives.
 
+08-copier-photos-pour-google-drive.command
+  Copie les photos dans ../../dossiers/photos/ en conservant l'arborescence,
+  prêtes à déposer dans Google Drive sans déplacer les originaux.
+
+google-drive-inventorier-photos.gs
+  Script Google Apps Script à coller dans script.google.com pour tester
+  l'inventaire automatique d'un dossier Drive : photos, IDs et liens.
+
+09-importer-liens-photos-google-drive.command
+  Nécessite : télécharger depuis Drive le fichier photos-google-drive-inventaire.csv
+  vers ../../dossiers/photos-google-drive-inventaire.csv.
+  Génère : ../config/archive-photo-drive-config.js, versionnable dans Git.
+  Les liens photo sont utilisés seulement quand les archives sont ouvertes en ligne,
+  pas lors de la consultation locale sur Mac.
+
 90-exporter-arborescence-archives.command
   Exporte la liste des dossiers et fichiers d'archives.
   Nécessite : ../../dossiers/

@@ -27,7 +27,7 @@ fi
   print "dossiers/"
 
   for category_dir in "$DOSSIERS_DIR"/*(/N); do
-    [[ "${category_dir:t}" == "heic" || "${category_dir:t}" == "videos" || "${category_dir:t}" == "pdf-images" ]] && continue
+    [[ "${category_dir:t}" == "heic" || "${category_dir:t}" == "videos" || "${category_dir:t}" == "pdf-images" || "${category_dir:t}" == "photos" ]] && continue
     print "├── ${category_dir:t}/"
     for folder_dir in "$category_dir"/*(/N); do
       print "│   ├── ${folder_dir:t}/"

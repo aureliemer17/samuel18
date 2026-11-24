@@ -108,6 +108,7 @@
     <script src="../config/archive-config.local.js"></script>
     <script src="../config/archive-video-config.example.js"></script>
     <script src="../config/archive-video-config.local.js"></script>
+    <script src="../config/archive-photo-drive-config.js"></script>
     <script src="../config/progress.js"></script>
     <script>
       const pages = document.querySelector("#pages");
@@ -115,11 +116,14 @@
       const viewed = window.ARCHIVE_PROGRESS.viewedCodes();
       const media = window.ARCHIVE_CONFIG.media;
       const videoLinks = window.ARCHIVE_VIDEO_LINKS || {};
+      const photoLinks = window.ARCHIVE_PHOTO_DRIVE_LINKS || {};
+      const isLocalArchive = window.location.protocol === "file:";
       Object.values(media).forEach((dossier) => (dossier.items || []).forEach((item) => {
         if (videoLinks[item.source]) {
           item.externalUrl = videoLinks[item.source];
           delete item.qrSource;
         }
+        if (!isLocalArchive && item.type === "image" && photoLinks[item.source]) item.source = photoLinks[item.source];
       }));
       const categories = window.ARCHIVE_CONFIG.categories;
       const sortArchiveItems = (items) => [...items].sort((left, right) => {

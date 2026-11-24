@@ -48,14 +48,18 @@
     <script src="../config/archive-config.local.js"></script>
     <script src="../config/archive-video-config.example.js"></script>
     <script src="../config/archive-video-config.local.js"></script>
+    <script src="../config/archive-photo-drive-config.js"></script>
     <script src="../config/progress.js"></script>
     <script>
       const code = new URLSearchParams(window.location.hash.slice(1)).get("code");
       const source = new URLSearchParams(window.location.hash.slice(1)).get("from");
        const item = window.ARCHIVE_CONFIG.media[code];
        const videoLinks = window.ARCHIVE_VIDEO_LINKS || {};
+       const photoLinks = window.ARCHIVE_PHOTO_DRIVE_LINKS || {};
+       const isLocalArchive = window.location.protocol === "file:";
        (item?.items || []).forEach((mediaItem) => {
          if (videoLinks[mediaItem.source]) mediaItem.externalUrl = videoLinks[mediaItem.source];
+         if (!isLocalArchive && mediaItem.type === "image" && photoLinks[mediaItem.source]) mediaItem.source = photoLinks[mediaItem.source];
        });
       if (!item) window.location.replace("acces-refuse.html");
       window.ARCHIVE_PROGRESS.markViewed(code);
