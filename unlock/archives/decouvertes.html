@@ -118,12 +118,18 @@
       const videoLinks = window.ARCHIVE_VIDEO_LINKS || {};
       const photoLinks = window.ARCHIVE_PHOTO_DRIVE_LINKS || {};
       const isLocalArchive = window.location.protocol === "file:";
+      const publishedContentSource = (source) => {
+        if (isLocalArchive || !source.startsWith("../../dossiers/")) return source;
+        return source.replace("../../dossiers/", "../contenu-archives/");
+      };
       Object.values(media).forEach((dossier) => (dossier.items || []).forEach((item) => {
         if (videoLinks[item.source]) {
           item.externalUrl = videoLinks[item.source];
           delete item.qrSource;
         }
         if (!isLocalArchive && item.type === "image" && photoLinks[item.source]) item.source = photoLinks[item.source];
+        if (!isLocalArchive && item.type === "document") item.source = publishedContentSource(item.source);
+        if (!isLocalArchive && dossier.instruction) dossier.instruction = publishedContentSource(dossier.instruction);
       }));
       const categories = window.ARCHIVE_CONFIG.categories;
       const sortArchiveItems = (items) => [...items].sort((left, right) => {
