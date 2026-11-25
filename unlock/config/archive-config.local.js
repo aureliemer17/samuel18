@@ -17,13 +17,13 @@ window.ARCHIVE_CONFIG = {
       title: "Les 18 ans de Samuel !",
       items: [
         { title: "PIC0001", type: "image", source: "../../dossiers/I%20-%20Disparitions%20myste%CC%81rieuses/I-A-1%20-%20Exemple/PIC0001.jpeg", width: 1792, height: 2400, orientation: "portrait", createdAt: "16 novembre 2026", createdAtEpoch: 1794864521 },
-        { title: "anecdote", type: "document", source: "../../dossiers/I%20-%20Disparitions%20myste%CC%81rieuses/I-A-1%20-%20Exemple/anecdote.html" },
+        { title: "anecdote", type: "document", source: "../../dossiers/I%20-%20Disparitions%20myste%CC%81rieuses/I-A-1%20-%20Exemple/anecdote.html",height: 200 },
       ],
     },
     "I-C-5": {
       title: "Cache-cache et Courrou coucou",
       items: [
-        { title: "anecdote", type: "document", source: "../../dossiers/I%20-%20Disparitions%20myste%CC%81rieuses/I-C-5%20-%20Cache-cache%20et%20Courrou%20coucou/anecdote.html", height: 575 },
+        { title: "anecdote", type: "document", source: "../../dossiers/I%20-%20Disparitions%20myste%CC%81rieuses/I-C-5%20-%20Cache-cache%20et%20Courrou%20coucou/anecdote.html", height: 350 },
       ],
     },
     "I-E-6": {
@@ -31,27 +31,27 @@ window.ARCHIVE_CONFIG = {
       instruction: "../../dossiers/I%20-%20Disparitions%20myste%CC%81rieuses/I-E-6%20-%20Samuel%20perd%20tout.../instruction.txt",
       items: [
         { title: "P1000181", type: "image", source: "../../dossiers/I%20-%20Disparitions%20myste%CC%81rieuses/I-E-6%20-%20Samuel%20perd%20tout.../P1000181.JPG", width: 5472, height: 3648, orientation: "landscape", createdAt: "01 juillet 2021", createdAtEpoch: 1625090400 },
-        { title: "anecdote", type: "document", source: "../../dossiers/I%20-%20Disparitions%20myste%CC%81rieuses/I-E-6%20-%20Samuel%20perd%20tout.../anecdote.html", height: 1100 },
+        { title: "anecdote", type: "document", source: "../../dossiers/I%20-%20Disparitions%20myste%CC%81rieuses/I-E-6%20-%20Samuel%20perd%20tout.../anecdote.html", height: 1200 },
       ],
     },
     "I-H-4": {
       title: "Où est la Twingo",
       instruction: "../../dossiers/I%20-%20Disparitions%20myste%CC%81rieuses/I-H-4%20-%20Ou%CC%80%20est%20la%20Twingo/instruction.txt",
       items: [
-        { title: "anecdote", type: "document", source: "../../dossiers/I%20-%20Disparitions%20myste%CC%81rieuses/I-H-4%20-%20Ou%CC%80%20est%20la%20Twingo/anecdote.html", height: 990 },
+        { title: "anecdote", type: "document", source: "../../dossiers/I%20-%20Disparitions%20myste%CC%81rieuses/I-H-4%20-%20Ou%CC%80%20est%20la%20Twingo/anecdote.html", height: 600 },
       ],
     },
     "I-J-2": {
       title: "Mais où est Samuel ?",
       items: [
         { title: "IMG 2668", type: "image", source: "../../dossiers/I%20-%20Disparitions%20myste%CC%81rieuses/I-J-2%20-%20Mais%20ou%CC%80%20est%20Samuel%20%3F/IMG_2668.jpg", width: 4032, height: 3024, orientation: "landscape", createdAt: "29 juillet 2021", createdAtEpoch: 1627562130 },
-        { title: "anecdote", type: "document", source: "../../dossiers/I%20-%20Disparitions%20myste%CC%81rieuses/I-J-2%20-%20Mais%20ou%CC%80%20est%20Samuel%20%3F/anecdote.html", height: 730 },
+        { title: "anecdote", type: "document", source: "../../dossiers/I%20-%20Disparitions%20myste%CC%81rieuses/I-J-2%20-%20Mais%20ou%CC%80%20est%20Samuel%20%3F/anecdote.html", height: 500 },
       ],
     },
     "II-B-3": {
       title: "Le monde selon Samuel",
       items: [
-        { title: "anecdote", type: "document", source: "../../dossiers/II%20-%20Un%20esprit%20scientifique/II-B-3%20-%20Le%20monde%20selon%20Samuel/anecdote.html", height: 685 },
+        { title: "anecdote", type: "document", source: "../../dossiers/II%20-%20Un%20esprit%20scientifique/II-B-3%20-%20Le%20monde%20selon%20Samuel/anecdote.html", height: 450 },
       ],
     },
     "II-E-8": {
@@ -73,7 +73,7 @@ window.ARCHIVE_CONFIG = {
         { title: "IMG 0043", type: "image", source: "../../dossiers/II%20-%20Un%20esprit%20scientifique/II-H-4%20-%20Concours%20de%20Math/IMG_0043.jpg", width: 4032, height: 3024, orientation: "landscape", createdAt: "18 mai 2022", createdAtEpoch: 1652881435 },
         { title: "IMG 4050", type: "image", source: "../../dossiers/II%20-%20Un%20esprit%20scientifique/II-H-4%20-%20Concours%20de%20Math/IMG_4050.jpg", width: 4032, height: 2268, orientation: "landscape", createdAt: "21 mai 2025", createdAtEpoch: 1747834792 },
         { title: "IMG 6395", type: "image", source: "../../dossiers/II%20-%20Un%20esprit%20scientifique/II-H-4%20-%20Concours%20de%20Math/IMG_6395.jpg", width: 4032, height: 3024, orientation: "landscape", createdAt: "28 octobre 2022", createdAtEpoch: 1666964855 },
-        { title: "anecdote", type: "document", source: "../../dossiers/II%20-%20Un%20esprit%20scientifique/II-H-4%20-%20Concours%20de%20Math/anecdote.html", height: 460 },
+        { title: "anecdote", type: "document", source: "../../dossiers/II%20-%20Un%20esprit%20scientifique/II-H-4%20-%20Concours%20de%20Math/anecdote.html", height: 380 },
       ],
     },
     "III-B-8": {
@@ -117,7 +117,7 @@ window.ARCHIVE_CONFIG = {
         { title: "IMG 7048", type: "image", source: "../../dossiers/III%20-%20Le%20monde%20selon%20Samuel/III-D-6%20-%20Le%20ge%CC%81ne%CC%81ral%20Samuel%20et%20les%20jeux/IMG_7048.jpg", width: 4032, height: 3024, orientation: "landscape", createdAt: "09 janvier 2023", createdAtEpoch: 1673291342 },
         { title: "IMG 8477", type: "video", source: "../../dossiers/III%20-%20Le%20monde%20selon%20Samuel/III-D-6%20-%20Le%20ge%CC%81ne%CC%81ral%20Samuel%20et%20les%20jeux/IMG_8477.MOV", externalUrl: "https://drive.google.com/file/d/1RNy-TtSntZ1AwtZ4aJOl4--umhZS4W5v/view?usp=drive_link", createdAt: "22 avril 2020", createdAtEpoch: 1587550071 },
         { title: "P1020808", type: "image", source: "../../dossiers/III%20-%20Le%20monde%20selon%20Samuel/III-D-6%20-%20Le%20ge%CC%81ne%CC%81ral%20Samuel%20et%20les%20jeux/P1020808.JPG", width: 4608, height: 3456, orientation: "landscape", createdAt: "17 août 2017", createdAtEpoch: 1502969301 },
-        { title: "anecdote", type: "document", source: "../../dossiers/III%20-%20Le%20monde%20selon%20Samuel/III-D-6%20-%20Le%20ge%CC%81ne%CC%81ral%20Samuel%20et%20les%20jeux/anecdote.html", height: 575 },
+        { title: "anecdote", type: "document", source: "../../dossiers/III%20-%20Le%20monde%20selon%20Samuel/III-D-6%20-%20Le%20ge%CC%81ne%CC%81ral%20Samuel%20et%20les%20jeux/anecdote.html", height: 450 },
         { title: "deb6c9ca 2607 47e2 8fc9 b0746e3bb756", type: "image", source: "../../dossiers/III%20-%20Le%20monde%20selon%20Samuel/III-D-6%20-%20Le%20ge%CC%81ne%CC%81ral%20Samuel%20et%20les%20jeux/deb6c9ca-2607-47e2-8fc9-b0746e3bb756.JPG", width: 1600, height: 1200, orientation: "landscape", createdAt: "12 juillet 2020", createdAtEpoch: 1594567954 },
       ],
     },
@@ -164,7 +164,7 @@ window.ARCHIVE_CONFIG = {
         { title: "IMG 9336", type: "image", source: "../../dossiers/III%20-%20Le%20monde%20selon%20Samuel/III-H-7%20-%20Les%20mots%20et%20dessins%20de%20Samuel/IMG_9336.JPG", width: 960, height: 960, orientation: "square", createdAt: "18 novembre 2026", createdAtEpoch: 1794987845 },
         { title: "IMG 9337", type: "image", source: "../../dossiers/III%20-%20Le%20monde%20selon%20Samuel/III-H-7%20-%20Les%20mots%20et%20dessins%20de%20Samuel/IMG_9337.JPG", width: 960, height: 612, orientation: "landscape", createdAt: "18 novembre 2026", createdAtEpoch: 1794987863 },
         { title: "IMG 9352", type: "image", source: "../../dossiers/III%20-%20Le%20monde%20selon%20Samuel/III-H-7%20-%20Les%20mots%20et%20dessins%20de%20Samuel/IMG_9352.JPG", width: 960, height: 650, orientation: "landscape", createdAt: "18 novembre 2026", createdAtEpoch: 1794988045 },
-        { title: "anecdote", type: "document", source: "../../dossiers/III%20-%20Le%20monde%20selon%20Samuel/III-H-7%20-%20Les%20mots%20et%20dessins%20de%20Samuel/anecdote.html", height: 510 },
+        { title: "anecdote", type: "document", source: "../../dossiers/III%20-%20Le%20monde%20selon%20Samuel/III-H-7%20-%20Les%20mots%20et%20dessins%20de%20Samuel/anecdote.html", height: 400 },
         { title: "cospastone", type: "video", source: "../../dossiers/III%20-%20Le%20monde%20selon%20Samuel/III-H-7%20-%20Les%20mots%20et%20dessins%20de%20Samuel/cospastone.MOV", externalUrl: "https://drive.google.com/file/d/1l912TNyWKOu0pUUyE4qmgbzet4eY4csa/view?usp=drive_link", createdAt: "11 novembre 2026", createdAtEpoch: 1794429993 },
         { title: "shinkansen et toustipoum", type: "video", source: "../../dossiers/III%20-%20Le%20monde%20selon%20Samuel/III-H-7%20-%20Les%20mots%20et%20dessins%20de%20Samuel/shinkansen%20et%20toustipoum.MOV", externalUrl: "https://drive.google.com/file/d/1VTC9v8Nq7vQy4HsNoEKGmV7RkrmppMcy/view?usp=drive_link", createdAt: "11 novembre 2026", createdAtEpoch: 1794430037 },
       ],
@@ -230,7 +230,7 @@ window.ARCHIVE_CONFIG = {
         { title: "Ski Samuel 2025   360 en cours d'acquisition", type: "video", source: "../../dossiers/IV%20-%20Sport/IV-A-4%20-%20Le%20ski%2C%20une%20grande%20histoire%2C%20une%20grande%20passion/Ski%20Samuel%202025%20-%20360%20en%20cours%20d%27acquisition.mov", externalUrl: "https://drive.google.com/file/d/1B7l3I836F07qy6c9UAjJ43Tj-fgrBNHr/view?usp=drive_link", createdAt: "23 février 2025", createdAtEpoch: 1740307800 },
         { title: "Ski Samuel 2026   360 acquis", type: "video", source: "../../dossiers/IV%20-%20Sport/IV-A-4%20-%20Le%20ski%2C%20une%20grande%20histoire%2C%20une%20grande%20passion/Ski%20Samuel%202026%20-%20360%20acquis.MOV", externalUrl: "https://drive.google.com/file/d/12dhkk2_E3MigKyDC-Nlv2bP8IWlMvI6X/view?usp=drive_link", createdAt: "28 février 2026", createdAtEpoch: 1772291784 },
         { title: "Ski samuel 2013   2", type: "video", source: "../../dossiers/IV%20-%20Sport/IV-A-4%20-%20Le%20ski%2C%20une%20grande%20histoire%2C%20une%20grande%20passion/Ski%20samuel%202013%20-%202.mov", externalUrl: "https://drive.google.com/file/d/1fdaLC5sSP8x2AfOCkCG9axnxqw33za4R/view?usp=drive_link", createdAt: "18 mars 2013", createdAtEpoch: 1363561200 },
-        { title: "anecdote", type: "document", source: "../../dossiers/IV%20-%20Sport/IV-A-4%20-%20Le%20ski%2C%20une%20grande%20histoire%2C%20une%20grande%20passion/anecdote.html", height: 770 },
+        { title: "anecdote", type: "document", source: "../../dossiers/IV%20-%20Sport/IV-A-4%20-%20Le%20ski%2C%20une%20grande%20histoire%2C%20une%20grande%20passion/anecdote.html", height: 470 },
         { title: "fevrier bis 2012 002", type: "image", source: "../../dossiers/IV%20-%20Sport/IV-A-4%20-%20Le%20ski%2C%20une%20grande%20histoire%2C%20une%20grande%20passion/fevrier%20bis%202012%20002.jpg", width: 3456, height: 5184, orientation: "portrait", createdAt: "02 mars 2012", createdAtEpoch: 1330681741 },
         { title: "recap   Samuel Ski 2013 2026", type: "video", source: "../../dossiers/IV%20-%20Sport/IV-A-4%20-%20Le%20ski%2C%20une%20grande%20histoire%2C%20une%20grande%20passion/recap%20-%20Samuel%20Ski%202013-2026.mov", isRecapVideo: true, externalUrl: "https://drive.google.com/file/d/1fF79Xk_yHpHFr5rv0_Xsv8mDqJbVKtdQ/view?usp=drive_link", createdAt: "23 novembre 2026", createdAtEpoch: 1795473289 },
       ],
@@ -295,7 +295,7 @@ window.ARCHIVE_CONFIG = {
         { title: "P1010628", type: "image", source: "../../dossiers/IV%20-%20Sport/IV-D-4%20-%20Plein%20de%20sports%20en%20vrac/P1010628.JPG", width: 4608, height: 3456, orientation: "landscape", createdAt: "28 février 2014", createdAtEpoch: 1393580657 },
         { title: "P1020722", type: "image", source: "../../dossiers/IV%20-%20Sport/IV-D-4%20-%20Plein%20de%20sports%20en%20vrac/P1020722.JPG", width: 4608, height: 3456, orientation: "landscape", createdAt: "10 août 2017", createdAtEpoch: 1502374593 },
         { title: "Resized DSCN1025 (2)(1)", type: "image", source: "../../dossiers/IV%20-%20Sport/IV-D-4%20-%20Plein%20de%20sports%20en%20vrac/Resized_DSCN1025_%282%29%281%29.JPEG", width: 540, height: 720, orientation: "portrait", createdAt: "02 février 2020", createdAtEpoch: 1580660086 },
-        { title: "anecdote", type: "document", source: "../../dossiers/IV%20-%20Sport/IV-D-4%20-%20Plein%20de%20sports%20en%20vrac/anecdote.html", height: 360 },
+        { title: "anecdote", type: "document", source: "../../dossiers/IV%20-%20Sport/IV-D-4%20-%20Plein%20de%20sports%20en%20vrac/anecdote.html", height: 260 },
       ],
     },
     "IV-F-1": {
@@ -322,7 +322,7 @@ window.ARCHIVE_CONFIG = {
         { title: "IMG 9169", type: "image", source: "../../dossiers/IV%20-%20Sport/IV-G-7%20-%20Le%20velo/IMG_9169.jpg", width: 4032, height: 3024, orientation: "landscape", createdAt: "24 mai 2020", createdAtEpoch: 1590317215 },
         { title: "La Loire à vélo", type: "image", source: "../../dossiers/IV%20-%20Sport/IV-G-7%20-%20Le%20velo/La%20Loire%20a%CC%80%20ve%CC%81lo.JPG", width: 960, height: 717, orientation: "landscape", createdAt: "15 mai 2013", createdAtEpoch: 1368568800 },
         { title: "Vélo chez Mamie Josée   2012?", type: "video", source: "../../dossiers/IV%20-%20Sport/IV-G-7%20-%20Le%20velo/Ve%CC%81lo%20chez%20Mamie%20Jose%CC%81e%20-%202012%3F.MOV", externalUrl: "https://drive.google.com/file/d/1vMnuHRY-2Sbf8smLpik74jmvkSjEPU08/view?usp=drive_link", createdAt: "10 juillet 2012", createdAtEpoch: 1341871200 },
-        { title: "anecdote", type: "document", source: "../../dossiers/IV%20-%20Sport/IV-G-7%20-%20Le%20velo/anecdote.html", height: 240 },
+        { title: "anecdote", type: "document", source: "../../dossiers/IV%20-%20Sport/IV-G-7%20-%20Le%20velo/anecdote.html", height: 190 },
         { title: "samuel velo sans roulettes", type: "video", source: "../../dossiers/IV%20-%20Sport/IV-G-7%20-%20Le%20velo/samuel%20velo%20sans%20roulettes.MOV", externalUrl: "https://drive.google.com/file/d/1-RVkHGsNGBT0EciZUk6F8VF-6yKUZAQp/view?usp=drive_link", createdAt: "23 juin 2012", createdAtEpoch: 1340402400 },
       ],
     },
@@ -373,7 +373,7 @@ window.ARCHIVE_CONFIG = {
         { title: "IMG 7967", type: "image", source: "../../dossiers/IV%20-%20Sport/IV-J-5%20-%20L%27escalade%20puis%20le%20bloc%2C%20une%20grande%20passion/IMG_7967.JPG", width: 3456, height: 2304, orientation: "landscape", createdAt: "10 mai 2012", createdAtEpoch: 1336665961 },
         { title: "Mai 2019   Annecy", type: "image", source: "../../dossiers/IV%20-%20Sport/IV-J-5%20-%20L%27escalade%20puis%20le%20bloc%2C%20une%20grande%20passion/Mai%202019%20-%20Annecy.jpg", width: 4032, height: 3024, orientation: "landscape", createdAt: "06 juin 2019", createdAtEpoch: 1559811198 },
         { title: "Mai 2021", type: "image", source: "../../dossiers/IV%20-%20Sport/IV-J-5%20-%20L%27escalade%20puis%20le%20bloc%2C%20une%20grande%20passion/Mai%202021.jpg", width: 3840, height: 5120, orientation: "portrait", createdAt: "02 juin 2021", createdAtEpoch: 1622611702 },
-        { title: "anecdote", type: "document", source: "../../dossiers/IV%20-%20Sport/IV-J-5%20-%20L%27escalade%20puis%20le%20bloc%2C%20une%20grande%20passion/anecdote.html", height: 395 },
+        { title: "anecdote", type: "document", source: "../../dossiers/IV%20-%20Sport/IV-J-5%20-%20L%27escalade%20puis%20le%20bloc%2C%20une%20grande%20passion/anecdote.html", height: 300 },
       ],
     },
     "V-C-6": {
@@ -385,7 +385,7 @@ window.ARCHIVE_CONFIG = {
         { title: "IMG 4377", type: "video", source: "../../dossiers/V%20-%20Archives%20audiovisuelles/V-C-6%20-%20Chant/IMG_4377.mov", externalUrl: "https://drive.google.com/file/d/1IOQswFIDEQH62Qos_tmGDuEdNQl_gGwv/view?usp=drive_link", createdAt: "06 juillet 2025", createdAtEpoch: 1751802220 },
         { title: "IMG 4427", type: "video", source: "../../dossiers/V%20-%20Archives%20audiovisuelles/V-C-6%20-%20Chant/IMG_4427.MOV", externalUrl: "https://drive.google.com/file/d/1BV1ZiOBpYjQ1yMv7rFJxoa2ZSWKIL9Iu/view?usp=drive_link", createdAt: "06 juillet 2025", createdAtEpoch: 1751832129 },
         { title: "IMG 9299", type: "video", source: "../../dossiers/V%20-%20Archives%20audiovisuelles/V-C-6%20-%20Chant/IMG_9299.MOV", externalUrl: "https://drive.google.com/file/d/10KnyGXuMQG98I5VhIKLKi9OV9f_bAimD/view?usp=drive_link", createdAt: "30 juillet 2023", createdAtEpoch: 1690724963 },
-        { title: "anecdote", type: "document", source: "../../dossiers/V%20-%20Archives%20audiovisuelles/V-C-6%20-%20Chant/anecdote.html", height: 320 },
+        { title: "anecdote", type: "document", source: "../../dossiers/V%20-%20Archives%20audiovisuelles/V-C-6%20-%20Chant/anecdote.html", height: 270 },
         { title: "samuel gaelle chantent libere delivre", type: "video", source: "../../dossiers/V%20-%20Archives%20audiovisuelles/V-C-6%20-%20Chant/samuel%20gaelle%20chantent%20libere%20delivre.MOV", externalUrl: "https://drive.google.com/file/d/1mtoaxd9DUrRk-dIqNgoFlCj6BvwGEu7Q/view?usp=drive_link", createdAt: "16 novembre 2026", createdAtEpoch: 1794818902 },
       ],
     },
@@ -426,7 +426,7 @@ window.ARCHIVE_CONFIG = {
         { title: "IMG 8827", type: "video", source: "../../dossiers/V%20-%20Archives%20audiovisuelles/V-J-2%20-%20Danse/IMG_8827.MOV", externalUrl: "https://drive.google.com/file/d/1gPGeSSE81KilIpqTidfZrQ1G2G5WsymO/view?usp=drive_link", createdAt: "19 juin 2023", createdAtEpoch: 1687202103 },
         { title: "IMG 8828", type: "video", source: "../../dossiers/V%20-%20Archives%20audiovisuelles/V-J-2%20-%20Danse/IMG_8828.MOV", externalUrl: "https://drive.google.com/file/d/1MHPjfeOIcjBJPFAR-LFF0HPgLo36OZGt/view?usp=drive_link", createdAt: "19 juin 2023", createdAtEpoch: 1687202117 },
         { title: "IMG 8829", type: "video", source: "../../dossiers/V%20-%20Archives%20audiovisuelles/V-J-2%20-%20Danse/IMG_8829.MOV", externalUrl: "https://drive.google.com/file/d/1002wgB9r23OM55SGeEeFgoRL8IYkY7ps/view?usp=drive_link", createdAt: "19 juin 2023", createdAtEpoch: 1687202170 },
-        { title: "anecdote", type: "document", source: "../../dossiers/V%20-%20Archives%20audiovisuelles/V-J-2%20-%20Danse/anecdote.html", height: 260 },
+        { title: "anecdote", type: "document", source: "../../dossiers/V%20-%20Archives%20audiovisuelles/V-J-2%20-%20Danse/anecdote.html", height: 220 },
         { title: "copy 8145385C 8D06 40D9 9D05 A865F76FCDFF", type: "video", source: "../../dossiers/V%20-%20Archives%20audiovisuelles/V-J-2%20-%20Danse/copy_8145385C-8D06-40D9-9D05-A865F76FCDFF.MOV", externalUrl: "https://drive.google.com/file/d/11Q0Mdb9Mb4hbS_CqcMGP-DgV5Wfjd8wc/view?usp=drive_link", createdAt: "05 avril 2025", createdAtEpoch: 1743890013 },
         { title: "recap   Compilation de toutes les Danse", type: "video", source: "../../dossiers/V%20-%20Archives%20audiovisuelles/V-J-2%20-%20Danse/recap%20-%20Compilation%20de%20toutes%20les%20Danse.mov", isRecapVideo: true, externalUrl: "https://drive.google.com/file/d/1EW35dJeUZCMO3rJkBX4I_ss2EVZvnmE2/view?usp=drive_link", createdAt: "01 janvier 2000", createdAtEpoch: 946681200 },
         { title: "samuel dans iam", type: "video", source: "../../dossiers/V%20-%20Archives%20audiovisuelles/V-J-2%20-%20Danse/samuel%20dans%20iam.MOV", externalUrl: "https://drive.google.com/file/d/1B_slB4T27aXg6nGtas5VzCiQvQ0v9S2z/view?usp=drive_link", createdAt: "16 novembre 2026", createdAtEpoch: 1794818828 },
@@ -513,7 +513,7 @@ window.ARCHIVE_CONFIG = {
         { title: "PHOTO 2026 11 17 20 17 51 (2)", type: "image", source: "../../dossiers/VI%20-%20Liens%20inde%CC%81fectibles/VI-B-2%20-%20Avec%20les%20Silvente/PHOTO-2026-11-17-20-17-51%20%282%29.jpg", width: 899, height: 1599, orientation: "portrait", createdAt: "18 août 2022", createdAtEpoch: 1660815600 },
         { title: "PHOTO 2026 11 17 20 17 51", type: "image", source: "../../dossiers/VI%20-%20Liens%20inde%CC%81fectibles/VI-B-2%20-%20Avec%20les%20Silvente/PHOTO-2026-11-17-20-17-51.jpg", width: 1600, height: 1209, orientation: "landscape", createdAt: "11 août 2022", createdAtEpoch: 1660226400 },
         { title: "Samuel et Mathis   Nov 2017?", type: "video", source: "../../dossiers/VI%20-%20Liens%20inde%CC%81fectibles/VI-B-2%20-%20Avec%20les%20Silvente/Samuel%20et%20Mathis%20-%20Nov%202017%3F.MOV", externalUrl: "https://drive.google.com/file/d/1Cv6PP7RuwqLzuuGzAqhtuEBAEvS0cchC/view?usp=drive_link", createdAt: "30 novembre 2017", createdAtEpoch: 1511996400 },
-        { title: "anecdote", type: "document", source: "../../dossiers/VI%20-%20Liens%20inde%CC%81fectibles/VI-B-2%20-%20Avec%20les%20Silvente/anecdote.html", height: 200 },
+        { title: "anecdote", type: "document", source: "../../dossiers/VI%20-%20Liens%20inde%CC%81fectibles/VI-B-2%20-%20Avec%20les%20Silvente/anecdote.html", height: 180 },
       ],
     },
     "VI-C-1": {
@@ -599,7 +599,7 @@ window.ARCHIVE_CONFIG = {
         { title: "P1000255", type: "image", source: "../../dossiers/VI%20-%20Liens%20inde%CC%81fectibles/VI-D-3%20-%20Avec%20Mamie%20Jose%CC%81e/P1000255.JPG", width: 4608, height: 3456, orientation: "landscape", createdAt: "16 février 2013", createdAtEpoch: 1361024892 },
         { title: "P1000499", type: "image", source: "../../dossiers/VI%20-%20Liens%20inde%CC%81fectibles/VI-D-3%20-%20Avec%20Mamie%20Jose%CC%81e/P1000499.JPG", width: 4608, height: 3456, orientation: "landscape", createdAt: "29 mars 2013", createdAtEpoch: 1364565793 },
         { title: "Souvenir", type: "image", source: "../../dossiers/VI%20-%20Liens%20inde%CC%81fectibles/VI-D-3%20-%20Avec%20Mamie%20Jose%CC%81e/Souvenir.JPG", width: 4608, height: 3072, orientation: "landscape", createdAt: "18 septembre 2021", createdAtEpoch: 1631983493 },
-        { title: "anecdote", type: "document", source: "../../dossiers/VI%20-%20Liens%20inde%CC%81fectibles/VI-D-3%20-%20Avec%20Mamie%20Jose%CC%81e/anecdote.html", height: 200 },
+        { title: "anecdote", type: "document", source: "../../dossiers/VI%20-%20Liens%20inde%CC%81fectibles/VI-D-3%20-%20Avec%20Mamie%20Jose%CC%81e/anecdote.html", height: 180 },
       ],
     },
     "VI-E-8": {
@@ -627,7 +627,7 @@ window.ARCHIVE_CONFIG = {
         { title: "P1090190", type: "image", source: "../../dossiers/VI%20-%20Liens%20inde%CC%81fectibles/VI-E-8%20-%20Avec%20Mamie%20Sylvie%20et%20Papi%20Fred/P1090190.JPG", width: 3264, height: 2448, orientation: "landscape", createdAt: "04 août 2010", createdAtEpoch: 1280946090 },
         { title: "P1090261", type: "image", source: "../../dossiers/VI%20-%20Liens%20inde%CC%81fectibles/VI-E-8%20-%20Avec%20Mamie%20Sylvie%20et%20Papi%20Fred/P1090261.JPG", width: 3264, height: 2448, orientation: "landscape", createdAt: "06 août 2010", createdAtEpoch: 1281109902 },
         { title: "Photo 088", type: "image", source: "../../dossiers/VI%20-%20Liens%20inde%CC%81fectibles/VI-E-8%20-%20Avec%20Mamie%20Sylvie%20et%20Papi%20Fred/Photo%20088.jpg", width: 2448, height: 3264, orientation: "portrait", createdAt: "24 mars 2009", createdAtEpoch: 1237849720 },
-        { title: "anecdote", type: "document", source: "../../dossiers/VI%20-%20Liens%20inde%CC%81fectibles/VI-E-8%20-%20Avec%20Mamie%20Sylvie%20et%20Papi%20Fred/anecdote.html", height: 200 },
+        { title: "anecdote", type: "document", source: "../../dossiers/VI%20-%20Liens%20inde%CC%81fectibles/VI-E-8%20-%20Avec%20Mamie%20Sylvie%20et%20Papi%20Fred/anecdote.html", height: 180 },
       ],
     },
     "VI-F-4": {
@@ -770,7 +770,7 @@ window.ARCHIVE_CONFIG = {
         { title: "P1020299", type: "image", source: "../../dossiers/VI%20-%20Liens%20inde%CC%81fectibles/VI-H-7%20-%20Avec%20les%20Alibert/P1020299.JPG", width: 4608, height: 3456, orientation: "landscape", createdAt: "22 décembre 2014", createdAtEpoch: 1419251644 },
         { title: "P1020304", type: "image", source: "../../dossiers/VI%20-%20Liens%20inde%CC%81fectibles/VI-H-7%20-%20Avec%20les%20Alibert/P1020304.JPG", width: 4608, height: 3456, orientation: "landscape", createdAt: "22 décembre 2014", createdAtEpoch: 1419251667 },
         { title: "Souvenir à bord de la STATION PERSEUS 0", type: "image", source: "../../dossiers/VI%20-%20Liens%20inde%CC%81fectibles/VI-H-7%20-%20Avec%20les%20Alibert/Souvenir%20a%CC%80%20bord%20de%20la%20STATION%20PERSEUS-0.JPG", width: 4000, height: 2252, orientation: "landscape", createdAt: "20 avril 2025", createdAtEpoch: 1745100727 },
-        { title: "anecdote", type: "document", source: "../../dossiers/VI%20-%20Liens%20inde%CC%81fectibles/VI-H-7%20-%20Avec%20les%20Alibert/anecdote.html", height: 460 },
+        { title: "anecdote", type: "document", source: "../../dossiers/VI%20-%20Liens%20inde%CC%81fectibles/VI-H-7%20-%20Avec%20les%20Alibert/anecdote.html", height: 360 },
         { title: "fevrier 2012 018", type: "image", source: "../../dossiers/VI%20-%20Liens%20inde%CC%81fectibles/VI-H-7%20-%20Avec%20les%20Alibert/fevrier%202012%20018.jpg", width: 3264, height: 2448, orientation: "landscape", createdAt: "29 février 2012", createdAtEpoch: 1330518919 },
         { title: "fevrier 2012 032", type: "image", source: "../../dossiers/VI%20-%20Liens%20inde%CC%81fectibles/VI-H-7%20-%20Avec%20les%20Alibert/fevrier%202012%20032.jpg", width: 3264, height: 2448, orientation: "landscape", createdAt: "29 février 2012", createdAtEpoch: 1330545824 },
       ],

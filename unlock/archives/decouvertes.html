@@ -52,13 +52,16 @@
        .evidence .drive-video { background: #241a10; border: 0; height: auto; }
       .evidence--document { max-width: 169mm; }
       .evidence figcaption { color: var(--brown); font-family: "Courier New", monospace; font-size: 9pt; margin-top: 4mm; }
-      .photo-sheet { display: grid; gap: 4mm; grid-template-columns: repeat(2, minmax(0, 1fr)); height: 205mm; margin: 0 auto; max-width: 180mm; }
-      .photo-sheet--1 { grid-template-columns: 1fr; }
-      .photo-sheet--2 { height: 100mm; }
-      .photo-sheet--3 .photo-evidence:first-child { grid-column: span 2; }
-      .photo-evidence { align-items: center; background: #fffefa; box-shadow: 3px 5px 9px rgba(53, 34, 10, .3); display: flex; justify-content: center; margin: 0; min-height: 0; padding: 3mm 3mm 8mm; position: relative; transform: rotate(-.6deg); }
-      .photo-evidence:nth-child(even) { transform: rotate(.7deg); }
-      .photo-evidence { cursor: zoom-in; }
+       .media-sheet { display: grid; gap: 4mm; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(2, minmax(0, 1fr)); height: 205mm; margin: 0 auto; max-width: 180mm; }
+       .media-sheet--one > :only-child { grid-column: span 2; grid-row: span 2; }
+       .media-sheet--two-landscape > * { grid-column: span 2; }
+       .media-sheet--two-portrait > * { grid-row: span 2; }
+       .media-sheet--three-landscape > :first-child { grid-column: span 2; }
+       .media-sheet--three-portrait > :first-child { grid-row: span 2; }
+       .media-sheet--anecdote-with-media > :first-child { grid-column: span 2; }
+       .photo-evidence, .video-evidence, .document-evidence { align-items: center; background: #fffefa; box-shadow: 3px 5px 9px rgba(53, 34, 10, .3); display: flex; justify-content: center; margin: 0; min-height: 0; padding: 3mm 3mm 8mm; position: relative; transform: rotate(-.6deg); }
+       .photo-evidence:nth-child(even), .video-evidence:nth-child(even), .document-evidence:nth-child(even) { transform: rotate(.7deg); }
+       .photo-evidence { cursor: zoom-in; }
       .photo-evidence.expanded { align-items: center; background: #fffefa; cursor: zoom-out; display: flex; height: min(88vh, 260mm); justify-content: center; left: 50%; max-width: min(90vw, 190mm); padding: 8mm 8mm 13mm; position: fixed; top: 50%; transform: translate(-50%, -50%) rotate(0); width: 90vw; z-index: 20; }
       .photo-evidence.expanded::after { background: rgba(0, 0, 0, .72); content: ""; height: 100vh; left: 50%; pointer-events: none; position: fixed; top: 50%; transform: translate(-50%, -50%); width: 100vw; z-index: -1; }
       .photo-evidence.expanded img { height: 100%; object-fit: contain; width: 100%; }
@@ -68,9 +71,6 @@
       .photo-evidence figcaption, .video-evidence figcaption { bottom: 2mm; left: 3mm; overflow: hidden; position: absolute; right: 3mm; text-overflow: ellipsis; white-space: nowrap; }
       .evidence-date { color: var(--red); font-family: "Courier New", monospace; font-size: 8pt; font-weight: 900; }
       .evidence-name { color: var(--brown); font-family: "Courier New", monospace; font-size: 7pt; margin-left: 5px; }
-      .video-sheet { display: grid; gap: 9mm; grid-template-columns: repeat(2, minmax(0, 1fr)); height: 186mm; margin: 0 auto; max-width: 169mm; }
-      .video-sheet--1 { grid-template-columns: 1fr; }
-      .video-sheet--2 { height: 100mm; }
       .video-qr-sheet { display: grid; gap: 7mm; grid-template-columns: repeat(2, minmax(0, 1fr)); margin: 0 auto; max-width: 169mm; }
       .video-qr-entry { align-items: center; background: #fffefa; box-shadow: 3px 5px 9px rgba(53, 34, 10, .3); display: flex; flex-direction: column; justify-content: center; min-height: 75mm; padding: 5mm; text-align: center; }
       .video-qr-entry .video-access { margin: 0; }
@@ -79,10 +79,11 @@
       .video-qr-entry .video-qr img { height: 35mm; width: 35mm; }
       .video-qr-entry__title { color: var(--brown); font-family: "Courier New", monospace; font-size: 8pt; font-weight: 900; margin: 0 0 3mm; }
       .video-qr-intro { color: var(--brown); font-size: 11pt; font-style: italic; margin: 0 0 8mm; }
-      .video-evidence { align-items: center; background: #fffefa; box-shadow: 3px 5px 9px rgba(53, 34, 10, .3); display: flex; flex-direction: column; justify-content: center; margin: 0; min-height: 0; padding: 5mm 5mm 10mm; position: relative; transform: rotate(-.5deg); }
-      .video-evidence:nth-child(even) { transform: rotate(.6deg); }
+       .video-evidence { flex-direction: column; padding: 5mm 5mm 10mm; }
       .video-evidence::before { border: 3px solid #a03b35; border-bottom: 0; border-radius: 10px 10px 0 0; content: ""; height: 25px; position: absolute; right: 12mm; top: -16px; transform: rotate(13deg); width: 11px; z-index: 2; }
        .video-evidence video, .video-evidence .drive-video { background: #241a10; display: block; max-height: 145mm; max-width: 100%; width: 100%; }
+       .document-evidence { padding: 0; }
+       .document-evidence iframe { background: #fff; border: 0; height: 100%; width: 100%; }
        .drive-video { aspect-ratio: 16 / 9; border: 0; height: auto; }
       .video-evidence .video-link { font-size: 8pt; margin-top: 4mm; padding: 7px 9px; }
       .video-print-note, .video-qr { display: none; }
@@ -98,8 +99,9 @@
       .contents .seen { color: #4f6a3d; font-weight: 900; }
       .contents button { background: transparent; border: 0; color: inherit; cursor: pointer; font: inherit; padding: 0; text-align: left; text-decoration: underline; text-decoration-style: dotted; }
       .contents .export-dossier { background: #eadbb0; border: 1px solid #9b7940; color: #4b351d; font-family: "Courier New", monospace; font-size: 7pt; font-weight: 900; margin-left: 7px; padding: 3px 5px; text-decoration: none; }
-      .contents .export-theme { background: #9d3424; border: 1px solid #6d2017; color: #fff8e2; font-family: "Courier New", monospace; font-size: 7pt; font-weight: 900; margin-left: 7px; padding: 3px 5px; text-decoration: none; }
-       @media (max-width: 700px) { body { padding: 10px; } .toolbar { gap: 8px; margin-bottom: 12px; } .toolbar button, .toolbar-link { font-size: .64rem; padding: 9px 10px; } .cover, .page { min-height: auto; } .cover { min-height: calc(100vh - 118px); padding: 15mm 10mm; } .page { padding: 12mm; } .contents { columns: 1; } body.mobile-inventory .book { max-width: 680px; } body.mobile-inventory .page { box-shadow: 0 12px 25px rgba(0, 0, 0, .38); min-height: calc(100vh - 118px); padding: 26px 20px 32px; } body.mobile-inventory .page::after { inset: 9px; } body.mobile-inventory .page h2 { font-size: clamp(1.9rem, 10vw, 3rem); margin: 30px 0 15px; } body.mobile-inventory .contents { font-size: .9rem; line-height: 1.35; margin-top: 22px; } body.mobile-inventory .contents li { margin-bottom: 12px; } body.mobile-inventory .contents li:not(:has(button)) { border-top: 1px solid var(--line); color: var(--red); font-family: Georgia, serif; font-size: 1.08rem; font-weight: 900 !important; margin: 26px 0 11px; padding-top: 22px; } body.mobile-inventory .contents button[data-dossier] { background: #fffaf0; border: 1px solid #ad9b76; box-shadow: 2px 3px 0 rgba(74, 49, 18, .16); display: block; font-family: Georgia, serif; font-size: 1.12rem; line-height: 1.2; padding: 15px; text-align: left; text-decoration: none; width: 100%; } }
+       .contents .export-theme { background: #9d3424; border: 1px solid #6d2017; color: #fff8e2; font-family: "Courier New", monospace; font-size: 7pt; font-weight: 900; margin-left: 7px; padding: 3px 5px; text-decoration: none; }
+       .inventory-navigation { display: none; }
+       @media (max-width: 700px) { body { padding: 10px; } .toolbar { gap: 8px; margin-bottom: 12px; } .toolbar button, .toolbar-link { font-size: .64rem; padding: 9px 10px; } .cover, .page { min-height: auto; } .cover { min-height: calc(100vh - 118px); padding: 15mm 10mm; } .page { padding: 12mm; } .contents { columns: 1; } body.mobile-inventory .book { max-width: 680px; } body.mobile-inventory .page { box-shadow: 0 12px 25px rgba(0, 0, 0, .38); min-height: calc(100vh - 118px); padding: 26px 20px 32px; } body.mobile-inventory .page::after { inset: 9px; } body.mobile-inventory .page h2 { font-size: clamp(1.9rem, 10vw, 3rem); margin: 30px 0 15px; } body.mobile-inventory .contents { font-size: .9rem; line-height: 1.35; margin-top: 22px; } body.mobile-inventory .contents li { margin-bottom: 12px; } body.mobile-inventory .contents li:not(:has(button)) { border-top: 1px solid var(--line); color: var(--red); font-family: Georgia, serif; font-size: 1.08rem; font-weight: 900 !important; margin: 26px 0 11px; padding-top: 22px; } body.mobile-inventory .contents button[data-dossier] { background: #fffaf0; border: 1px solid #ad9b76; box-shadow: 2px 3px 0 rgba(74, 49, 18, .16); display: block; font-family: Georgia, serif; font-size: 1.12rem; line-height: 1.2; padding: 15px; text-align: left; text-decoration: none; width: 100%; } .inventory-navigation { background: #f4ead1; border: 1px solid #8b6d42; color: #4b351d; display: block; font-family: "Courier New", monospace; font-size: .75rem; font-weight: 900; margin: 20px auto 0; padding: 10px 14px; text-transform: uppercase; } }
        @media print { @page { size: A4 portrait; margin: 0; } body { background: #fff; padding: 0; } .toolbar { display: none; } .book { max-width: none; } .book:not(.open) .pages { display: block; } .cover, .page { box-shadow: none; break-after: page; display: flex !important; height: 297mm; margin: 0; min-height: 297mm; opacity: 1 !important; page-break-after: always; position: relative !important; transform: none !important; width: 210mm; } .cover { display: flex !important; } .page { display: block !important; } .pages { display: block; } .page:last-child { break-after: auto; page-break-after: auto; } .evidence video, .video-evidence video, .drive-video { display: none; } .evidence .video-print-note, .video-qr { display: block; } body.exporting-dossier .cover, body.exporting-dossier .page:not(.export-selected), body.exporting-theme .cover, body.exporting-theme .page:not(.export-selected) { display: none !important; } body.exporting-complete .contents .export-dossier, body.exporting-complete .contents .export-theme, body.exporting-theme .contents .export-dossier, body.exporting-theme .contents .export-theme { display: none; } }
     </style>
   </head>
@@ -243,14 +245,34 @@
          video.controls = true;
          container.append(video);
        };
-      const contents = makePage("contents-page");
-      contents.append(makeHeader("INVENTAIRE"));
        const inventoryStatus = viewed.size === Object.keys(media).length ? "Dossier complet" : "Dossier en cours";
-       contents.innerHTML += `<h2>Inventaire des découvertes</h2><span class="status">${inventoryStatus}</span>`;
-       const inventoryStatusElement = contents.querySelector(".status");
-      const list = document.createElement("ul");
-      list.className = "contents";
-      Object.entries(categories).forEach(([categoryCode, categoryTitle]) => {
+       const inventoryStatusElements = [];
+       const inventoryLists = [];
+       const categoryEntries = Object.entries(categories);
+       // Four themes contain 22 dossiers and the remaining three contain 28.
+       // This keeps the 50-entry inventory readable on exactly two A4 pages.
+       const splitInventoryAt = 4;
+       categoryEntries.forEach(([categoryCode, categoryTitle], categoryIndex) => {
+         if (categoryIndex === 0 || categoryIndex === splitInventoryAt) {
+           const contents = makePage("contents-page");
+           contents.append(makeHeader(categoryIndex === 0 ? "INVENTAIRE" : "INVENTAIRE · SUITE"));
+           contents.innerHTML += `<h2>${categoryIndex === 0 ? "Inventaire des découvertes" : "Inventaire des découvertes · suite"}</h2><span class="status">${inventoryStatus}</span>`;
+           inventoryStatusElements.push(contents.querySelector(".status"));
+           const list = document.createElement("ul");
+           list.className = "contents";
+           contents.append(list);
+           if (categoryIndex === 0) {
+             const next = document.createElement("button");
+             next.className = "inventory-navigation";
+             next.type = "button";
+             next.dataset.inventoryNext = "true";
+             next.textContent = "Suite de l’inventaire";
+             contents.append(next);
+           }
+           inventoryLists.push(list);
+           pages.append(contents);
+         }
+         const list = inventoryLists[inventoryLists.length - 1];
         const category = document.createElement("li");
          category.textContent = `${categoryCode}. ${categoryTitle.toUpperCase()}`;
         category.style.fontWeight = "900";
@@ -285,9 +307,7 @@
           } else item.textContent = `□ ${dossier.title}`;
           list.append(item);
         });
-      });
-      contents.append(list);
-      pages.append(contents);
+       });
       function appendSinglePage(code, dossier, item, pageNumber, totalPages) {
           const page = makePage();
           page.dataset.dossier = code;
@@ -308,62 +328,57 @@
           pages.append(page);
           if (pageNumber === 1) firstPageByDossier.set(code, pages.querySelectorAll(".page").length);
       }
-      function appendPhotoSheet(code, dossier, items, pageNumber, totalPages) {
-        const page = makePage();
-        page.dataset.dossier = code;
-        page.append(makeHeader(dossierHeader(code, pageNumber, totalPages)));
-        const heading = document.createElement("h2");
-        heading.textContent = dossier.title;
-        const detail = document.createElement("h3");
-        detail.textContent = `${categories[code.split("-")[0]]} · ${items.length} photographie${items.length > 1 ? "s" : ""}`;
-        page.append(heading, detail);
-        const sheet = document.createElement("section");
-        sheet.className = `photo-sheet photo-sheet--${items.length}`;
-        items.forEach((item) => {
-          const figure = document.createElement("figure");
-          figure.className = "photo-evidence";
+       const isPortrait = (item) => item.orientation === "portrait" || (item.height && item.width && item.height > item.width);
+       const sheetLayout = (items, includesDocument = false) => {
+         if (includesDocument) return "media-sheet--anecdote-with-media";
+         if (items.length === 1) return "media-sheet--one";
+         if (items.length === 2 && items.every(isPortrait)) return "media-sheet--two-portrait";
+         if (items.length === 2 && items.every((item) => !isPortrait(item))) return "media-sheet--two-landscape";
+         if (items.length === 3 && items.filter(isPortrait).length >= 2) return "media-sheet--three-portrait";
+         if (items.length === 3) return "media-sheet--three-landscape";
+         return "";
+       };
+       function appendMediaEvidence(sheet, item) {
+         const figure = document.createElement("figure");
+         figure.className = `${item.type}-evidence`;
+         if (item.type === "image") {
            const image = document.createElement("img");
-            deferSource(image, item.source);
+           deferSource(image, item.source);
            image.dataset.pdfSource = item.source;
            image.alt = item.title;
-          const caption = document.createElement("figcaption");
-          caption.innerHTML = `<span class="evidence-date"></span><span class="evidence-name"></span>`;
-          caption.querySelector(".evidence-date").textContent = item.createdAt || "Date inconnue";
-          caption.querySelector(".evidence-name").textContent = item.title;
-          figure.append(image, caption);
-          sheet.append(figure);
-        });
-        page.append(sheet);
-        pages.append(page);
-        if (pageNumber === 1) firstPageByDossier.set(code, pages.querySelectorAll(".page").length);
-      }
-      function appendVideoSheet(code, dossier, items, pageNumber, totalPages) {
-        const page = makePage();
-        page.dataset.dossier = code;
-        page.append(makeHeader(dossierHeader(code, pageNumber, totalPages)));
+           figure.append(image);
+         } else if (item.type === "video") {
+           appendVideoPlayer(figure, item);
+           appendVideoAccess(figure, item);
+         } else {
+           const frame = document.createElement("iframe");
+           deferSource(frame, item.source);
+           frame.title = item.title;
+           figure.append(frame);
+         }
+         const caption = document.createElement("figcaption");
+         caption.innerHTML = `<span class="evidence-date"></span><span class="evidence-name"></span>`;
+         caption.querySelector(".evidence-date").textContent = item.createdAt || "";
+         caption.querySelector(".evidence-name").textContent = item.title;
+         figure.append(caption);
+         sheet.append(figure);
+       }
+       function appendMediaSheet(code, dossier, items, pageNumber, totalPages, includesDocument = false) {
+         const page = makePage();
+         page.dataset.dossier = code;
+         page.append(makeHeader(dossierHeader(code, pageNumber, totalPages)));
         const heading = document.createElement("h2");
         heading.textContent = dossier.title;
         const detail = document.createElement("h3");
-        detail.textContent = `${categories[code.split("-")[0]]} · ${items.length} enregistrement${items.length > 1 ? "s" : ""}`;
-        page.append(heading, detail);
-        const sheet = document.createElement("section");
-        sheet.className = `video-sheet video-sheet--${items.length}`;
-        items.forEach((item) => {
-          const figure = document.createElement("figure");
-          figure.className = "video-evidence";
-           const caption = document.createElement("figcaption");
-          caption.innerHTML = `<span class="evidence-date"></span><span class="evidence-name"></span>`;
-          caption.querySelector(".evidence-date").textContent = item.createdAt || "Date inconnue";
-          caption.querySelector(".evidence-name").textContent = item.title;
-           appendVideoPlayer(figure, item);
-           figure.append(caption);
-           appendVideoAccess(figure, item);
-          sheet.append(figure);
-        });
-        page.append(sheet);
-        pages.append(page);
-        if (pageNumber === 1) firstPageByDossier.set(code, pages.querySelectorAll(".page").length);
-      }
+         detail.textContent = `${categories[code.split("-")[0]]} · ${items.length} pièce${items.length > 1 ? "s" : ""}`;
+         page.append(heading, detail);
+         const sheet = document.createElement("section");
+         sheet.className = `media-sheet ${sheetLayout(items, includesDocument)}`;
+         items.forEach((item) => appendMediaEvidence(sheet, item));
+         page.append(sheet);
+         pages.append(page);
+         if (pageNumber === 1) firstPageByDossier.set(code, pages.querySelectorAll(".page").length);
+       }
       function appendVideoQrList(code, dossier, items, pageNumber, totalPages) {
         const page = makePage();
         page.dataset.dossier = code;
@@ -388,53 +403,63 @@
         page.append(heading, intro, sheet);
         pages.append(page);
       }
-      function appendStandardItems(code, dossier, items, startPage, totalPages) {
-        let dossierPage = startPage;
-        for (let index = 0; index < items.length;) {
-          const item = items[index];
-          if (item.type === "video") {
-            const videos = [];
-            while (index < items.length && items[index].type === "video" && videos.length < 2) {
-              videos.push(items[index]);
-              index += 1;
-            }
-            appendVideoSheet(code, dossier, videos, dossierPage, totalPages);
-            dossierPage += 1;
-            continue;
-          }
-          if (item.type !== "image") {
-            appendSinglePage(code, dossier, item, dossierPage, totalPages);
-            dossierPage += 1;
-            index += 1;
-            continue;
-          }
-          const photos = [];
-          while (index < items.length && items[index].type === "image" && photos.length < 4) {
-            photos.push(items[index]);
-            index += 1;
-          }
-          appendPhotoSheet(code, dossier, photos, dossierPage, totalPages);
-          dossierPage += 1;
-        }
-        return dossierPage;
-      }
-      const standardPageCount = (items) => Math.ceil(items.filter((item) => item.type === "image").length / 4) + Math.ceil(items.filter((item) => item.type === "video").length / 2) + items.filter((item) => item.type !== "image" && item.type !== "video").length;
-      Object.entries(media).filter(([code]) => adminMode || viewed.has(code)).forEach(([code, dossier]) => {
-        const items = sortArchiveItems(dossier.items || []);
-        const recapVideos = items.filter((item) => item.isRecapVideo);
-        if (recapVideos.length === 0) {
-          appendStandardItems(code, dossier, items, 1, standardPageCount(items));
-          return;
-        }
-        const otherVideos = items.filter((item) => item.type === "video" && !item.isRecapVideo && !item.isFeaturedVideo);
-        const chronologicalItems = items.filter((item) => item.type !== "video" || item.isFeaturedVideo);
-        const totalPages = recapVideos.length + standardPageCount(chronologicalItems) + Math.ceil(otherVideos.length / 4);
+       const shortDocument = (item) => item.type === "document" && (item.height || 0) <= 380;
+       function buildStandardPlan(items) {
+         const plan = [];
+         for (let index = 0; index < items.length;) {
+           const item = items[index];
+           if (shortDocument(item)) {
+             const followingMedia = [];
+             while (followingMedia.length < 2 && items[index + followingMedia.length + 1] && (items[index + followingMedia.length + 1].type === "image" || items[index + followingMedia.length + 1].type === "video")) {
+               followingMedia.push(items[index + followingMedia.length + 1]);
+             }
+             if (followingMedia.length > 0) {
+               plan.push({ type: "sheet", items: [item, ...followingMedia], includesDocument: true });
+               index += followingMedia.length + 1;
+               continue;
+             }
+           }
+           if (item.type === "image" || item.type === "video") {
+             const mediaItems = [];
+             while (index < items.length && mediaItems.length < 4 && (items[index].type === "image" || items[index].type === "video")) {
+               mediaItems.push(items[index]);
+               index += 1;
+             }
+             plan.push({ type: "sheet", items: mediaItems, includesDocument: false });
+             continue;
+           }
+           plan.push({ type: "single", item });
+           index += 1;
+         }
+         return plan;
+       }
+       function appendStandardItems(code, dossier, plan, startPage, totalPages) {
+         let dossierPage = startPage;
+         plan.forEach((entry) => {
+           if (entry.type === "sheet") appendMediaSheet(code, dossier, entry.items, dossierPage, totalPages, entry.includesDocument);
+           else appendSinglePage(code, dossier, entry.item, dossierPage, totalPages);
+           dossierPage += 1;
+         });
+         return dossierPage;
+       }
+       Object.entries(media).filter(([code]) => adminMode || viewed.has(code)).forEach(([code, dossier]) => {
+         const items = sortArchiveItems(dossier.items || []);
+         const recapVideos = items.filter((item) => item.isRecapVideo);
+         if (recapVideos.length === 0) {
+           const plan = buildStandardPlan(items);
+           appendStandardItems(code, dossier, plan, 1, plan.length);
+           return;
+         }
+         const otherVideos = items.filter((item) => item.type === "video" && !item.isRecapVideo && !item.isFeaturedVideo);
+         const chronologicalItems = items.filter((item) => item.type !== "video" || item.isFeaturedVideo);
+         const plan = buildStandardPlan(chronologicalItems);
+         const totalPages = recapVideos.length + plan.length + Math.ceil(otherVideos.length / 4);
         let dossierPage = 1;
         recapVideos.forEach((item) => {
           appendSinglePage(code, dossier, item, dossierPage, totalPages);
           dossierPage += 1;
         });
-        dossierPage = appendStandardItems(code, dossier, chronologicalItems, dossierPage, totalPages);
+         dossierPage = appendStandardItems(code, dossier, plan, dossierPage, totalPages);
         for (let index = 0; index < otherVideos.length; index += 4) {
           appendVideoQrList(code, dossier, otherVideos.slice(index, index + 4), dossierPage, totalPages);
           dossierPage += 1;
@@ -500,7 +525,7 @@
       cover.addEventListener("click", open);
       cover.addEventListener("keydown", (event) => { if (event.key === "Enter" || event.key === " ") open(); });
        document.querySelector("#inventory").addEventListener("click", () => open());
-       list.addEventListener("click", (event) => {
+        inventoryLists.forEach((list) => list.addEventListener("click", (event) => {
          const exportThemeButton = event.target.closest("button[data-export-theme]");
          if (exportThemeButton) {
            exportTheme(exportThemeButton.dataset.exportTheme);
@@ -518,8 +543,11 @@
            return;
          }
          showPage(firstPageByDossier.get(link.dataset.dossier));
-      });
-       pages.addEventListener("click", (event) => {
+        }));
+        pages.addEventListener("click", (event) => {
+          if (event.target.closest("button[data-inventory-next]")) showPage(2);
+        });
+        pages.addEventListener("click", (event) => {
         const photo = event.target.closest(".photo-evidence");
         if (photo) {
           photo.classList.toggle("expanded");
@@ -579,7 +607,7 @@
           document.body.classList.remove("exporting-complete");
           document.body.classList.remove("exporting-theme");
          document.querySelectorAll(".page[data-dossier]").forEach((page) => page.classList.remove("export-selected"));
-          if (previousInventoryStatus !== null) inventoryStatusElement.textContent = previousInventoryStatus;
+           if (previousInventoryStatus !== null) inventoryStatusElements.forEach((element) => { element.textContent = previousInventoryStatus; });
           restoreOriginalImages();
           unloadHiddenPageMedia();
           loadVisiblePageMedia();
@@ -597,20 +625,20 @@
        }
         async function exportComplete() {
          const previousTitle = document.title;
-         const previousInventoryStatus = inventoryStatusElement.textContent;
+           const previousInventoryStatus = inventoryStatusElements[0].textContent;
          document.title = "Dossier S-18 - Archives complètes";
          document.body.classList.add("exporting-complete");
-         inventoryStatusElement.textContent = "Dossier complet";
+           inventoryStatusElements.forEach((element) => { element.textContent = "Dossier complet"; });
          window.addEventListener("afterprint", () => resetExport(previousTitle, previousInventoryStatus), { once: true });
            await preparePdf();
           window.print();
         }
         async function exportTheme(categoryCode) {
           const previousTitle = document.title;
-          const previousInventoryStatus = inventoryStatusElement.textContent;
+          const previousInventoryStatus = inventoryStatusElements[0].textContent;
           document.title = `${categoryCode} - ${categories[categoryCode]}`;
           document.body.classList.add("exporting-theme");
-          inventoryStatusElement.textContent = "Dossier complet";
+          inventoryStatusElements.forEach((element) => { element.textContent = "Dossier complet"; });
           document.querySelectorAll(".page[data-dossier]").forEach((page) => {
             page.classList.toggle("export-selected", page.dataset.dossier.startsWith(`${categoryCode}-`));
           });
