@@ -11,37 +11,27 @@ INPUT="${IMPORT_DIR}/drive-inventaire-medias.csv"
 mkdir -p "$IMPORT_DIR"
 PHOTO_CSV="${DOSSIERS_DIR}/photos-google-drive-inventaire.csv"
 VIDEO_CSV="${DOSSIERS_DIR}/liens-videos-a-completer.csv"
-node - "$INPUT" "$PHOTO_CSV" "$VIDEO_CSV" <<'NODE'
-const fs = require("fs");
-const [input, photos, videos] = process.argv.slice(2);
-const parse = (line) => {
-  const values = [];
-  let value = "";
-  let quoted = false;
-  for (let index = 0; index < line.length; index += 1) {
-    const character = line[index];
-    if (character === '"') {
-      if (quoted && line[index + 1] === '"') { value += '"'; index += 1; }
-      else quoted = !quoted;
-    } else if (character === "," && !quoted) { values.push(value); value = ""; }
-    else value += character;
+INPUT="$INPUT" PHOTO_CSV="$PHOTO_CSV" VIDEO_CSV="$VIDEO_CSV" perl -MEncode=decode -CSDA -e '
+  sub parse_csv {
+    my ($line) = @_; chomp $line; my @values;
+    while ($line =~ /\G(?:\A|,)(?:"((?:[^"]|"")*)"|([^,]*))/gc) { my $value = defined $1 ? $1 : $2; $value =~ s/""/"/g; push @values, $value; }
+    return @values;
   }
-  values.push(value);
-  return values;
-};
-const quote = (value) => `"${String(value).replaceAll('"', '""')}"`;
-const rows = fs.readFileSync(input, "utf8").split(/\r?\n/).filter(Boolean).slice(1).map(parse);
-const photoRows = [["Thème", "Dossier", "Nom exact de la photo", "ID Google Drive", "Lien Google Drive"]];
-const videoRows = [["Thème", "Dossier", "Nom exact de la vidéo", "Lien Google Drive"]];
-for (const [theme, folder, name, type, , id, link] of rows) {
-  if (!theme || !folder || !name || !id || !link) continue;
-  if (type === "Photo") photoRows.push([theme, folder, name, id, link]);
-  if (type === "Video") videoRows.push([theme, folder, name, link]);
-}
-fs.writeFileSync(photos, photoRows.map((row) => row.map(quote).join(",")).join("\n") + "\n");
-fs.writeFileSync(videos, videoRows.map((row) => row.map(quote).join(",")).join("\n") + "\n");
-console.log(`Photos importables : ${photoRows.length - 1} | Videos importables : ${videoRows.length - 1}`);
-NODE
+  sub quote_csv { my ($value) = @_; $value =~ s/"/""/g; return qq{"$value"}; }
+  open my $in, "<:encoding(UTF-8)", $ENV{INPUT} or die "$!\n";
+  open my $photos, ">:encoding(UTF-8)", $ENV{PHOTO_CSV} or die "$!\n";
+  open my $videos, ">:encoding(UTF-8)", $ENV{VIDEO_CSV} or die "$!\n";
+  print $photos join(",", map { quote_csv($_) } ("Thème", "Dossier", "Nom exact de la photo", "ID Google Drive", "Lien Google Drive")), "\n";
+  print $videos join(",", map { quote_csv($_) } ("Thème", "Dossier", "Nom exact de la vidéo", "Lien Google Drive")), "\n";
+  <$in>; my ($photo_count, $video_count) = (0, 0);
+  while (my $line = <$in>) {
+    my ($theme, $folder, $name, $type, $size, $id, $link) = parse_csv($line);
+    next unless $theme && $folder && $name && $id && $link;
+    if ($type eq "Photo") { print $photos join(",", map { quote_csv($_) } ($theme, $folder, $name, $id, $link)), "\n"; $photo_count++; }
+    if ($type eq "Video") { print $videos join(",", map { quote_csv($_) } ($theme, $folder, $name, $link)), "\n"; $video_count++; }
+  }
+  print "Photos importables : $photo_count | Videos importables : $video_count\n";
+'
 printf '\n' | "$OUTILS_DIR/09-importer-liens-photos-google-drive.command"
 printf '\n' | "$OUTILS_DIR/03-importer-liens-videos-csv.command"
 printf '\n' | "$OUTILS_DIR/04-mettre-a-jour-liens-videos.command"

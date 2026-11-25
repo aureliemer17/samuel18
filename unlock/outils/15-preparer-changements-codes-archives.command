@@ -29,38 +29,47 @@ if [[ ! -f "$REGISTRY" ]]; then
   exit 0
 fi
 
-node - "$REGISTRY" "$PLAN" <<'NODE'
-const fs = require("fs");
-const [registry, plan] = process.argv.slice(2);
-const parse = (line) => line.match(/(?:^|,)(?:"((?:[^"]|"")*)"|([^,]*))/g).map((cell) => cell.replace(/^,/, "").replace(/^"|"$/g, "").replaceAll('""', '"'));
-const rows = fs.readFileSync(registry, "utf8").trim().split(/\r?\n/).slice(1).map(parse);
-const changes = rows.filter((row) => row[2] !== row[3] && row[5].toLowerCase() === "renommer");
-const quote = (value) => `"${String(value).replaceAll('"', '""')}"`;
-const output = [["Type", "Theme", "Ancien dossier", "Nouveau dossier", "Action"]];
-for (const [theme, folder, oldCode, newCode, title] of changes) {
-  output.push(["Dossier", theme, folder, `${newCode}${title ? ` - ${title}` : ""}`, "renommer"]);
-}
-fs.writeFileSync(plan, output.map((row) => row.map(quote).join(",")).join("\n") + "\n");
-console.log(`Plan genere : ${changes.length} renommage(s).`);
-NODE
+REGISTRY="$REGISTRY" PLAN="$PLAN" perl -MEncode=decode -CSDA -e '
+  sub parse_csv {
+    my ($line) = @_; chomp $line; my @values;
+    while ($line =~ /\G(?:\A|,)(?:"((?:[^"]|"")*)"|([^,]*))/gc) {
+      my $value = defined $1 ? $1 : $2; $value =~ s/""/"/g; push @values, $value;
+    }
+    return @values;
+  }
+  sub quote_csv { my ($value) = @_; $value =~ s/"/""/g; return qq{"$value"}; }
+  open my $in, "<:encoding(UTF-8)", $ENV{REGISTRY} or die "$!\n";
+  <$in>; my @plan = (["Type", "Theme", "Ancien dossier", "Nouveau dossier", "Action"]); my $count = 0;
+  while (my $line = <$in>) {
+    my ($theme, $folder, $old, $new, $title, $action) = parse_csv($line);
+    next unless $old ne $new && lc($action // "") eq "renommer";
+    push @plan, ["Dossier", $theme, $folder, $new . (length($title // "") ? " - $title" : ""), "renommer"]; $count++;
+  }
+  open my $out, ">:encoding(UTF-8)", $ENV{PLAN} or die "$!\n";
+  print $out join(",", map { quote_csv($_) } @$_), "\n" for @plan;
+  print "Plan genere : $count renommage(s).\n";
+'
 print "Plan Google Drive genere : $PLAN"
 print "Verifiez-le, puis utilisez google-drive-synchroniser-medias.gs pour appliquer les renommages Drive."
 read "confirm?Appliquer aussi les renommages locaux indiques dans le plan ? [oui/N] "
 if [[ "$confirm" == "oui" ]]; then
-  node - "$REGISTRY" "$DOSSIERS_DIR" <<'NODE'
-const fs = require("fs");
-const path = require("path");
-const [registry, root] = process.argv.slice(2);
-const parse = (line) => line.match(/(?:^|,)(?:"((?:[^"]|"")*)"|([^,]*))/g).map((cell) => cell.replace(/^,/, "").replace(/^"|"$/g, "").replaceAll('""', '"'));
-for (const [theme, folder, oldCode, newCode, title, action] of fs.readFileSync(registry, "utf8").trim().split(/\r?\n/).slice(1).map(parse)) {
-  if (action.toLowerCase() !== "renommer" || oldCode === newCode) continue;
-  const oldPath = path.join(root, theme, folder);
-  const newPath = path.join(root, theme, `${newCode}${title ? ` - ${title}` : ""}`);
-  if (!fs.existsSync(oldPath)) throw new Error(`Dossier local introuvable : ${oldPath}`);
-  if (fs.existsSync(newPath)) throw new Error(`Destination locale existante : ${newPath}`);
-  fs.renameSync(oldPath, newPath);
-  console.log(`Renomme : ${folder} -> ${path.basename(newPath)}`);
-}
-NODE
+  REGISTRY="$REGISTRY" DOSSIERS_DIR="$DOSSIERS_DIR" perl -MEncode=decode -CSDA -e '
+    sub parse_csv {
+      my ($line) = @_; chomp $line; my @values;
+      while ($line =~ /\G(?:\A|,)(?:"((?:[^"]|"")*)"|([^,]*))/gc) { my $value = defined $1 ? $1 : $2; $value =~ s/""/"/g; push @values, $value; }
+      return @values;
+    }
+    open my $in, "<:encoding(UTF-8)", $ENV{REGISTRY} or die "$!\n"; <$in>;
+    while (my $line = <$in>) {
+      my ($theme, $folder, $old, $new, $title, $action) = parse_csv($line);
+      next unless lc($action // "") eq "renommer" && $old ne $new;
+      my $from = "$ENV{DOSSIERS_DIR}/$theme/$folder";
+      my $to = "$ENV{DOSSIERS_DIR}/$theme/$new" . (length($title // "") ? " - $title" : "");
+      die "Dossier local introuvable : $from\n" unless -d $from;
+      die "Destination locale existante : $to\n" if -e $to;
+      rename $from, $to or die "Renommage impossible : $!\n";
+      print "Renomme : $folder -> $new\n";
+    }
+  '
 fi
 read "?Appuyez sur Entree pour fermer cette fenetre..."
