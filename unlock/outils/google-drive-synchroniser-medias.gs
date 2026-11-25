@@ -44,16 +44,25 @@ function appliquerPlanDeRenommage() {
   rows.shift();
   const root = DriveApp.getFolderById(ROOT_FOLDER_ID);
   let renamed = 0;
+  let skipped = 0;
   rows.forEach(([type, theme, oldName, newName, action]) => {
     if (type !== "Dossier" || String(action).toLowerCase() !== "renommer") return;
     const themeFolder = findFolder(root, theme);
-    if (!themeFolder) throw new Error(`Theme introuvable : ${theme}`);
+    if (!themeFolder) {
+      Logger.log(`Ignore : theme absent de Drive : ${theme}`);
+      skipped += 1;
+      return;
+    }
     const archiveFolder = findArchiveFolder(themeFolder, oldName);
-    if (!archiveFolder) throw new Error(`Dossier introuvable : ${theme}/${oldName}`);
+    if (!archiveFolder) {
+      Logger.log(`Ignore : dossier absent de Drive : ${theme}/${oldName}`);
+      skipped += 1;
+      return;
+    }
     archiveFolder.setName(newName);
     renamed += 1;
   });
-  Logger.log(`Dossiers renommes : ${renamed}`);
+  Logger.log(`Dossiers renommes : ${renamed} | Ignores car absents de Drive : ${skipped}`);
 }
 
 function findFolder(parent, expectedName) {
