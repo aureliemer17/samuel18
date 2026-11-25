@@ -74,6 +74,9 @@ count=0
 for category_dir in "$DOSSIERS_DIR"/*(/); do
   category_name="${category_dir:t}"
   [[ "$category_name" == "heic" || "$category_name" == "videos" || "$category_name" == "pdf-images" || "$category_name" == "photos" || "$category_name" == "travail" || "$category_name" == "rapports" || "$category_name" == "drive-imports" ]] && continue
+  print ""
+  print "--- Debut theme : ${category_name} ---"
+  theme_count=0
   for folder_dir in "$category_dir"/*(/); do
     folder_name="${folder_dir:t}"
     if [[ "$folder_name" =~ '^((I|II|III|IV|V|VI|VII)-[A-J]-[1-8])( - .+)?$' ]]; then
@@ -197,7 +200,9 @@ for category_dir in "$DOSSIERS_DIR"/*(/); do
     print '      ],' >> "$BLOCK_FILE"
     print '    },' >> "$BLOCK_FILE"
     (( count += 1 ))
+    (( theme_count += 1 ))
   done
+  print "--- Fin theme : ${category_name} (${theme_count} dossier(s)) ---"
 done
 
 print '  },' >> "$BLOCK_FILE"

@@ -27,11 +27,22 @@ usage() {
 }
 
 run_full() {
-  print "Regeneration complete : contenu, configuration, liens video et images PDF."
+  print ""
+  print "=== REGENERATION COMPLETE DES ARCHIVES ==="
+  print ""
+  print "[1/4] Analyse des souvenirs et generation de la configuration..."
   printf '\n' | "$OUTILS_DIR/05-mettre-a-jour-archives.command"
+  print ""
+  print "[2/4] Generation des liens video..."
   printf '\n' | "$OUTILS_DIR/04-mettre-a-jour-liens-videos.command"
+  print ""
+  print "[3/4] Publication des anecdotes, instructions et documents..."
   printf '\n' | "$OUTILS_DIR/10-copier-contenu-archives-pour-site.command"
+  print ""
+  print "[4/4] Preparation des images legeres pour les exports PDF..."
   printf '\n' | "$OUTILS_DIR/06-preparer-images-pour-pdf.command"
+  print ""
+  print "=== REGENERATION TERMINEE ==="
 }
 
 add_or_update() {
