@@ -10,15 +10,21 @@ Les actions courantes sont :
 1. **Ajouter ou modifier un souvenir** : choisir le souvenir puis ajouter une photo,
    vidéo, anecdote, instruction, titre ou document. La configuration et le contenu
    publié sont mis à jour après l'ajout.
-2. **Régénérer le site complet** : à utiliser après une opération importante ou pour
-   repartir d'une configuration propre. Les HEIC, le contenu publié, les liens vidéo
-   et les images PDF sont traités en une seule action.
+2. **Régénérer le site local** : à utiliser après une opération importante ou pour
+    repartir d'une configuration propre. Les HEIC, le contenu publié, les liens vidéo
+    et les images PDF sont traités en une seule action. Cette action ne contacte pas
+    Google Drive et ne modifie pas les liens photo Drive.
 3. **Préparer les médias pour Google Drive** : crée seulement les photos et vidéos
    nouvelles ou modifiées sous `../../dossiers/travail/drive-a-deposer/`, avec la
    même arborescence que les originaux. Déposez ce contenu dans Drive.
 4. **Importer l'inventaire Google Drive** : téléchargez `drive-inventaire-medias.csv`
-   depuis Drive vers `../../dossiers/drive-imports/`, puis lancez cette action pour
-   mettre à jour les liens photo et vidéo du site.
+    depuis Drive vers `../../dossiers/drive-imports/`, puis lancez cette action pour
+    mettre à jour les liens photo et vidéo du site.
+
+Après un renommage de thèmes ou dossiers dans Drive, exécutez d'abord
+`inventorierMedias` dans Apps Script, téléchargez son CSV, puis choisissez l'action 4.
+Cette étape régénère `../config/archive-photo-drive-config.js` avec les nouveaux
+chemins et IDs ; elle est indispensable pour que les photos en ligne se chargent.
 5. **Vérifier avant publication Git** : bloque les médias d'archives placés par erreur
    dans `unlock/` et affiche les fichiers réellement modifiés.
 6. **Codes et énigmes** : génère les configurations depuis des registres séparés,

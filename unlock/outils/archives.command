@@ -15,7 +15,7 @@ DOSSIERS_DIR="${ROOT_DIR}/dossiers"
 usage() {
   print ""
   print "GESTION DES ARCHIVES"
-  print "1. Regenerer le site complet"
+  print "1. Regenerer le site local (sans inventaire Google Drive)"
   print "2. Ajouter ou modifier un souvenir"
   print "3. Preparer les medias pour Google Drive"
   print "4. Importer l'inventaire Google Drive"
@@ -28,7 +28,10 @@ usage() {
 
 run_full() {
   print ""
-  print "=== REGENERATION COMPLETE DES ARCHIVES ==="
+  print "=== REGENERATION DU SITE LOCAL ==="
+  print "Les photos Drive ne sont pas mises a jour ici."
+  print "Apres un renommage Drive, lancez Apps Script inventorierMedias,"
+  print "telechargez le CSV puis choisissez l'action 4."
   print ""
   print "[1/4] Analyse des souvenirs et generation de la configuration..."
   printf '\n' | "$OUTILS_DIR/05-mettre-a-jour-archives.command"
@@ -42,7 +45,7 @@ run_full() {
   print "[4/4] Preparation des images legeres pour les exports PDF..."
   printf '\n' | "$OUTILS_DIR/06-preparer-images-pour-pdf.command"
   print ""
-  print "=== REGENERATION TERMINEE ==="
+  print "=== REGENERATION LOCALE TERMINEE ==="
 }
 
 add_or_update() {

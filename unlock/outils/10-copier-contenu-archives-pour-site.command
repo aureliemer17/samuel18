@@ -19,7 +19,11 @@ if [[ ! -d "$DOSSIERS_DIR" ]]; then
 fi
 
 copied=0
-updated=0
+
+# contenu-archives is generated output. Rebuild it so renamed or deleted
+# dossiers cannot leave stale published paths behind.
+rm -rf "$CONTENT_DIR"
+mkdir -p "$CONTENT_DIR"
 
 for category_dir in "$DOSSIERS_DIR"/*(/N); do
   category_name="${category_dir:t}"
@@ -38,17 +42,13 @@ for category_dir in "$DOSSIERS_DIR"/*(/N); do
         cp -p "$content_file" "$destination_file"
         print "Copié : ${category_name}/${folder_name}/${file_name}"
         (( copied += 1 ))
-      elif [[ "$content_file" -nt "$destination_file" ]]; then
-        cp -p "$content_file" "$destination_file"
-        print "Mis à jour : ${category_name}/${folder_name}/${file_name}"
-        (( updated += 1 ))
       fi
     done
   done
 done
 
 print ""
-print "Documents nouveaux : ${copied} | Documents mis à jour : ${updated}"
+print "Documents publiés : ${copied}"
 print "Contenu publié : ${CONTENT_DIR}"
 print "Ajoutez ensuite ce dossier à Git avec :"
 print "git add -A unlock/contenu-archives"
