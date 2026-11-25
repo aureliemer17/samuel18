@@ -36,17 +36,15 @@
       .document-frame { background: #fffdf7; height: 420px; max-height: none; min-height: 120px; }
        .folder-footer { align-items: end; display: grid; gap: 20px; grid-template-columns: minmax(0, 1fr) minmax(0, 3fr); margin-top: 22px; }
        .folder-return-top { margin: 0 0 22px; width: fit-content; }
-       .mobile-nav { display: none; }
       .instructions { background: #f3e49c; box-shadow: 3px 5px 7px rgba(62, 42, 11, .25); padding: 14px 16px; transform: rotate(1deg); }
       .instructions__label { color: #765b1d; font-size: .68rem; font-weight: 850; letter-spacing: .14em; margin: 0 0 7px; text-transform: uppercase; }
       .instructions iframe { background: transparent; border: 0; display: block; font-size: .85rem; height: 11.2em; line-height: 1.4; max-height: 11.2em; width: 100%; }
       .return { align-items: center; background: #72572c; box-shadow: 3px 4px 0 #372713; color: #fff8e2; display: inline-flex; font-size: .78rem; font-weight: 800; justify-content: center; padding: 12px 18px; text-decoration: none; text-transform: uppercase; width: 100%; }
       .return:hover { background: #503a1d; }
-       @media (max-width: 620px) { body { padding: 12px; } .mobile-nav { display: flex; gap: 8px; margin: 0 auto 12px; max-width: 1000px; } .mobile-nav a { background: #f4ead1; border: 1px solid #8b6d42; box-shadow: 2px 3px 0 rgba(0, 0, 0, .3); color: #4b351d; flex: 1; font-family: "Courier New", monospace; font-size: .68rem; font-weight: 900; letter-spacing: .04em; padding: 10px; text-align: center; text-decoration: none; text-transform: uppercase; } .folder { padding: 28px 20px 34px; } .folder-footer { align-items: stretch; grid-template-columns: 1fr; } .return { justify-content: center; } .photo-gallery, .photo-gallery--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); } .photo-gallery--1 { grid-template-columns: minmax(0, 1fr); } .photo-gallery:not(.photo-gallery--1) .photo--landscape { grid-column: span 2; } }
+       @media (max-width: 620px) { body { padding: 12px; } .folder { padding: 28px 20px 34px; } .folder-footer { align-items: stretch; grid-template-columns: 1fr; } .return { justify-content: center; } .photo-gallery, .photo-gallery--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); } .photo-gallery--1 { grid-template-columns: minmax(0, 1fr); } .photo-gallery:not(.photo-gallery--1) .photo--landscape { grid-column: span 2; } }
     </style>
   </head>
   <body>
-    <nav class="mobile-nav" aria-label="Navigation mobile"><a href="../index.html">Accueil</a><a href="decouvertes.html" id="inventoryLink">Inventaire</a></nav>
     <main><a class="return folder-return-top" id="returnLinkTop" href="console.html" hidden>Retour aux archives</a><article class="folder"><div class="code" id="code"></div><h1 id="title"></h1><div id="content"></div></article><footer class="folder-footer"><a class="return" id="returnLink" href="console.html">Retour aux archives</a><div id="instructions"></div></footer></main>
     <script src="../config/archive-config.example.js"></script>
     <script src="../config/archive-config.local.js"></script>
