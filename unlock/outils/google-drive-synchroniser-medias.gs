@@ -46,14 +46,28 @@ function appliquerPlanDeRenommage() {
   let renamed = 0;
   rows.forEach(([type, theme, oldName, newName, action]) => {
     if (type !== "Dossier" || String(action).toLowerCase() !== "renommer") return;
-    const themeFolders = root.getFoldersByName(theme);
-    if (!themeFolders.hasNext()) throw new Error(`Theme introuvable : ${theme}`);
-    const matches = themeFolders.next().getFoldersByName(oldName);
-    if (!matches.hasNext()) throw new Error(`Dossier introuvable : ${theme}/${oldName}`);
-    matches.next().setName(newName);
+    const themeFolder = findFolder(root, theme);
+    if (!themeFolder) throw new Error(`Theme introuvable : ${theme}`);
+    const archiveFolder = findFolder(themeFolder, oldName);
+    if (!archiveFolder) throw new Error(`Dossier introuvable : ${theme}/${oldName}`);
+    archiveFolder.setName(newName);
     renamed += 1;
   });
   Logger.log(`Dossiers renommes : ${renamed}`);
+}
+
+function findFolder(parent, expectedName) {
+  const expected = normalizeName(expectedName);
+  const folders = parent.getFolders();
+  while (folders.hasNext()) {
+    const folder = folders.next();
+    if (normalizeName(folder.getName()) === expected) return folder;
+  }
+  return null;
+}
+
+function normalizeName(value) {
+  return String(value).trim().replace(/\u00a0/g, " ").normalize("NFD");
 }
 
 function parcourir(folder, path, rows) {
