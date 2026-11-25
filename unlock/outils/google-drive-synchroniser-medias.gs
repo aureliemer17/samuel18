@@ -48,7 +48,7 @@ function appliquerPlanDeRenommage() {
     if (type !== "Dossier" || String(action).toLowerCase() !== "renommer") return;
     const themeFolder = findFolder(root, theme);
     if (!themeFolder) throw new Error(`Theme introuvable : ${theme}`);
-    const archiveFolder = findFolder(themeFolder, oldName);
+    const archiveFolder = findArchiveFolder(themeFolder, oldName);
     if (!archiveFolder) throw new Error(`Dossier introuvable : ${theme}/${oldName}`);
     archiveFolder.setName(newName);
     renamed += 1;
@@ -63,6 +63,24 @@ function findFolder(parent, expectedName) {
     const folder = folders.next();
     if (normalizeName(folder.getName()) === expected) return folder;
   }
+  return null;
+}
+
+function findArchiveFolder(parent, expectedName) {
+  const exactMatch = findFolder(parent, expectedName);
+  if (exactMatch) return exactMatch;
+
+  // Archive codes are the stable identifier; titles may differ by accents or punctuation.
+  const code = String(expectedName).match(/^(?:I|II|III|IV|V|VI|VII)-[A-J]-[1-8](?=\s|$)/)?.[0];
+  if (!code) return null;
+  const folders = parent.getFolders();
+  const matches = [];
+  while (folders.hasNext()) {
+    const folder = folders.next();
+    if (normalizeName(folder.getName()).startsWith(`${code} `) || normalizeName(folder.getName()) === code) matches.push(folder);
+  }
+  if (matches.length === 1) return matches[0];
+  if (matches.length > 1) throw new Error(`Plusieurs dossiers Drive portent le code ${code} sous ${parent.getName()}`);
   return null;
 }
 
