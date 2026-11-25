@@ -8,35 +8,45 @@ REGISTRE_DIR="${ROOT_DIR}/registre"
 for file in registre-machines.csv registre-pages.csv registre-indices.csv; do
   [[ -f "$REGISTRE_DIR/$file" ]] || { print -u2 "Registre introuvable : $file"; exit 1; }
 done
-node - "$REGISTRE_DIR" "$ROOT_DIR/unlock/config" <<'NODE'
-const fs = require("fs");
-const path = require("path");
-const [registryDir, configDir] = process.argv.slice(2);
-const read = (name) => {
-  const lines = fs.readFileSync(path.join(registryDir, name), "utf8").trim().split(/\r?\n/);
-  const headers = lines.shift().split(";");
-  return lines.filter(Boolean).map((line) => Object.fromEntries(headers.map((header, index) => [header, (line.split(";")[index] || "").trim()])));
-};
-const active = (row) => row.Actif.toLowerCase() === "oui";
-const machines = read("registre-machines.csv").filter(active);
-const pages = read("registre-pages.csv").filter(active);
-const hints = read("registre-indices.csv").filter(active);
-const duplicateCodes = machines.map((row) => row.Code).filter((code, index, codes) => codes.indexOf(code) !== index);
-if (duplicateCodes.length) throw new Error(`Codes machine dupliques : ${[...new Set(duplicateCodes)].join(", ")}`);
-const machineMap = Object.fromEntries(machines.map((row) => [row.Code, row.Destination]));
-const pageMap = Object.fromEntries(pages.map((row) => [row.Identifiant, Object.fromEntries([
-  ["entryCode", row["Code entree"]],
-  ["unlockCode", row["Code devoile"]],
-].filter(([, value]) => value))]));
-const hintMap = {};
-for (const row of hints) {
-  const entry = hintMap[row.Carte] ||= { hints: [] };
-  entry.hints[Number(row.Position) - 1] = row.Texte;
-  if (row.Solution.toLowerCase() === "oui") entry.solution = Number(row.Position);
-}
-for (const entry of Object.values(hintMap)) entry.hints = entry.hints.filter(Boolean);
-fs.writeFileSync(path.join(configDir, "config.js"), `// Genere depuis registre/registre-machines.csv et registre/registre-pages.csv.\nwindow.PUZZLE_CONFIG = ${JSON.stringify({ machines: machineMap, pages: pageMap }, null, 2)};\n`);
-fs.writeFileSync(path.join(configDir, "hints-config.js"), `// Genere depuis registre/registre-indices.csv.\nwindow.HINTS_CONFIG = ${JSON.stringify(hintMap, null, 2)};\n`);
-console.log(`Configurations generees : ${machines.length} machine(s), ${pages.length} page(s), ${hints.length} indice(s).`);
-NODE
+REGISTRE_DIR="$REGISTRE_DIR" CONFIG_DIR="$ROOT_DIR/unlock/config" perl -MJSON::PP=encode_json -MEncode=decode -CSDA -e '
+  use strict; use warnings;
+  my $registry = $ENV{REGISTRE_DIR};
+  my $config = $ENV{CONFIG_DIR};
+  sub rows {
+    my ($name) = @_;
+    open my $fh, "<:encoding(UTF-8)", "$registry/$name" or die "Impossible de lire $name: $!\n";
+    my $header = <$fh>; chomp $header;
+    my @keys = split /;/, $header, -1;
+    my @rows;
+    while (my $line = <$fh>) {
+      chomp $line; next unless length $line;
+      my @values = split /;/, $line, -1;
+      my %row; @row{@keys} = @values;
+      push @rows, \%row if lc($row{Actif} // "") eq "oui";
+    }
+    return @rows;
+  }
+  my @machines = rows("registre-machines.csv");
+  my @pages = rows("registre-pages.csv");
+  my @hints = rows("registre-indices.csv");
+  my (%machines, %pages, %hints);
+  for my $row (@machines) { die "Code machine duplique: $row->{Code}\n" if exists $machines{$row->{Code}}; $machines{$row->{Code}} = $row->{Destination}; }
+  for my $row (@pages) {
+    my %entry;
+    $entry{entryCode} = $row->{"Code entree"} if length($row->{"Code entree"} // "");
+    $entry{unlockCode} = $row->{"Code devoile"} if length($row->{"Code devoile"} // "");
+    $pages{$row->{Identifiant}} = \%entry;
+  }
+  for my $row (@hints) {
+    my $entry = ($hints{$row->{Carte}} //= { hints => [] });
+    $entry->{hints}[($row->{Position} // 1) - 1] = $row->{Texte};
+    $entry->{solution} = 0 + $row->{Position} if lc($row->{Solution} // "") eq "oui";
+  }
+  for my $entry (values %hints) { $entry->{hints} = [ grep { defined } @{$entry->{hints}} ]; }
+  open my $puzzle, ">:encoding(UTF-8)", "$config/config.js" or die $!;
+  print $puzzle "// Genere depuis registre/registre-machines.csv et registre/registre-pages.csv.\nwindow.PUZZLE_CONFIG = ", JSON::PP->new->canonical->pretty->encode({ machines => \%machines, pages => \%pages }), ";\n";
+  open my $hint_file, ">:encoding(UTF-8)", "$config/hints-config.js" or die $!;
+  print $hint_file "// Genere depuis registre/registre-indices.csv.\nwindow.HINTS_CONFIG = ", JSON::PP->new->canonical->pretty->encode(\%hints), ";\n";
+  print "Configurations generees : ", scalar(@machines), " machine(s), ", scalar(@pages), " page(s), ", scalar(@hints), " indice(s).\n";
+'
 read "?Appuyez sur Entree pour fermer cette fenetre..."
