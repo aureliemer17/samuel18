@@ -23,11 +23,12 @@
       .cover.open { opacity: 0; pointer-events: none; position: absolute; transform: rotateY(-108deg); }
       .cover.page-visible { opacity: 1; pointer-events: auto; position: relative; transform: none; }
       .cover__content { align-items: center; display: flex; flex-direction: column; margin: auto; max-width: 145mm; min-height: 245mm; position: relative; }
-      .logo { display: block; margin: 0 auto 7mm; max-width: 78mm; width: 65%; }
+      .logo { display: block; margin: 0 auto 5mm; max-width: 52mm; width: 44%; }
       .division { color: var(--brown); font-family: Arial, sans-serif; font-size: 8pt; letter-spacing: .07em; text-transform: uppercase; }
-      .cover h1 { font-size: 28pt; margin: 15mm 0 24mm; text-transform: uppercase; }
-      .cover .subtitle { font-size: 20pt; font-style: italic; line-height: 1.25; margin: 0; }
-      .cover .name { display: block; font-size: 37pt; margin-top: 3mm; }
+       .cover h1 { font-size: 28pt; margin: 15mm 0 24mm; text-transform: uppercase; }
+       .cover .subtitle { font-size: 20pt; font-style: italic; line-height: 1.25; margin: 0; }
+       .cover .name { display: block; font-size: 37pt; margin-top: 3mm; }
+       .cover-image { border: 4mm solid #fff8e2; box-shadow: 3mm 4mm 6mm rgba(53, 34, 10, .28); margin: 8mm auto; max-height: 88mm; max-width: 145mm; object-fit: contain; transform: rotate(-1.5deg); width: 100%; }
       .date { color: var(--red); font-family: Arial, sans-serif; font-size: 9pt; font-weight: 900; margin-top: 9mm; text-transform: uppercase; }
       .cover .quote { color: var(--brown); font-size: 11pt; font-style: italic; margin: auto 0 3mm; }
       .cover .confidential { color: var(--red); font-family: Arial, sans-serif; font-size: 8pt; font-weight: 900; letter-spacing: .04em; margin: 0; text-transform: uppercase; }
@@ -108,7 +109,7 @@
   <body>
     <nav class="toolbar" aria-label="Actions du dossier"><a class="toolbar-link" href="../index.html">Accueil</a><button id="inventory" type="button">Inventaire</button><button id="exportAll" type="button" hidden>PDF complet</button><button id="resetProgress" type="button" hidden>Réinitialiser le suivi</button></nav>
     <main class="book">
-      <section class="cover" id="cover" tabindex="0" role="button" aria-label="Ouvrir le dossier"><div class="cover__content"><img class="logo" src="../assets/bureau-majorite.png" alt="Bureau de la Majorité" /><div class="division">Archives personnelles · Restitution à la majorité</div><h1>Dossier S-18</h1><p class="subtitle">Les 18 premières années de<span class="name">Samuel</span></p><p class="date">29 novembre 2026</p><p class="quote">« Une vie entière de souvenirs à découvrir. »</p><p class="confidential">Document confidentiel</p></div></section>
+      <section class="cover" id="cover" tabindex="0" role="button" aria-label="Ouvrir le dossier"><div class="cover__content"><img class="logo" src="../assets/bureau-majorite.png" alt="Bureau de la Majorité" /><div class="division">Archives personnelles · Restitution à la majorité</div><h1>Dossier S-18</h1><p class="subtitle">Les 18 premières années de<span class="name">Samuel</span></p><img class="cover-image" src="../assets/image_dossier_S_18.png" alt="Samuel" /><p class="date">29 novembre 2026</p><p class="quote">« Une vie entière de souvenirs à découvrir. »</p><p class="confidential">Document confidentiel</p></div></section>
       <section class="pages" id="pages"></section>
     </main>
     <script src="../config/archive-config.example.js"></script>
