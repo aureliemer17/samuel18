@@ -1,39 +1,57 @@
 <!doctype html>
 <html lang="fr">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#291a11" />
-    <link rel="manifest" href="manifest.webmanifest" />
-    <style>html { touch-action: manipulation; }</style>
-    <title>Unlock</title>
-    <style>
-      :root { --ink: #273346; --orange: #ee913f; }
-      * { box-sizing: border-box; }
-      body { align-items: center; background: url("assets/index_background.png") center bottom / cover no-repeat; display: flex; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; justify-content: center; margin: 0; min-height: 100vh; padding: 24px; }
-      main { aspect-ratio: 1; margin-bottom: 8vh; max-width: 720px; position: relative; width: min(100%, 720px); }
-      .choice { color: #fff4cf; display: grid; font-size: clamp(.64rem, 1.8vw, .82rem); font-weight: 900; gap: 10px; justify-items: center; letter-spacing: .1em; position: absolute; text-decoration: none; text-shadow: 0 2px 2px rgba(0, 0, 0, .8); text-transform: uppercase; width: 23%; }
-      .choice--indice { left: 5%; top: 5%; }
-      .choice--machine { right: 5%; top: 5%; }
-      .choice--dossier { bottom: 5%; left: 38.5%; }
-      .button { aspect-ratio: 1; background: linear-gradient(145deg, #fff4cf, #e7bd69 54%, #bd7c32); border: 0; border-radius: 24%; box-shadow: inset 0 3px 3px rgba(255, 255, 239, .9), inset 0 -8px 13px rgba(157, 95, 30, .3), 0 15px 21px rgba(48, 24, 6, .48); display: grid; overflow: hidden; place-items: center; transition: transform .12s, box-shadow .12s; width: 100%; }
-      .choice:hover .button { box-shadow: inset 0 3px 3px rgba(255, 255, 239, 1), inset 0 -8px 13px rgba(157, 95, 30, .3), 0 10px 15px rgba(48, 24, 6, .42); transform: translateY(3px); }
-      .choice:active .button { box-shadow: inset 0 5px 12px rgba(127, 74, 20, .43), 0 2px 4px rgba(48, 24, 6, .24); transform: translateY(7px); }
-      .choice:focus-visible { outline: 3px solid var(--orange); outline-offset: 7px; }
-      .button img { display: block; height: 100%; object-fit: contain; pointer-events: none; transform: scale(1.06); transition: transform .12s; width: 100%; }
-      .choice:hover .button img { transform: scale(1.1); }
-      .choice:active .button img { transform: scale(1.05); }
-      .seal { align-items: center; background: #fffdf7; border: clamp(5px, 1vw, 9px) solid #d5c9ae; border-radius: 50%; box-shadow: inset 0 0 0 3px #8d7855, 0 14px 26px rgba(40, 55, 75, .18); display: grid; left: 50%; padding: 5%; place-items: center; position: absolute; top: 47%; transform: translate(-50%, -50%); width: 30%; }
-      .seal img { display: block; height: auto; width: 100%; }
-      @media (max-width: 480px) { body { background-image: url("assets/index_background_mobile.png"); padding: 14px; } main { margin-bottom: 12vh; } .choice { font-size: .58rem; letter-spacing: .06em; width: 26%; } .choice--indice { left: 2%; top: 7%; } .choice--machine { right: 2%; top: 7%; } .choice--dossier { bottom: 7%; left: 37%; } .seal { top: 47%; width: 34%; } }
-    </style>
-  </head>
-  <body>
-    <main>
-      <div class="seal"><img src="assets/bureau-majorite.png" alt="Bureau de la Majorité" /></div>
-      <a class="choice choice--indice" href="jeu/indices.html"><span>Indice</span><span class="button"><img src="assets/indice.png" alt="" /></span></a>
-      <a class="choice choice--machine" href="jeu/machine.html"><span>Machine</span><span class="button"><img src="assets/machine.png" alt="" /></span></a>
-      <a class="choice choice--dossier" href="archives/decouvertes.html"><span>Dossier S-18</span><span class="button"><img src="assets/dossier.png" alt="" /></span></a>
-    </main>
-  </body>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#291a11">
+<link rel="manifest" href="manifest.webmanifest">
+<title>Affaire S-18 — Bureau de la Majorité</title>
+<style>
+:root { --ink:#35291e; --gold:#a17c46; --paper:#fff5df; --veil:.46; }
+* {box-sizing:border-box}
+html {touch-action:manipulation}
+body {margin:0; min-height:100vh; min-height:100svh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:20px 12px; color:var(--ink); font-family:ui-monospace,SFMono-Regular,Menlo,monospace; background:#d9c6a5; isolation:isolate;}
+body::before {content:"";position:fixed;inset:0;z-index:-1;background:linear-gradient(rgba(255,248,232,var(--veil)),rgba(255,248,232,var(--veil))),url('assets/index_background.png') center/cover no-repeat;}
+header {text-align:center; padding:14px 30px 17px; background:linear-gradient(90deg,transparent,rgba(255,248,232,.88) 20%,rgba(255,248,232,.88) 80%,transparent); width:min(100%,680px);}
+.eyebrow {font-size:clamp(10px,2.5vw,13px);letter-spacing:.22em;text-transform:uppercase;font-weight:700;}
+h1 {font-family:Georgia,serif;font-size:clamp(38px,7vw,68px);line-height:1;margin:10px 0 8px;letter-spacing:.035em;}
+.subtitle {font-size:clamp(10px,2.4vw,13px);letter-spacing:.12em;text-transform:uppercase;}
+main {width:min(94vw,510px, calc(100svh - 205px)); min-width:min(94vw,310px); aspect-ratio:1;position:relative;margin:12px auto;}
+.orbit {position:absolute;inset:19%;border:1px solid rgba(103,72,36,.65);border-radius:50%;box-shadow:0 0 0 9px rgba(255,248,232,.2),0 0 0 10px rgba(103,72,36,.23);background:radial-gradient(circle,rgba(255,248,232,.75),rgba(255,248,232,.15));}
+.orbit::before {content:"";position:absolute;inset:12%;border:1px dashed rgba(103,72,36,.4);border-radius:50%;}
+.status {position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:34%;text-align:center;pointer-events:none;}
+.status small {display:block;font-size:clamp(8px,2vw,11px);letter-spacing:.14em;text-transform:uppercase;}
+.status strong {display:block;font-family:Georgia,serif;font-size:clamp(27px,7vw,44px);margin:5px 0;}
+.status .dot {display:inline-block;width:7px;height:7px;background:#50734b;border-radius:50%;margin-right:5px;}
+.choice {position:absolute;left:var(--x);top:var(--y);transform:translate(-50%,-50%);width:29%;display:grid;justify-items:center;gap:7px;text-decoration:none;color:var(--ink);z-index:1;}
+.button {display:grid;place-items:center;width:100%;aspect-ratio:1;border-radius:23%;overflow:hidden;background:#e7bd69;box-shadow:inset 0 2px 3px rgba(255,255,239,.65),5px 5px 8px rgba(48,24,6,.28),0 0 0 3px #fff4d9;transition:transform .15s,box-shadow .15s;}
+.button img {width:100%;height:100%;object-fit:contain;display:block;pointer-events:none;}
+.label {background:#3d3023;color:#fff5df;border:1px solid #b99a65;border-radius:5px;padding:6px 9px;font-size:clamp(10px,2.5vw,13px);font-weight:bold;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;box-shadow:0 3px 8px #39240e33;}
+.choice:hover .button {transform:translate(-1px,-1px);box-shadow:inset 0 2px 3px rgba(255,255,239,.65),7px 7px 10px rgba(48,24,6,.30),0 0 0 3px #fff4d9;}
+.choice:active .button {transform:translate(2px,2px);box-shadow:inset 0 2px 3px rgba(255,255,239,.45),2px 2px 4px rgba(48,24,6,.22),0 0 0 3px #fff4d9;}
+.choice:focus-visible {outline:3px solid #a65d20;outline-offset:8px;border-radius:15px;}
+.choice[hidden] {display:none;}
+footer {text-align:center;font-size:11px;letter-spacing:.1em;text-transform:uppercase;background:#fff5dfcf;padding:8px 15px;border-top:1px solid #a17c46;}
+@media (max-width:600px) {body::before {background-image:linear-gradient(rgba(255,248,232,.12),rgba(255,248,232,.12)),url('assets/index_background_mobile.png');} body {justify-content:space-evenly;} main {width:min(94vw,450px);margin:18px auto;} }
+@media (prefers-reduced-motion:reduce) {.button {transition:none;}}
+</style>
+</head>
+<body>
+<header><div class="eyebrow">Bureau de la Majorité</div><h1>AFFAIRE S-18</h1><div class="subtitle">Samuel · Dossier de majorité</div></header>
+<main aria-label="Pupitre de commande">
+<div class="orbit" aria-hidden="true"></div>
+<div class="status"><small>Procédure</small><strong>S-18</strong><small><span class="dot"></span>Enquête en cours</small></div>
+<a class="choice" href="jeu/indices.html" style="--x:23%;--y:24%"><span class="button"><img src="assets/indice.png" alt=""></span><span class="label">Indice</span></a>
+<a class="choice" href="jeu/machine.html" style="--x:77%;--y:24%"><span class="button"><img src="assets/machine.png" alt=""></span><span class="label">Machine</span></a>
+<a class="choice" href="archives/decouvertes.html" style="--x:50%;--y:81%"><span class="button"><img src="assets/dossier.png" alt=""></span><span class="label">Dossier S-18</span></a>
+<!-- Pour activer le quatrième bouton, renseigner ses chemins réels puis retirer hidden. -->
+<a class="choice" href="#" hidden><span class="button"><img data-src="assets/ordinateur.png" alt=""></span><span class="label">Énigmes</span></a>
+</main>
+<footer>Procédure de restitution des archives</footer>
+<script>
+const choices = [...document.querySelectorAll('.choice:not([hidden])')];
+const positions = choices.length === 4 ? [[23,23],[77,23],[77,77],[23,77]] : [[23,24],[77,24],[50,81]];
+choices.forEach((choice,i)=>{const p=positions[i]; if(p){choice.style.setProperty('--x',p[0]+'%');choice.style.setProperty('--y',p[1]+'%');} const img=choice.querySelector('img[data-src]');if(img)img.src=img.dataset.src;});
+</script>
+</body>
 </html>
