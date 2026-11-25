@@ -59,7 +59,7 @@
        .media-sheet--three-landscape > :first-child { grid-column: span 2; }
        .media-sheet--three-portrait > :first-child { grid-row: span 2; }
        .media-sheet--anecdote-with-media > :first-child { grid-column: span 2; }
-       .photo-evidence, .video-evidence, .document-evidence { align-items: center; background: #fffefa; box-shadow: 3px 5px 9px rgba(53, 34, 10, .3); display: flex; justify-content: center; margin: 0; min-height: 0; padding: 3mm 3mm 8mm; position: relative; transform: rotate(-.6deg); }
+       .photo-evidence, .video-evidence, .document-evidence { align-items: center; background: #fffefa; box-shadow: 3px 5px 9px rgba(53, 34, 10, .3); display: flex; justify-content: center; margin: 0; min-height: 0; min-width: 0; padding: 3mm 3mm 8mm; position: relative; transform: rotate(-.6deg); }
        .photo-evidence:nth-child(even), .video-evidence:nth-child(even), .document-evidence:nth-child(even) { transform: rotate(.7deg); }
        .photo-evidence { cursor: zoom-in; }
       .photo-evidence.expanded { align-items: center; background: #fffefa; cursor: zoom-out; display: flex; height: min(88vh, 260mm); justify-content: center; left: 50%; max-width: min(90vw, 190mm); padding: 8mm 8mm 13mm; position: fixed; top: 50%; transform: translate(-50%, -50%) rotate(0); width: 90vw; z-index: 20; }
@@ -81,9 +81,10 @@
       .video-qr-intro { color: var(--brown); font-size: 11pt; font-style: italic; margin: 0 0 8mm; }
        .video-evidence { flex-direction: column; padding: 5mm 5mm 10mm; }
       .video-evidence::before { border: 3px solid #a03b35; border-bottom: 0; border-radius: 10px 10px 0 0; content: ""; height: 25px; position: absolute; right: 12mm; top: -16px; transform: rotate(13deg); width: 11px; z-index: 2; }
-       .video-evidence video, .video-evidence .drive-video { background: #241a10; display: block; max-height: 145mm; max-width: 100%; width: 100%; }
-       .document-evidence { padding: 0; }
-       .document-evidence iframe { background: #fff; border: 0; height: 100%; width: 100%; }
+       .video-evidence video, .video-evidence .drive-video { background: #241a10; display: block; max-height: 100%; max-width: 100%; width: 100%; }
+       .document-evidence { flex-direction: column; overflow: hidden; padding: 4mm 4mm 11mm; }
+       .document-evidence iframe { background: #fff; border: 1px solid #b8aa8d; flex: 1 1 auto; height: 100%; min-height: 0; width: 100%; }
+       .document-evidence figcaption { bottom: 2mm; color: var(--brown); font-family: "Courier New", monospace; font-size: 7pt; left: 4mm; position: absolute; right: 4mm; text-transform: uppercase; }
        .drive-video { aspect-ratio: 16 / 9; border: 0; height: auto; }
       .video-evidence .video-link { font-size: 8pt; margin-top: 4mm; padding: 7px 9px; }
       .video-print-note, .video-qr { display: none; }
@@ -340,7 +341,7 @@
        };
        function appendMediaEvidence(sheet, item) {
          const figure = document.createElement("figure");
-         figure.className = `${item.type}-evidence`;
+         figure.className = item.type === "image" ? "photo-evidence" : `${item.type}-evidence`;
          if (item.type === "image") {
            const image = document.createElement("img");
            deferSource(image, item.source);
@@ -357,9 +358,13 @@
            figure.append(frame);
          }
          const caption = document.createElement("figcaption");
-         caption.innerHTML = `<span class="evidence-date"></span><span class="evidence-name"></span>`;
-         caption.querySelector(".evidence-date").textContent = item.createdAt || "";
-         caption.querySelector(".evidence-name").textContent = item.title;
+         if (item.type === "document") {
+           caption.textContent = "PIÈCE JOINTE : ANECDOTE";
+         } else {
+           caption.innerHTML = `<span class="evidence-date"></span><span class="evidence-name"></span>`;
+           caption.querySelector(".evidence-date").textContent = item.createdAt || "";
+           caption.querySelector(".evidence-name").textContent = item.title;
+         }
          figure.append(caption);
          sheet.append(figure);
        }
