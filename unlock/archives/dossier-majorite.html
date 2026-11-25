@@ -10,7 +10,26 @@
       main { max-width: 28rem; }
       a { background: #f4ead1; border: 1px solid #8b6d42; box-shadow: 2px 3px 0 rgba(0, 0, 0, .3); color: #4b351d; display: inline-block; font-family: "Courier New", monospace; font-size: .82rem; font-weight: 900; letter-spacing: .06em; margin-top: 14px; padding: 12px 16px; text-decoration: none; text-transform: uppercase; }
     </style>
-  </head>
+  <!-- Refonte visuelle : écran uniquement -->
+<style>
+
+@media screen {
+ body { background: radial-gradient(ellipse at 50% 0%, #ffffff12, transparent 65%), repeating-linear-gradient(93deg,#ffffff03 0 1px,transparent 1px 9px), linear-gradient(125deg,#38251a,#201710 60%,#493020); }
+ button:focus-visible, a:focus-visible, [tabindex]:focus-visible { outline: 3px solid #d9a94e; outline-offset: 4px; }
+}
+
+@media screen {
+ * { box-sizing:border-box; }
+ body { min-height:100svh; }
+ main { width:min(100%,470px); max-width:none; background:linear-gradient(145deg,#fff5d9,#e2c58a); color:#39291c; border:5px double #96713b; border-radius:12px; padding:clamp(24px,6vw,48px); box-shadow:0 20px 60px #0008,inset 0 0 25px #a47b3933; }
+ main::before { content:''; display:block; width:110px; height:110px; margin:0 auto 20px; background:url('../assets/bureau-majorite.png') center/contain no-repeat; }
+ main::after { content:'AFFAIRE S-18 · ADMINISTRATION'; display:block; margin-top:30px; padding-top:15px; border-top:3px double #a58a55; color:#873e2c; font: bold 11px 'Courier New',monospace; letter-spacing:.1em; }
+ main p { font-size:1.12rem; line-height:1.6; }
+ a { background:linear-gradient(#f3dba1,#bc914d); border:1px solid #96713b; border-radius:5px; box-shadow:inset 0 1px #fff9,0 4px 8px #50391c44; }
+ a:hover { background:#fff0c5; }
+}
+</style>
+</head>
   <body>
     <main>
       <p>Ajoutez cette page à l’écran d’accueil pour créer le raccourci admin.</p>
