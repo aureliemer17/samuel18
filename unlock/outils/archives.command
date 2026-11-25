@@ -22,6 +22,7 @@ usage() {
   print "5. Verifier avant publication Git"
   print "6. Codes et enigmes / codes d'archives"
   print "7. Exporter l'arborescence"
+  print "8. Appliquer les dates de prise de vue aux photos"
   print "0. Quitter"
   print ""
 }
@@ -83,6 +84,7 @@ case "${1:-}" in
   verifier) "$OUTILS_DIR/13-verifier-avant-publication.command" ;;
   enigmes) printf '\n' | "$OUTILS_DIR/14-generer-config-enigmes.command"; "$OUTILS_DIR/15-preparer-changements-codes-archives.command" ;;
   arborescence) "$OUTILS_DIR/90-exporter-arborescence-archives.command" ;;
+  dates-photos) "$OUTILS_DIR/16-appliquer-dates-de-prise-de-vue.command" ;;
   "")
     usage
     read "action?Action : "
@@ -91,7 +93,8 @@ case "${1:-}" in
       4) "$OUTILS_DIR/12-importer-inventaire-google-drive.command" ;;
       5) "$OUTILS_DIR/13-verifier-avant-publication.command" ;;
       6) printf '\n' | "$OUTILS_DIR/14-generer-config-enigmes.command"; "$OUTILS_DIR/15-preparer-changements-codes-archives.command" ;;
-      7) "$OUTILS_DIR/90-exporter-arborescence-archives.command" ;; 0) exit 0 ;;
+      7) "$OUTILS_DIR/90-exporter-arborescence-archives.command" ;;
+      8) "$OUTILS_DIR/16-appliquer-dates-de-prise-de-vue.command" ;; 0) exit 0 ;;
       *) print -u2 "Action invalide."; exit 1 ;;
     esac
     ;;

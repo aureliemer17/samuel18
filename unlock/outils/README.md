@@ -28,8 +28,13 @@ chemins et IDs ; elle est indispensable pour que les photos en ligne se chargent
 5. **Vérifier avant publication Git** : bloque les médias d'archives placés par erreur
    dans `unlock/` et affiche les fichiers réellement modifiés.
 6. **Codes et énigmes** : génère les configurations depuis des registres séparés,
-   puis prépare un plan de renommage local et Drive des codes d'archives. Le plan
-   n'est appliqué qu'après confirmation ; Drive utilise le même CSV.
+    puis prépare un plan de renommage local et Drive des codes d'archives. Le plan
+    n'est appliqué qu'après confirmation ; Drive utilise le même CSV.
+8. **Appliquer les dates de prise de vue aux photos** : lit la date de contenu
+   indexée par macOS (généralement la date EXIF), affiche toutes les modifications
+   prévues, puis met à jour les dates de création et de modification seulement après
+   confirmation. Relancez ensuite la régénération locale pour mettre à jour les dates
+   affichées dans les archives.
 
 ## Règles de rangement
 
