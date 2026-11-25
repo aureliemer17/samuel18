@@ -1,6 +1,50 @@
-# Outils d'archives
+# Gestion des archives
 
-Les fichiers sont numérotés dans l'ordre habituel d'utilisation.
+## Point d'entrée recommandé
+
+Utilisez `Gestion des archives.command`. Il remplace les séquences de scripts
+numérotés par un menu unique et garde les médias originaux hors de Git.
+
+Les actions courantes sont :
+
+1. **Ajouter ou modifier un souvenir** : choisir le souvenir puis ajouter une photo,
+   vidéo, anecdote, instruction, titre ou document. La configuration et le contenu
+   publié sont mis à jour après l'ajout.
+2. **Régénérer le site complet** : à utiliser après une opération importante ou pour
+   repartir d'une configuration propre. Les HEIC, le contenu publié, les liens vidéo
+   et les images PDF sont traités en une seule action.
+3. **Préparer les médias pour Google Drive** : crée seulement les photos et vidéos
+   nouvelles ou modifiées sous `../../dossiers/travail/drive-a-deposer/`, avec la
+   même arborescence que les originaux. Déposez ce contenu dans Drive.
+4. **Importer l'inventaire Google Drive** : téléchargez `drive-inventaire-medias.csv`
+   depuis Drive vers `../../dossiers/drive-imports/`, puis lancez cette action pour
+   mettre à jour les liens photo et vidéo du site.
+5. **Vérifier avant publication Git** : bloque les médias d'archives placés par erreur
+   dans `unlock/` et affiche les fichiers réellement modifiés.
+6. **Codes et énigmes** : génère les configurations depuis des registres séparés,
+   puis prépare un plan de renommage local et Drive des codes d'archives. Le plan
+   n'est appliqué qu'après confirmation ; Drive utilise le même CSV.
+
+## Règles de rangement
+
+- `../../dossiers/` est la source de vérité locale et n'est jamais versionné.
+- Google Drive reprend exactement cette arborescence ; il est une copie publiée,
+  jamais la source de vérité.
+- `../contenu-archives/` ne reçoit que les anecdotes, instructions et documents.
+  Les photos et vidéos ne doivent jamais être ajoutées sous `unlock/`.
+- Les copies de travail, rapports et CSV téléchargés sont sous `dossiers/travail/`,
+  `dossiers/rapports/` et `dossiers/drive-imports/`, tous ignorés par Git.
+
+## Google Drive
+
+`google-drive-synchroniser-medias.gs` inventorie les photos **et** vidéos, y compris
+leur taille. Il peut aussi placer dans la corbeille les éléments listés dans un plan
+CSV, uniquement après avoir renseigné `PLAN_FILE_ID` et confirmé `APPLY_PLAN = true`.
+
+## Scripts historiques
+
+Les fichiers numérotés restent disponibles pour compatibilité pendant la migration.
+Le nouveau menu les orchestre et évite de devoir se souvenir de leur ordre.
 
 ## Préparer les vidéos pour Google Drive
 

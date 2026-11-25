@@ -1,0 +1,27 @@
+Carte;Position;Texte;Solution;Actif
+36;1;Observez les portes de l'ascenseur;;oui
+36;2;Essayez de collaborer avec les autres agences.;;oui
+36;3;Comparez vos cartes entre agences. Que remarquez vous?;;oui
+36;4;Si vous superposez les carrés ça donne quoi ?;;oui
+36;5;Cela forme le chiffre 10, prenez la carte 10.;oui;oui
+11;1;Le tableau blanc indique comment décoder;;oui
+11;2;Les post-its donnent le mot clé à déchiffrer;;oui
+11;3;Les deux tableaux blancs sont nécessaires.;;oui
+11;4;Avez vous remarqué la symétrie des bureaux?;;oui
+11;5;L'indice du jour = 18 et non pas 81;;oui
+11;6;Le code est 519223;oui;oui
+14;1;Il y a un objet caché dans cette carte;;oui
+14;2;Regardez bien dans le dossier sur la table;;oui
+14;3;Il y a ecrit 18 sur le dossier, prenez la carte 18;oui;oui
+2;1;Il faut d'abord réussir à entrer dans l'ascenseur;;oui
+18;1;Rendez-vous au bureau des clotures;;oui
+10;1;Samuel, appelle l'ascenseur;;oui
+10;2;Si tu ne trouve vraiment pas, demande a la famille comment tu appelait l'ascenseur quand tu étais petit.;;oui
+10;3;Dis 'SENCEUR';;oui
+10;4;Dire 'SENCEUR' aurait du ouvrir l'ascenseur, si ça n'a pas fonctionné, prend la carte 15;oui;oui
+15;1;On peut se rendre au bureau des admissions c'est affiché sur un panneau.;;oui
+15;2;Avec le dossier de Samuel, rendez-vous au bureau des clotures.;;oui
+15;3;Pour aller aux archives il faut la clé de la boite à clé;;oui
+46;1;Qui est la directrice ?;;oui
+46;2;Elle a du valider votre agrément...;;oui
+46;3;Login : DELORME;oui;oui

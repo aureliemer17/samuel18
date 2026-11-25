@@ -5,3 +5,10 @@
 /dossiers/videos/
 /dossiers/pdf-images/
 /dossiers/photos/
+/dossiers/travail/
+/dossiers/rapports/
+/dossiers/drive-imports/
+/dossiers/*-inventaire*.csv
+/dossiers/*-a-completer.csv
+/registre/registre-archives.csv
+/registre/plan-renommage-drive.csv

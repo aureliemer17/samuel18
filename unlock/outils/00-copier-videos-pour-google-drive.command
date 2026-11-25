@@ -21,7 +21,7 @@ updated=0
 
 for category_dir in "$DOSSIERS_DIR"/*(/N); do
   category_name="${category_dir:t}"
-  [[ "$category_name" == "heic" || "$category_name" == "videos" ]] && continue
+  [[ "$category_name" == "heic" || "$category_name" == "videos" || "$category_name" == "pdf-images" || "$category_name" == "photos" || "$category_name" == "travail" || "$category_name" == "rapports" || "$category_name" == "drive-imports" ]] && continue
   for folder_dir in "$category_dir"/*(/N); do
     folder_name="${folder_dir:t}"
     for video_file in "$folder_dir"/*.(#i)(mp4|mov|m4v|webm|mts)(.N); do
