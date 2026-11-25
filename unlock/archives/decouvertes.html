@@ -116,6 +116,7 @@
       const pages = document.querySelector("#pages");
       const adminMode = new URLSearchParams(window.location.search).get("admin") === "1";
       const mobileLayout = window.matchMedia("(max-width: 700px)").matches;
+      const openInventory = new URLSearchParams(window.location.search).get("inventory") === "1";
       const viewed = window.ARCHIVE_PROGRESS.viewedCodes();
       const media = window.ARCHIVE_CONFIG.media;
       const videoLinks = window.ARCHIVE_VIDEO_LINKS || {};
@@ -515,16 +516,18 @@
          }
          showPage(firstPageByDossier.get(link.dataset.dossier));
       });
-      pages.addEventListener("click", (event) => {
+       pages.addEventListener("click", (event) => {
         const photo = event.target.closest(".photo-evidence");
         if (photo) {
           photo.classList.toggle("expanded");
           return;
         }
-        if (event.target.closest("a, button, video, iframe")) return;
-        const bounds = pages.getBoundingClientRect();
-        if (event.clientX < bounds.left + bounds.width / 2) turnPage(pageIndex - 1);
-        else turnPage(pageIndex + 1);
+         if (event.target.closest("a, button, video, iframe")) return;
+         if (mobileLayout) return;
+         const bounds = pages.getBoundingClientRect();
+         const edgeWidth = Math.min(bounds.width * .24, 190);
+         if (event.clientX < bounds.left + edgeWidth) turnPage(pageIndex - 1);
+         else if (event.clientX > bounds.right - edgeWidth) turnPage(pageIndex + 1);
       });
        const pdfImageSource = (source) => source.replace("../../dossiers/", "../../dossiers/pdf-images/").replace(/\.[^.]+$/, ".jpg");
          const loadImage = (image) => new Promise((resolve) => {
@@ -619,7 +622,8 @@
           window.location.reload();
         }
       });
-      showPage(0);
+       if (openInventory) open();
+       else showPage(0);
     </script>
   </body>
 </html>
