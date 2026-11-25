@@ -101,8 +101,7 @@
       .contents button { background: transparent; border: 0; color: inherit; cursor: pointer; font: inherit; padding: 0; text-align: left; text-decoration: underline; text-decoration-style: dotted; }
       .contents .export-dossier { background: #eadbb0; border: 1px solid #9b7940; color: #4b351d; font-family: "Courier New", monospace; font-size: 7pt; font-weight: 900; margin-left: 7px; padding: 3px 5px; text-decoration: none; }
        .contents .export-theme { background: #9d3424; border: 1px solid #6d2017; color: #fff8e2; font-family: "Courier New", monospace; font-size: 7pt; font-weight: 900; margin-left: 7px; padding: 3px 5px; text-decoration: none; }
-       .inventory-navigation { display: none; }
-       @media (max-width: 700px) { body { padding: 10px; } .toolbar { gap: 8px; margin-bottom: 12px; } .toolbar button, .toolbar-link { font-size: .64rem; padding: 9px 10px; } .cover, .page { min-height: auto; } .cover { min-height: calc(100vh - 118px); padding: 15mm 10mm; } .page { padding: 12mm; } .contents { columns: 1; } body.mobile-inventory .book { max-width: 680px; } body.mobile-inventory .page { box-shadow: 0 12px 25px rgba(0, 0, 0, .38); min-height: calc(100vh - 118px); padding: 26px 20px 32px; } body.mobile-inventory .page::after { inset: 9px; } body.mobile-inventory .page h2 { font-size: clamp(1.9rem, 10vw, 3rem); margin: 30px 0 15px; } body.mobile-inventory .contents { font-size: .9rem; line-height: 1.35; margin-top: 22px; } body.mobile-inventory .contents li { margin-bottom: 12px; } body.mobile-inventory .contents li:not(:has(button)) { border-top: 1px solid var(--line); color: var(--red); font-family: Georgia, serif; font-size: 1.08rem; font-weight: 900 !important; margin: 26px 0 11px; padding-top: 22px; } body.mobile-inventory .contents button[data-dossier] { background: #fffaf0; border: 1px solid #ad9b76; box-shadow: 2px 3px 0 rgba(74, 49, 18, .16); display: block; font-family: Georgia, serif; font-size: 1.12rem; line-height: 1.2; padding: 15px; text-align: left; text-decoration: none; width: 100%; } .inventory-navigation { background: #f4ead1; border: 1px solid #8b6d42; color: #4b351d; display: block; font-family: "Courier New", monospace; font-size: .75rem; font-weight: 900; margin: 20px auto 0; padding: 10px 14px; text-transform: uppercase; } }
+       @media (max-width: 700px) { body { padding: 10px; } .toolbar { gap: 8px; margin-bottom: 12px; } .toolbar button, .toolbar-link { font-size: .64rem; padding: 9px 10px; } .cover, .page { min-height: auto; } .cover { min-height: calc(100vh - 118px); padding: 15mm 10mm; } .page { padding: 12mm; } .contents { columns: 1; } body.mobile-inventory .book { max-width: 680px; } body.mobile-inventory .page { box-shadow: 0 12px 25px rgba(0, 0, 0, .38); min-height: calc(100vh - 118px); padding: 26px 20px 32px; } body.mobile-inventory .contents-page { min-height: auto; } body.mobile-inventory .page::after { inset: 9px; } body.mobile-inventory .page h2 { font-size: clamp(1.9rem, 10vw, 3rem); margin: 30px 0 15px; } body.mobile-inventory .contents { font-size: .9rem; line-height: 1.35; margin-top: 22px; } body.mobile-inventory .contents li { margin-bottom: 12px; } body.mobile-inventory .contents li:not(:has(button)) { border-top: 1px solid var(--line); color: var(--red); font-family: Georgia, serif; font-size: 1.08rem; font-weight: 900 !important; margin: 26px 0 11px; padding-top: 22px; } body.mobile-inventory .contents button[data-dossier] { background: #fffaf0; border: 1px solid #ad9b76; box-shadow: 2px 3px 0 rgba(74, 49, 18, .16); display: block; font-family: Georgia, serif; font-size: 1.12rem; line-height: 1.2; padding: 15px; text-align: left; text-decoration: none; width: 100%; } }
        @media print { @page { size: A4 portrait; margin: 0; } body { background: #fff; padding: 0; } .toolbar { display: none; } .book { max-width: none; } .book:not(.open) .pages { display: block; } .cover, .page { box-shadow: none; break-after: page; display: flex !important; height: 297mm; margin: 0; min-height: 297mm; opacity: 1 !important; page-break-after: always; position: relative !important; transform: none !important; width: 210mm; } .cover { display: flex !important; } .page { display: block !important; } .pages { display: block; } .page:last-child { break-after: auto; page-break-after: auto; } .evidence video, .video-evidence video, .drive-video { display: none; } .evidence .video-print-note, .video-qr { display: block; } body.exporting-dossier .cover, body.exporting-dossier .page:not(.export-selected), body.exporting-theme .cover, body.exporting-theme .page:not(.export-selected) { display: none !important; } body.exporting-complete .contents .export-dossier, body.exporting-complete .contents .export-theme, body.exporting-theme .contents .export-dossier, body.exporting-theme .contents .export-theme { display: none; } }
     </style>
   </head>
@@ -262,14 +261,6 @@
            const list = document.createElement("ul");
            list.className = "contents";
            contents.append(list);
-           if (categoryIndex === 0) {
-             const next = document.createElement("button");
-             next.className = "inventory-navigation";
-             next.type = "button";
-             next.dataset.inventoryNext = "true";
-             next.textContent = "Suite de l’inventaire";
-             contents.append(next);
-           }
            inventoryLists.push(list);
            pages.append(contents);
          }
@@ -506,10 +497,14 @@
        function showPage(index) {
         pageIndex = Math.max(0, Math.min(index, allPages.length - 1));
         const showingCover = pageIndex === 0;
-         cover.classList.toggle("page-visible", showingCover);
-         cover.classList.toggle("open", !showingCover);
-         document.body.classList.toggle("mobile-inventory", mobileLayout && pageIndex === 1);
-         documentPages.forEach((page, current) => { page.hidden = showingCover || current !== pageIndex - 1; });
+          cover.classList.toggle("page-visible", showingCover);
+          cover.classList.toggle("open", !showingCover);
+          document.body.classList.toggle("mobile-inventory", mobileLayout && pageIndex === 1);
+          const showInventoryScroll = mobileLayout && pageIndex <= inventoryLists.length;
+          documentPages.forEach((page, current) => {
+            const isInventoryPage = page.classList.contains("contents-page");
+            page.hidden = showingCover || (!showInventoryScroll || !isInventoryPage) && current !== pageIndex - 1;
+          });
          unloadHiddenPageMedia();
          if (!showingCover) loadVisiblePageMedia();
       }
@@ -549,9 +544,6 @@
          }
          showPage(firstPageByDossier.get(link.dataset.dossier));
         }));
-        pages.addEventListener("click", (event) => {
-          if (event.target.closest("button[data-inventory-next]")) showPage(2);
-        });
         pages.addEventListener("click", (event) => {
         const photo = event.target.closest(".photo-evidence");
         if (photo) {
