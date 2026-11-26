@@ -23,14 +23,15 @@ h1 { margin:.25rem 0 .5rem; } .eyebrow,small { color:var(--muted); font-size:.78
   .layout { gap:12px; grid-template-columns:1fr; }
   .panel { padding:10px; }
   .layout > .panel:first-child { background:transparent; border:0; padding:0; }
+  .controls { background:transparent; border:0; padding:0; }
   .grid { box-shadow:0 8px 24px #0008; max-width:none; width:100%; }
   .cell { font-size:clamp(1rem,9vw,1.8rem); min-height:0; }
   .cell.selected { outline-width:3px; }
   .cell.note::after { font-size:clamp(.5rem,3vw,.82rem); line-height:1.25; }
   .controls { gap:9px; }
   .controls > .button:not(.danger) { min-height:50px; }
-  .keypad { background:transparent; gap:4px; grid-template-columns:repeat(var(--keypad-cols),1fr); }
-  .keypad button { font-size:1.05rem; min-height:50px; padding:6px 2px; }
+  .keypad { background:transparent; gap:3px; grid-template-columns:repeat(var(--keypad-cols),1fr); }
+  .keypad button { font-size:1rem; min-height:48px; padding:4px 0; }
   .entry-actions .button { min-height:50px; }
   .utility-actions { grid-template-columns:50px 1fr; }
   .utility-actions .button { min-height:50px; }
