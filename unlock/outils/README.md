@@ -73,6 +73,8 @@ Alternative pratique pour beaucoup de vidéos :
 
 4. `04-mettre-a-jour-liens-videos.command` : à lancer après un ajout ou une modification de lien Google Drive. Il lit seulement les `../../dossiers/<Thème>/<Dossier>/video-urls.txt` et génère `../config/archive-video-config.local.js`. Il ne convertit aucune photo, ne traite aucun HEIC et ne réinitialise pas la progression. Les QR codes sont créés au moment de l'export PDF, avec une connexion Internet, sans installer d'outil sur le Mac.
 
+En cas de suppression accidentelle des `video-urls.txt`, `17-restaurer-liens-videos-depuis-csv.command` les reconstruit depuis `../../dossiers/rapport-liens-videos.csv`. Il produit d'abord `../../dossiers/plan-restauration-liens-videos.csv`, rapproche les apostrophes et underscores des noms locaux, puis demande confirmation avant toute écriture.
+
 ## Mettre à jour tout le livret
 
 5. `05-mettre-a-jour-archives.command` : à lancer après un ajout ou une modification de photo, HEIC, document, titre ou dossier. Il lit `../../dossiers/<Thème>/<Dossier>/`, génère `../config/archive-config.local.js`, convertit les HEIC en JPEG et archive les originaux dans `../../dossiers/heic/<Thème>/<Dossier>/`. Il n'est pas nécessaire après un simple lien vidéo. Les QR codes sont créés au moment de l'export PDF.

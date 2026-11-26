@@ -37,6 +37,12 @@ Ordre habituel pour les vidéos : 00, puis 01 OU 02 + 03, puis 04.
   Les QR codes sont créés au moment de l'export PDF ; une connexion Internet
   est nécessaire à cet instant, mais aucun outil supplémentaire n'est requis.
 
+17-restaurer-liens-videos-depuis-csv.command
+  Reconstruit les video-urls.txt depuis ../../dossiers/rapport-liens-videos.csv.
+  Crée d'abord ../../dossiers/plan-restauration-liens-videos.csv et demande
+  confirmation. Les apostrophes et underscores sont rapprochés pour retrouver
+  les noms de vidéos locaux. Lancez ensuite 04 pour régénérer la configuration.
+
 05-mettre-a-jour-archives.command
   À lancer après toute modification : actualise le livret, convertit les HEIC
   et actualise toutes les archives. À utiliser après ajout de photos, HEIC,
