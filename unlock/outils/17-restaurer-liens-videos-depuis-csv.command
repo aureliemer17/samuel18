@@ -61,7 +61,7 @@ while IFS=$'\t' read -r category folder video url; do
     print "$(csv_escape "$category"),$(csv_escape "$folder"),$(csv_escape "$video"),""","$(csv_escape "$url"),"Vidéo introuvable"" >> "$PLAN_FILE"
     (( missing += 1 )); continue
   }
-  print -r -- "${folder_dir}\t${video_file:t}\t${url}" >> "$PLAN_TSV"
+  print -r -- "${folder_dir}"$'\t'"${video_file:t}"$'\t'"${url}" >> "$PLAN_TSV"
   print "$(csv_escape "$category"),$(csv_escape "$folder"),$(csv_escape "$video"),$(csv_escape "${video_file:t}"),$(csv_escape "$url"),"Prêt à restaurer"" >> "$PLAN_FILE"
   (( matched += 1 ))
 done < <(SEPARATOR="$separator" perl -MEncode=decode -ne '
