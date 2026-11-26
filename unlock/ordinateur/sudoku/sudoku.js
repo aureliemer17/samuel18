@@ -27,8 +27,7 @@
     for (let row = 0; row < size; row += 1) for (let col = 0; col < size; col += 1) {
       const cellKey = key(row, col);
       const value = valueAt(row, col);
-      const selectedValue = selected ? valueAt(...selected) : "";
-      const classes = ["cell", initialGrid[row][col] ? "fixed" : "", selected?.[0] === row && selected?.[1] === col ? "selected" : "", selected && (selected[0] === row || selected[1] === col || (Math.floor(selected[0] / boxRows) === Math.floor(row / boxRows) && Math.floor(selected[1] / boxCols) === Math.floor(col / boxCols))) ? "related" : "", selectedValue && selectedValue === value ? "same" : "", !value && state.notes[cellKey]?.length ? "note" : ""].filter(Boolean).join(" ");
+      const classes = ["cell", initialGrid[row][col] ? "fixed" : "", selected?.[0] === row && selected?.[1] === col ? "selected" : "", !value && state.notes[cellKey]?.length ? "note" : ""].filter(Boolean).join(" ");
       const border = `${(col + 1) % boxCols === 0 && col + 1 < size ? "border-right:3px solid #315e35;" : ""}${(row + 1) % boxRows === 0 && row + 1 < size ? "border-bottom:3px solid #315e35;" : ""}`;
       cells.push(`<button class="${classes}" data-row="${row}" data-col="${col}" data-notes="${(state.notes[cellKey] || []).join(" ")}" style="${border}" ${initialGrid[row][col] || solved ? "disabled" : ""}>${value}</button>`);
     }
@@ -48,10 +47,13 @@
     else if (notesMode) { const notes = new Set(state.notes[cellKey] || []); notes.has(value) ? notes.delete(value) : notes.add(value); state.notes[cellKey] = [...notes].sort(); }
     else { state.values[cellKey] = Number(value); delete state.notes[cellKey]; }
     state.status = "in_progress";
-    save(); render();
+    save();
+    if (!notesMode && !action && isComplete()) return verify();
+    render();
   }
   function undo() { const previous = state.history.pop(); if (!previous) return; state.values = previous.values; state.notes = previous.notes; state.status = Object.keys(state.values).length ? "in_progress" : "not_started"; save(); render(); }
-  function restart() { if (window.confirm("Recommencer cette grille ?")) { progress.resetSudoku(id); state = progress.sudoku(id); state.values ||= {}; state.notes ||= {}; state.history ||= []; selected = null; render(); } }
+  function restart() { if (window.confirm("Effacer toutes les cases et notes de cette grille ?")) { progress.resetSudoku(id); state = progress.sudoku(id); state.values ||= {}; state.notes ||= {}; state.history ||= []; selected = null; render("Grille recommencée."); } }
+  function isComplete() { return Array.from({ length:size }, (_, row) => Array.from({ length:size }, (_, col) => valueAt(row, col))).every((row) => row.every(Boolean)); }
   function verify() { const values = Array.from({ length:size }, (_, row) => Array.from({ length:size }, (_, col) => Number(valueAt(row, col)))); if (values.some((row) => row.some((value) => !value))) return render("La grille est incomplète."); if (values.some((row, r) => row.some((value, c) => value !== solution[r][c]))) return render("Cette grille n’est pas correcte. Réessayez."); state.status = "solved"; state.notes = {}; state.archiveCodes = puzzle.archiveCodes; progress.solve(id, values.map((row) => row.join("")).join("/"), puzzle.archiveCodes); save(); render(); }
   window.addEventListener("keydown", (event) => { if (event.key >= "1" && event.key <= String(size)) apply(event.key); if (event.key === "Backspace" || event.key === "Delete") apply(null, "erase"); });
   render();
