@@ -35,6 +35,7 @@ main {width:min(94vw,510px, calc(100svh - 205px)); min-width:min(94vw,310px); as
 .choice[hidden] {display:none;}
 footer {text-align:center;font-size:11px;letter-spacing:.1em;text-transform:uppercase;background:#fff5dfcf;padding:8px 15px;border-top:1px solid #a17c46;}
 footer {display:flex;align-items:center;gap:10px;justify-content:center;}
+.version {color:#856f4f;font-size:9px;letter-spacing:.04em;}
 .restart {background:transparent;border:0;color:#6b5131;cursor:pointer;font:inherit;font-size:10px;letter-spacing:.08em;padding:7px;text-decoration:underline;text-underline-offset:3px;text-transform:uppercase;}
 .restart:hover {color:#311d0b;}
 .restart:focus-visible {outline:3px solid #a65d20;outline-offset:3px;}
@@ -64,7 +65,7 @@ footer {display:flex;align-items:center;gap:10px;justify-content:center;}
 <!-- Pour activer le quatrième bouton, renseigner ses chemins réels puis retirer hidden. -->
 <a class="choice" id="puzzleShortcut" href="jeu/ordinateur.html?direct=1" hidden><span class="button"><img src="assets/ordinateur.png" alt=""></span><span class="label">Énigmes</span></a>
 </main>
-<footer><span>Procédure de restitution des archives</span><button class="restart" id="restartGame" type="button">Recommencer</button></footer>
+<footer><span>Procédure de restitution des archives</span><span class="version" id="version" aria-label="Version du site"></span><button class="restart" id="restartGame" type="button">Recommencer</button></footer>
 <section class="restart-warning" id="restartWarning" role="alertdialog" aria-labelledby="restartTitle" aria-describedby="restartDescription" aria-modal="true" hidden>
   <div class="restart-warning__panel">
     <h2 id="restartTitle">Attention</h2>
@@ -72,7 +73,9 @@ footer {display:flex;align-items:center;gap:10px;justify-content:center;}
     <div class="restart-warning__actions"><button class="restart-cancel" id="cancelRestart" type="button">Annuler</button><button class="restart-confirm" id="confirmRestart" type="button">Tout recommencer</button></div>
   </div>
 </section>
+<script src="config/version.js"></script>
 <script>
+document.querySelector('#version').textContent = `v${window.SITE_VERSION || "?"}`;
 const choices = [...document.querySelectorAll('.choice:not([hidden])')];
 const positions = choices.length === 4 ? [[23,23],[77,23],[77,77],[23,77]] : [[23,24],[77,24],[50,81]];
 choices.forEach((choice,i)=>{const p=positions[i]; if(p){choice.style.setProperty('--x',p[0]+'%');choice.style.setProperty('--y',p[1]+'%');} const img=choice.querySelector('img[data-src]');if(img)img.src=img.dataset.src;});
