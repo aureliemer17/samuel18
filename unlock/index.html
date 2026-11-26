@@ -34,7 +34,22 @@ main {width:min(94vw,510px, calc(100svh - 205px)); min-width:min(94vw,310px); as
 .choice:focus-visible {outline:3px solid #a65d20;outline-offset:8px;border-radius:15px;}
 .choice[hidden] {display:none;}
 footer {text-align:center;font-size:11px;letter-spacing:.1em;text-transform:uppercase;background:#fff5dfcf;padding:8px 15px;border-top:1px solid #a17c46;}
+footer {display:flex;align-items:center;gap:10px;justify-content:center;}
+.restart {background:transparent;border:0;color:#6b5131;cursor:pointer;font:inherit;font-size:10px;letter-spacing:.08em;padding:7px;text-decoration:underline;text-underline-offset:3px;text-transform:uppercase;}
+.restart:hover {color:#311d0b;}
+.restart:focus-visible {outline:3px solid #a65d20;outline-offset:3px;}
+.restart-warning {background:rgba(40,25,16,.96);border:2px solid #d4a34e;box-shadow:0 12px 30px rgba(0,0,0,.45);color:#fff5df;inset:0;display:grid;place-items:center;padding:22px;position:fixed;z-index:10;}
+.restart-warning[hidden] {display:none;}
+.restart-warning__panel {background:#fff5df;color:#35291e;max-width:480px;padding:clamp(24px,7vw,42px);text-align:center;}
+.restart-warning h2 {color:#9d3424;font-family:Georgia,serif;font-size:clamp(28px,8vw,44px);line-height:1;margin:0 0 18px;text-transform:uppercase;}
+.restart-warning p {font-family:Georgia,serif;font-size:clamp(17px,4vw,21px);line-height:1.45;margin:0 0 24px;}
+.restart-warning__actions {display:grid;gap:12px;grid-template-columns:1fr 1fr;}
+.restart-warning button {border:1px solid #805f34;cursor:pointer;font-family:inherit;font-size:13px;font-weight:700;min-height:50px;padding:10px;text-transform:uppercase;}
+.restart-cancel {background:#eadcbf;color:#35291e;}
+.restart-confirm {background:#9d3424;color:#fff5df;}
+.restart-warning button:focus-visible {outline:3px solid #a65d20;outline-offset:3px;}
 @media (max-width:600px) {body::before {background-image:linear-gradient(rgba(255,248,232,.12),rgba(255,248,232,.12)),url('assets/index_background_mobile.png');} body {justify-content:space-evenly;} main {width:min(94vw,450px);margin:18px auto;} }
+@media (max-width:420px) {.restart-warning__actions {grid-template-columns:1fr;}}
 @media (prefers-reduced-motion:reduce) {.button {transition:none;}}
 </style>
 </head>
@@ -49,12 +64,36 @@ footer {text-align:center;font-size:11px;letter-spacing:.1em;text-transform:uppe
 <!-- Pour activer le quatrième bouton, renseigner ses chemins réels puis retirer hidden. -->
 <a class="choice" id="puzzleShortcut" href="jeu/ordinateur.html?direct=1" hidden><span class="button"><img src="assets/ordinateur.png" alt=""></span><span class="label">Énigmes</span></a>
 </main>
-<footer>Procédure de restitution des archives</footer>
+<footer><span>Procédure de restitution des archives</span><button class="restart" id="restartGame" type="button">Recommencer</button></footer>
+<section class="restart-warning" id="restartWarning" role="alertdialog" aria-labelledby="restartTitle" aria-describedby="restartDescription" aria-modal="true" hidden>
+  <div class="restart-warning__panel">
+    <h2 id="restartTitle">Attention</h2>
+    <p id="restartDescription">Vous allez perdre toute votre progression sur cet appareil, y compris les énigmes résolues et les dossiers consultés. Le jeu recommencera à zéro.</p>
+    <div class="restart-warning__actions"><button class="restart-cancel" id="cancelRestart" type="button">Annuler</button><button class="restart-confirm" id="confirmRestart" type="button">Tout recommencer</button></div>
+  </div>
+</section>
 <script>
 const choices = [...document.querySelectorAll('.choice:not([hidden])')];
 const positions = choices.length === 4 ? [[23,23],[77,23],[77,77],[23,77]] : [[23,24],[77,24],[50,81]];
 choices.forEach((choice,i)=>{const p=positions[i]; if(p){choice.style.setProperty('--x',p[0]+'%');choice.style.setProperty('--y',p[1]+'%');} const img=choice.querySelector('img[data-src]');if(img)img.src=img.dataset.src;});
 try { const ordinateur = JSON.parse(localStorage.getItem('unlock-ordinateur-progress-v1') || localStorage.getItem('unlock-machine-46-progress-v1') || '{}'); if (ordinateur.discovered && ordinateur.authenticated) { const shortcut = document.querySelector('#puzzleShortcut'); shortcut.hidden = false; const visible = [...document.querySelectorAll('.choice:not([hidden])')]; const positions = [[23,23],[77,23],[77,77],[23,77]]; visible.forEach((choice, index) => { choice.style.setProperty('--x', `${positions[index][0]}%`); choice.style.setProperty('--y', `${positions[index][1]}%`); }); } } catch { /* The shortcut remains hidden without local storage. */ }
+const restartGame = document.querySelector('#restartGame');
+const restartWarning = document.querySelector('#restartWarning');
+const cancelRestart = document.querySelector('#cancelRestart');
+const confirmRestart = document.querySelector('#confirmRestart');
+restartGame.addEventListener('click', () => { restartWarning.hidden = false; cancelRestart.focus(); });
+cancelRestart.addEventListener('click', () => { restartWarning.hidden = true; restartGame.focus(); });
+restartWarning.addEventListener('click', (event) => { if (event.target === restartWarning) cancelRestart.click(); });
+document.addEventListener('keydown', (event) => { if (event.key === 'Escape' && !restartWarning.hidden) cancelRestart.click(); });
+confirmRestart.addEventListener('click', () => {
+  try {
+    localStorage.removeItem('unlock-archive-viewed');
+    localStorage.removeItem('unlock-archive-progress-reset-key');
+    localStorage.removeItem('unlock-ordinateur-progress-v1');
+    localStorage.removeItem('unlock-machine-46-progress-v1');
+  } catch { /* The game remains usable if local storage is unavailable. */ }
+  window.location.reload();
+});
 </script>
 </body>
 </html>
