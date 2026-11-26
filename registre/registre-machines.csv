@@ -3,3 +3,4 @@ Code;Destination;Actif;Description
 11;cle.html;oui;Boite a cle
 41;../archives/console.html;oui;Console des archives
 46;ordinateur.html;oui;Ordinateur des enigmes
+90;ascenseur.html?debug=1;oui;Diagnostic ascenseur

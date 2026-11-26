@@ -129,9 +129,14 @@ main { max-width:760px; padding:8px; text-align:center; }
 .return-link { background:linear-gradient(#f9e9bd,#c6a36a); color:#302318; border:2px solid #8d633f; border-radius:10px; padding:12px 22px; font-size:.8rem; box-shadow:3px 5px 0 #523820; }
 .return-gear { display:none; }
 .start-button { background:linear-gradient(#f9e9bd,#c6a36a); color:#302318; border:2px solid #8d633f; box-shadow:0 5px 0 #654c39; }
-body.setup .scene { width:min(100%,420px); }
-body.setup .status,body.setup .hint,body.setup details { text-align:left; }
-body.setup .status { color:#172017; }
+       body.setup .scene { width:min(100%,420px); }
+       body.setup .status,body.setup .hint,body.setup details { text-align:left; }
+       body.setup .status { color:#172017; }
+       body.debug .setup-only { display:block; }
+       body.debug .scene { width:min(100%,420px); }
+       body.debug .status,body.debug .hint,body.debug details { text-align:left; }
+       body.debug .status { color:#172017; }
+       body.debug .setup-banner { background:#315e76; color:#fff; display:block; font-family:Arial,sans-serif; font-size:.75rem; font-weight:900; letter-spacing:.08em; margin:-8px 0 20px; padding:9px 12px; text-transform:uppercase; }
     
 /* Immersive responsive scene: all hit areas share the image coordinate system. */
 body:not(.setup), body.mic-ready:not(.setup) { padding:0; overflow:hidden; background:#7b3517; }
@@ -160,7 +165,7 @@ body.setup .scene { aspect-ratio:var(--ratio); background-size:100% 100%; }
       <div class="start-dialog__card"><p>Samuel, tu dois être seul pour résoudre cette énigme.</p><p>Quand tu es prêt, appuie sur ce bouton.</p><div class="start-dialog__actions"><button class="start-button" id="startButton" type="button">Commencer</button><a class="not-samuel" href="machine.html">Je ne suis pas Samuel</a></div></div>
     </section>
     <main>
-      <div class="setup-banner setup-only">Mode preparation : activez le micro ici, puis partagez la page sans <code>?setup=1</code>.</div>
+      <div class="setup-banner setup-only" id="debugBanner">Mode preparation : activez le micro ici, puis partagez la page sans <code>?setup=1</code>.</div>
 
       <section class="scene" aria-label="Ascenseur et panneau d'appel">
         <div class="building">
@@ -192,12 +197,13 @@ body.setup .scene { aspect-ratio:var(--ratio); background-size:100% 100%; }
       const cabin = document.querySelector("#cabin");
       const debug = document.querySelector("#debug");
       const micLevel = document.querySelector("#micLevel");
-      const unlockCode = document.querySelector("#unlockCode");
-      const startDialog = document.querySelector("#startDialog");
-      const startButton = document.querySelector("#startButton");
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      const parameters = new URLSearchParams(window.location.search);
-      const setupMode = parameters.has("setup");
+       const unlockCode = document.querySelector("#unlockCode");
+       const startDialog = document.querySelector("#startDialog");
+       const startButton = document.querySelector("#startButton");
+       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+       const parameters = new URLSearchParams(window.location.search);
+       const debugMode = parameters.has("debug");
+       const setupMode = parameters.has("setup") || debugMode;
       let unlocked = false;
       let recognition;
       let microphoneStream;
@@ -206,8 +212,13 @@ body.setup .scene { aspect-ratio:var(--ratio); background-size:100% 100%; }
       let shouldListen = false;
       let restartTimer;
 
-      document.body.classList.toggle("setup", setupMode);
-      if (setupMode) startDialog.hidden = true;
+       document.body.classList.toggle("setup", setupMode);
+       document.body.classList.toggle("debug", debugMode);
+       if (setupMode) startDialog.hidden = true;
+       if (debugMode) {
+         document.querySelector("#debugBanner").textContent = "Mode diagnostic : les transcriptions vocales et événements apparaissent ci-dessous.";
+         document.querySelector("details").open = true;
+       }
 
       unlockCode.textContent = window.PUZZLE_CONFIG.pages.ascenseur.unlockCode;
 

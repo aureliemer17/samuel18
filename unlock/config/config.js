@@ -4,7 +4,8 @@ window.PUZZLE_CONFIG = {
       "10" : "ascenseur.html",
       "11" : "cle.html",
       "41" : "../archives/console.html",
-      "46" : "ordinateur.html"
+      "46" : "ordinateur.html",
+      "90" : "ascenseur.html?debug=1"
    },
    "pages" : {
       "ascenseur" : {
