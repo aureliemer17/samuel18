@@ -87,8 +87,8 @@ main { max-width:1100px; }
       <a class="button home-link" href="../index.html">← Retour à l’accueil</a>
       <p class="footer">AFFAIRE S-18 · ORDINATEUR DES ÉNIGMES</p>
     </main>
-    <script src="../config/ordinateur-catalog.js"></script>
-    <script src="../config/ordinateur-progress.js"></script>
+    <script src="../config/ordinateur-catalog.js?v=ligne-20261127"></script>
+    <script src="../config/ordinateur-progress.js?v=ligne-20261127"></script>
     <script>
       const catalog = window.ORDINATEUR_CATALOG;
       const progress = window.ORDINATEUR_PROGRESS;
@@ -115,7 +115,7 @@ main { max-width:1100px; }
         screen.innerHTML = `<div class="boot"><header class="desktop-header"><div><p class="terminal-line">Session DELORME · terminal 46</p><h1>Bureau des énigmes</h1></div><p class="stats">${total.solved} résolue(s) · ${total.remaining} restante(s) · ${total.total} accessible(s)</p></header><section class="categories" id="categories"></section></div>`;
         const container = screen.querySelector("#categories");
         if (!categories().length) { container.innerHTML = `<p class="empty">Aucune catégorie publiée pour le moment. Le catalogue peut être complété sans modifier cette interface.</p>`; return; }
-        categories().forEach((category) => { const count = stats(category.id); const button = document.createElement("button"); button.className = `category${count.total > 0 && count.remaining === 0 ? " done" : ""}`; button.innerHTML = `<span class="category-icon">${category.icon || "▣"}</span><h2>${category.title}</h2><span class="count">${count.solved} / ${count.total} résolue(s)</span>`; button.addEventListener("click", () => category.id === "sudoku" ? window.location.assign(`../ordinateur/sudoku/index.html?from=ordinateur`) : renderCategory(category.id)); container.append(button); });
+        categories().forEach((category) => { const count = stats(category.id); const button = document.createElement("button"); button.className = `category${count.total > 0 && count.remaining === 0 ? " done" : ""}`; button.innerHTML = `<span class="category-icon">${category.icon || "▣"}</span><h2>${category.title}</h2><span class="count">${count.solved} / ${count.total} résolue(s)</span>`; button.addEventListener("click", () => category.id === "sudoku" ? window.location.assign(`../ordinateur/sudoku/index.html?from=ordinateur`) : category.id === "ligne" ? window.location.assign(`../ordinateur/entre-les-lignes/index.html?from=ordinateur`) : renderCategory(category.id)); container.append(button); });
       }
       function renderCategory(categoryId) {
         progress.setView({ name: "category", categoryId });
@@ -124,7 +124,7 @@ main { max-width:1100px; }
         screen.querySelector("#back").addEventListener("click", renderDesktop);
         const container = screen.querySelector("#puzzles");
         if (!puzzles.length) { container.innerHTML = `<p class="empty">Aucune énigme accessible dans cette catégorie.</p>`; return; }
-        puzzles.forEach((puzzle) => { const result = solved()[puzzle.id]; const button = document.createElement("button"); button.className = `puzzle${result?.solved ? " done" : ""}`; button.innerHTML = `<span class="terminal-line">${result?.solved ? "Résolue" : "À résoudre"}</span><h2>${puzzle.title}</h2><span class="count">${result?.solved ? result.archiveCodes.join(" · ") : "Ouvrir l’énigme"}</span>`; button.addEventListener("click", () => puzzle.template === "sudoku" ? window.location.assign(`../ordinateur/sudoku/sudoku.html?id=${encodeURIComponent(puzzle.id)}&from=ordinateur`) : renderPuzzle(puzzle.id)); container.append(button); });
+        puzzles.forEach((puzzle) => { const result = solved()[puzzle.id]; const button = document.createElement("button"); button.className = `puzzle${result?.solved ? " done" : ""}`; button.innerHTML = `<span class="terminal-line">${result?.solved ? "Résolue" : "À résoudre"}</span><h2>${puzzle.title}</h2><span class="count">${result?.solved ? result.archiveCodes.join(" · ") : "Ouvrir l’énigme"}</span>`; button.addEventListener("click", () => puzzle.template === "sudoku" ? window.location.assign(`../ordinateur/sudoku/sudoku.html?id=${encodeURIComponent(puzzle.id)}&from=ordinateur`) : puzzle.template === "ligne" ? window.location.assign(`../ordinateur/entre-les-lignes/ligne.html?id=${encodeURIComponent(puzzle.id)}&from=ordinateur`) : renderPuzzle(puzzle.id)); container.append(button); });
       }
       function renderPuzzle(id, message = "") {
         const puzzle = activePuzzles().find((entry) => entry.id === id);

@@ -49,9 +49,24 @@ window.ORDINATEUR_PROGRESS = (() => {
     return update((value) => { if (value.sudoku?.[id]?.status !== "solved") delete value.sudoku[id]; });
   }
 
+  function ligne(id) {
+    return read().ligne?.[id] || { status: "not_started", values: {}, activeIndex: null };
+  }
+
+  function saveLigne(id, entry) {
+    return update((value) => {
+      value.ligne ||= {};
+      value.ligne[id] = { ...entry, lastUpdated: new Date().toISOString() };
+    });
+  }
+
+  function resetLigne(id) {
+    return update((value) => { if (value.ligne?.[id]?.status !== "solved") delete value.ligne[id]; });
+  }
+
   function reset() {
     try { localStorage.removeItem(key); localStorage.removeItem(legacyKey); } catch { /* Progress remains optional. */ }
   }
 
-  return { read, discover, setPoweredOn, setView, authenticate, solve, sudoku, saveSudoku, resetSudoku, reset };
+  return { read, discover, setPoweredOn, setView, authenticate, solve, sudoku, saveSudoku, resetSudoku, ligne, saveLigne, resetLigne, reset };
 })();
