@@ -4,12 +4,13 @@ Carte;Position;Texte;Solution;Actif
 36;3;Comparez vos cartes entre agences. Que remarquez vous?;;oui
 36;4;Si vous superposez les carrés ça donne quoi ?;;oui
 36;5;Cela forme le chiffre 10, prenez la carte 10.;oui;oui
-11;1;Le tableau blanc indique comment décoder;;oui
-11;2;Les post-its donnent le mot clé à déchiffrer;;oui
-11;3;Les deux tableaux blancs sont nécessaires.;;oui
-11;4;Avez vous remarqué la symétrie des bureaux?;;oui
-11;5;L'indice du jour = 18 et non pas 81;;oui
-11;6;Le code est 519223;oui;oui
+11;1;Allez d'abord vous promener dans les bureaux;;oui
+11;2;Le tableau blanc indique comment décoder;;oui
+11;3;Les post-its donnent le mot clé à déchiffrer;;oui
+11;4;Les deux tableaux blancs sont nécessaires.;;oui
+11;5;Avez vous remarqué la symétrie des bureaux?;;oui
+11;6;L'indice du jour = 18 et non pas 81;;oui
+11;7;Le code est 519223;oui;oui
 14;1;Il y a un objet caché dans cette carte;;oui
 14;2;Regardez bien dans le dossier sur la table;;oui
 14;3;Il y a ecrit 18 sur le dossier, prenez la carte 18;oui;oui

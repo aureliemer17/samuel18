@@ -11,6 +11,7 @@ window.HINTS_CONFIG = {
    },
    "11" : {
       "hints" : [
+         "Allez d'abord vous promener dans les bureaux",
          "Le tableau blanc indique comment décoder",
          "Les post-its donnent le mot clé à déchiffrer",
          "Les deux tableaux blancs sont nécessaires.",
@@ -18,7 +19,7 @@ window.HINTS_CONFIG = {
          "L'indice du jour = 18 et non pas 81",
          "Le code est 519223"
       ],
-      "solution" : 6
+      "solution" : 7
    },
    "14" : {
       "hints" : [
