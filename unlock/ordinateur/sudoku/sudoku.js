@@ -15,6 +15,7 @@
   state.history ||= [];
   let selected = null;
   let notesMode = false;
+  let restartConfirmation = false;
   const key = (row, col) => `${row}-${col}`;
   const valueAt = (row, col) => initialGrid[row][col] || state.values[key(row, col)] || "";
   const save = () => progress.saveSudoku(id, state);
@@ -31,12 +32,15 @@
       const border = `${(col + 1) % boxCols === 0 && col + 1 < size ? "border-right:3px solid #315e35;" : ""}${(row + 1) % boxRows === 0 && row + 1 < size ? "border-bottom:3px solid #315e35;" : ""}`;
       cells.push(`<button class="${classes}" data-row="${row}" data-col="${col}" data-notes="${(state.notes[cellKey] || []).join(" ")}" style="${border}" ${initialGrid[row][col] || solved ? "disabled" : ""}>${value}</button>`);
     }
-    app.innerHTML = `<a class="back" href="${backHref}">← ${fromComputer ? "Bureau des énigmes" : "Catalogue Sudoku"}</a><p class="eyebrow">Ordinateur des énigmes / Sudoku</p><h1>${puzzle.title}</h1><p>${puzzle.instructions}</p><div class="layout"><section class="panel"><div class="grid" style="--size:${size};--box-cols:${boxCols}">${cells.join("")}</div></section><aside class="panel controls"><button class="button ${notesMode ? "active" : ""}" id="notes">Mode notes : ${notesMode ? "actif" : "inactif"}</button><div class="keypad" id="keypad">${Array.from({ length:size }, (_, index) => `<button class="button" data-value="${index + 1}">${index + 1}</button>`).join("")}<button class="button" data-action="erase">Effacer</button></div><button class="button" id="undo" ${state.history.length ? "" : "disabled"}>Annuler</button><button class="button" id="restart" ${solved ? "disabled" : ""}>Recommencer</button><button class="button" id="verify" ${solved ? "disabled" : ""}>Vérifier la grille</button><p class="message ${solved ? "success" : ""}">${message || (solved ? `Résolu. Codes obtenus : ${state.archiveCodes.join(" · ")}` : "")}</p>${solved ? archiveLinks() : ""}</aside></div>`;
+    const restartControls = restartConfirmation ? `<div class="restart-confirmation"><p>Effacer toutes les cases et notes ?</p><button class="button" id="cancelRestart">Annuler</button><button class="button danger" id="confirmRestart">Effacer la grille</button></div>` : `<button class="button" id="restart" ${solved ? "disabled" : ""}>Recommencer</button>`;
+    app.innerHTML = `<a class="back" href="${backHref}">← ${fromComputer ? "Bureau des énigmes" : "Catalogue Sudoku"}</a><p class="eyebrow">Ordinateur des énigmes / Sudoku</p><h1>${puzzle.title}</h1><p>${puzzle.instructions}</p><div class="layout"><section class="panel"><div class="grid" style="--size:${size};--box-cols:${boxCols}">${cells.join("")}</div></section><aside class="panel controls"><button class="button ${notesMode ? "active" : ""}" id="notes">Mode notes : ${notesMode ? "actif" : "inactif"}</button><div class="keypad" id="keypad">${Array.from({ length:size }, (_, index) => `<button class="button" data-value="${index + 1}">${index + 1}</button>`).join("")}<button class="button" data-action="erase">Effacer</button></div><button class="button" id="undo" ${state.history.length ? "" : "disabled"}>Annuler</button>${restartControls}<button class="button" id="verify" ${solved ? "disabled" : ""}>Vérifier la grille</button><p class="message ${solved ? "success" : ""}">${message || (solved ? `Résolu. Codes obtenus : ${state.archiveCodes.join(" · ")}` : "")}</p>${solved ? archiveLinks() : ""}</aside></div>`;
     app.querySelectorAll(".cell:not(.fixed)").forEach((cell) => cell.addEventListener("click", () => { selected = [Number(cell.dataset.row), Number(cell.dataset.col)]; render(); }));
     app.querySelector("#notes").addEventListener("click", () => { notesMode = !notesMode; render(); });
     app.querySelector("#keypad").addEventListener("click", (event) => apply(event.target.dataset.value, event.target.dataset.action));
     app.querySelector("#undo").addEventListener("click", undo);
-    app.querySelector("#restart").addEventListener("click", restart);
+    app.querySelector("#restart")?.addEventListener("click", () => { restartConfirmation = true; render(); });
+    app.querySelector("#cancelRestart")?.addEventListener("click", () => { restartConfirmation = false; render(); });
+    app.querySelector("#confirmRestart")?.addEventListener("click", restart);
     app.querySelector("#verify").addEventListener("click", verify);
   }
   function apply(value, action) {
@@ -52,7 +56,7 @@
     render();
   }
   function undo() { const previous = state.history.pop(); if (!previous) return; state.values = previous.values; state.notes = previous.notes; state.status = Object.keys(state.values).length ? "in_progress" : "not_started"; save(); render(); }
-  function restart() { if (window.confirm("Effacer toutes les cases et notes de cette grille ?")) { progress.resetSudoku(id); state = progress.sudoku(id); state.values ||= {}; state.notes ||= {}; state.history ||= []; selected = null; render("Grille recommencée."); } }
+  function restart() { progress.resetSudoku(id); state = progress.sudoku(id); state.values ||= {}; state.notes ||= {}; state.history ||= []; selected = null; restartConfirmation = false; render("Grille recommencée."); }
   function isComplete() { return Array.from({ length:size }, (_, row) => Array.from({ length:size }, (_, col) => valueAt(row, col))).every((row) => row.every(Boolean)); }
   function verify() { const values = Array.from({ length:size }, (_, row) => Array.from({ length:size }, (_, col) => Number(valueAt(row, col)))); if (values.some((row) => row.some((value) => !value))) return render("La grille est incomplète."); if (values.some((row, r) => row.some((value, c) => value !== solution[r][c]))) return render("Cette grille n’est pas correcte. Réessayez."); state.status = "solved"; state.notes = {}; state.archiveCodes = puzzle.archiveCodes; progress.solve(id, values.map((row) => row.join("")).join("/"), puzzle.archiveCodes); save(); render(); }
   window.addEventListener("keydown", (event) => { if (event.key >= "1" && event.key <= String(size)) apply(event.key); if (event.key === "Backspace" || event.key === "Delete") apply(null, "erase"); });
