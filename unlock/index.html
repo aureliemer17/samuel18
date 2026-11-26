@@ -47,14 +47,14 @@ footer {text-align:center;font-size:11px;letter-spacing:.1em;text-transform:uppe
 <a class="choice" href="jeu/machine.html" style="--x:77%;--y:24%"><span class="button"><img src="assets/machine.png" alt=""></span><span class="label">Machine</span></a>
 <a class="choice" href="archives/decouvertes.html" style="--x:50%;--y:81%"><span class="button"><img src="assets/dossier.png" alt=""></span><span class="label">Dossier S-18</span></a>
 <!-- Pour activer le quatrième bouton, renseigner ses chemins réels puis retirer hidden. -->
-<a class="choice" id="puzzleShortcut" href="jeu/machine46.html" hidden><span class="button"><img src="assets/machine.png" alt=""></span><span class="label">Énigmes</span></a>
+<a class="choice" id="puzzleShortcut" href="jeu/ordinateur.html?direct=1" hidden><span class="button"><img src="assets/ordinateur.png" alt=""></span><span class="label">Énigmes</span></a>
 </main>
 <footer>Procédure de restitution des archives</footer>
 <script>
 const choices = [...document.querySelectorAll('.choice:not([hidden])')];
 const positions = choices.length === 4 ? [[23,23],[77,23],[77,77],[23,77]] : [[23,24],[77,24],[50,81]];
 choices.forEach((choice,i)=>{const p=positions[i]; if(p){choice.style.setProperty('--x',p[0]+'%');choice.style.setProperty('--y',p[1]+'%');} const img=choice.querySelector('img[data-src]');if(img)img.src=img.dataset.src;});
-try { const machine46 = JSON.parse(localStorage.getItem('unlock-machine-46-progress-v1') || '{}'); if (machine46.discovered && machine46.authenticated) { const shortcut = document.querySelector('#puzzleShortcut'); shortcut.hidden = false; const visible = [...document.querySelectorAll('.choice:not([hidden])')]; const positions = [[23,23],[77,23],[77,77],[23,77]]; visible.forEach((choice, index) => { choice.style.setProperty('--x', `${positions[index][0]}%`); choice.style.setProperty('--y', `${positions[index][1]}%`); }); } } catch { /* The shortcut remains hidden without local storage. */ }
+try { const ordinateur = JSON.parse(localStorage.getItem('unlock-ordinateur-progress-v1') || localStorage.getItem('unlock-machine-46-progress-v1') || '{}'); if (ordinateur.discovered && ordinateur.authenticated) { const shortcut = document.querySelector('#puzzleShortcut'); shortcut.hidden = false; const visible = [...document.querySelectorAll('.choice:not([hidden])')]; const positions = [[23,23],[77,23],[77,77],[23,77]]; visible.forEach((choice, index) => { choice.style.setProperty('--x', `${positions[index][0]}%`); choice.style.setProperty('--y', `${positions[index][1]}%`); }); } } catch { /* The shortcut remains hidden without local storage. */ }
 </script>
 </body>
 </html>

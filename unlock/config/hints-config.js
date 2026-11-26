@@ -11,15 +11,14 @@ window.HINTS_CONFIG = {
    },
    "11" : {
       "hints" : [
-         "Allez vous promener dans les étages pour trouver des indices",
- 	 "Le tableau blanc indique comment décoder",
+         "Le tableau blanc indique comment décoder",
          "Les post-its donnent le mot clé à déchiffrer",
          "Les deux tableaux blancs sont nécessaires.",
          "Avez vous remarqué la symétrie des bureaux?",
          "L'indice du jour = 18 et non pas 81",
          "Le code est 519223"
       ],
-      "solution" : 7
+      "solution" : 6
    },
    "14" : {
       "hints" : [

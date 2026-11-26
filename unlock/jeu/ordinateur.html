@@ -25,8 +25,8 @@
       .desktop-header { align-items:center; border-bottom:1px solid var(--line); display:flex; gap:12px; justify-content:space-between; margin-bottom:22px; padding-bottom:12px; } .desktop-header h1 { margin:0; }
       .stats { color:#b7d8a9; font-size:.76rem; } .categories,.puzzle-list { display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(175px,1fr)); }
       .category,.puzzle { background:#0b1e10cc; border:1px solid #48704b; color:inherit; min-height:115px; padding:15px; text-align:left; } .category.done,.puzzle.done { border-color:#a9e582; } .category-icon { font-size:2rem; } .count { color:#a8cc93; display:block; font-size:.75rem; margin-top:10px; }
-      .back { margin-bottom:18px; } .puzzle-card { background:#0a1a0eaa; border:1px solid #527756; max-width:650px; padding:20px; } .puzzle-card p { line-height:1.6; white-space:pre-wrap; } .archive-codes { display:flex; flex-wrap:wrap; gap:8px; margin:14px 0; } .archive-codes a { color:#c9ffad; }
-      .empty { color:#aac5a0; max-width:520px; line-height:1.65; } .footer { color:#665e4d; font-size:.67rem; margin-top:14px; text-align:center; }
+      .back { margin-bottom:18px; } .puzzle-card { background:#0a1a0eaa; border:1px solid #527756; max-width:650px; padding:20px; } .puzzle-card p { line-height:1.6; white-space:pre-wrap; } .puzzle-assets { display:grid; gap:12px; margin:18px 0; } .puzzle-assets img { background:#eef0e6; border:1px solid #78906f; display:block; height:auto; max-width:100%; padding:8px; } .response-format { color:#b7d8a9; font-size:.78rem; } .archive-codes { display:flex; flex-wrap:wrap; gap:8px; margin:14px 0; } .archive-codes a { color:#c9ffad; }
+      .empty { color:#aac5a0; max-width:520px; line-height:1.65; } .home-link { display:block; margin:16px auto 0; text-align:center; width:max-content; } .footer { color:#665e4d; font-size:.67rem; margin-top:14px; text-align:center; }
       @media (max-width:600px) { body { padding:8px; } .computer { border-width:6px; border-radius:14px; padding:12px; } .screen-shell { border-width:7px; padding:9px; } .screen { min-height:calc(100svh - 95px); padding:18px; } .desktop-header { align-items:flex-start; flex-direction:column; } .categories,.puzzle-list { grid-template-columns:1fr; } }
       @media (prefers-reduced-motion:reduce) { * { animation:none !important; } }
     </style>
@@ -38,13 +38,14 @@
         <div class="screen-shell"><div class="screen off" id="screen" aria-live="polite"></div></div>
         <button class="power" id="power" type="button" aria-label="Marche / arrêt"></button>
       </section>
+      <a class="button home-link" href="../index.html">← Retour à l’accueil</a>
       <p class="footer">AFFAIRE S-18 · ORDINATEUR DES ÉNIGMES</p>
     </main>
-    <script src="../config/machine46-catalog.js"></script>
-    <script src="../config/machine46-progress.js"></script>
+    <script src="../config/ordinateur-catalog.js"></script>
+    <script src="../config/ordinateur-progress.js"></script>
     <script>
-      const catalog = window.MACHINE46_CATALOG;
-      const progress = window.MACHINE46_PROGRESS;
+      const catalog = window.ORDINATEUR_CATALOG;
+      const progress = window.ORDINATEUR_PROGRESS;
       const screen = document.querySelector("#screen");
       const power = document.querySelector("#power");
       const normalize = (value) => value.trim().toLocaleLowerCase("fr");
@@ -58,36 +59,52 @@
       };
       const categoryTitle = (id) => categories().find((category) => category.id === id)?.title || id;
       function renderLogin(message = "") {
+        progress.setView({ name: "login" });
         screen.innerHTML = `<div class="boot"><p class="terminal-line">S-18 / TERMINAL 46 / ACCÈS RESTREINT</p><h1>LOGIN</h1><form class="login" id="loginForm"><label>Identifiant<input id="login" autocomplete="username" autofocus /></label><button>Ouvrir la session</button><p class="error">${message}</p></form></div>`;
         screen.querySelector("#loginForm").addEventListener("submit", (event) => { event.preventDefault(); if (normalize(screen.querySelector("#login").value) === "delorme") { progress.authenticate(); renderDesktop(); } else renderLogin("Identifiant non reconnu."); });
       }
       function renderDesktop() {
+        progress.setView({ name: "desktop" });
         const total = stats();
         screen.innerHTML = `<div class="boot"><header class="desktop-header"><div><p class="terminal-line">Session DELORME · terminal 46</p><h1>Bureau des énigmes</h1></div><p class="stats">${total.solved} résolue(s) · ${total.remaining} restante(s) · ${total.total} accessible(s)</p></header><section class="categories" id="categories"></section></div>`;
         const container = screen.querySelector("#categories");
         if (!categories().length) { container.innerHTML = `<p class="empty">Aucune catégorie publiée pour le moment. Le catalogue peut être complété sans modifier cette interface.</p>`; return; }
-        categories().forEach((category) => { const count = stats(category.id); const button = document.createElement("button"); button.className = `category${count.total > 0 && count.remaining === 0 ? " done" : ""}`; button.innerHTML = `<span class="category-icon">${category.icon || "▣"}</span><h2>${category.title}</h2><span class="count">${count.solved} / ${count.total} résolue(s)</span>`; button.addEventListener("click", () => renderCategory(category.id)); container.append(button); });
+        categories().forEach((category) => { const count = stats(category.id); const button = document.createElement("button"); button.className = `category${count.total > 0 && count.remaining === 0 ? " done" : ""}`; button.innerHTML = `<span class="category-icon">${category.icon || "▣"}</span><h2>${category.title}</h2><span class="count">${count.solved} / ${count.total} résolue(s)</span>`; button.addEventListener("click", () => category.id === "sudoku" ? window.location.assign(`../ordinateur/sudoku/index.html?from=ordinateur`) : renderCategory(category.id)); container.append(button); });
       }
       function renderCategory(categoryId) {
+        progress.setView({ name: "category", categoryId });
         const puzzles = activePuzzles().filter((puzzle) => puzzle.categoryId === categoryId).sort((a, b) => a.order - b.order);
         screen.innerHTML = `<button class="back" id="back">← Bureau</button><p class="terminal-line">Catégorie</p><h1>${categoryTitle(categoryId)}</h1><section class="puzzle-list" id="puzzles"></section>`;
         screen.querySelector("#back").addEventListener("click", renderDesktop);
         const container = screen.querySelector("#puzzles");
         if (!puzzles.length) { container.innerHTML = `<p class="empty">Aucune énigme accessible dans cette catégorie.</p>`; return; }
-        puzzles.forEach((puzzle) => { const result = solved()[puzzle.id]; const button = document.createElement("button"); button.className = `puzzle${result?.solved ? " done" : ""}`; button.innerHTML = `<span class="terminal-line">${result?.solved ? "Résolue" : "À résoudre"}</span><h2>${puzzle.title}</h2><span class="count">${result?.solved ? result.archiveCodes.join(" · ") : "Ouvrir l’énigme"}</span>`; button.addEventListener("click", () => renderPuzzle(puzzle.id)); container.append(button); });
+        puzzles.forEach((puzzle) => { const result = solved()[puzzle.id]; const button = document.createElement("button"); button.className = `puzzle${result?.solved ? " done" : ""}`; button.innerHTML = `<span class="terminal-line">${result?.solved ? "Résolue" : "À résoudre"}</span><h2>${puzzle.title}</h2><span class="count">${result?.solved ? result.archiveCodes.join(" · ") : "Ouvrir l’énigme"}</span>`; button.addEventListener("click", () => puzzle.template === "sudoku" ? window.location.assign(`../ordinateur/sudoku/sudoku.html?id=${encodeURIComponent(puzzle.id)}&from=ordinateur`) : renderPuzzle(puzzle.id)); container.append(button); });
       }
       function renderPuzzle(id, message = "") {
         const puzzle = activePuzzles().find((entry) => entry.id === id);
         if (!puzzle) return renderDesktop();
+        progress.setView({ name: "puzzle", puzzleId: id });
         const result = solved()[id];
-        const archiveLinks = (codes) => `<div class="archive-codes">${codes.map((code) => `<a class="button" href="../archives/media.html#code=${encodeURIComponent(code)}&from=machine46">Archive ${code}</a>`).join("")}</div>`;
-        screen.innerHTML = `<button class="back" id="back">← ${categoryTitle(puzzle.categoryId)}</button><article class="puzzle-card"><p class="terminal-line">Énigme ${puzzle.id}</p><h1>${puzzle.title}</h1><p>${puzzle.instructions}</p>${result?.solved ? `<p class="success">Résolue. Réponse enregistrée : ${result.submittedAnswer}</p>${archiveLinks(result.archiveCodes)}<button id="continue">Continuer les énigmes</button>` : `<form class="login" id="answerForm"><label>Votre réponse<input id="answer" autocomplete="off" autofocus /></label><button>Valider</button><p class="error">${message}</p></form>`}</article>`;
+        const archiveLinks = (codes) => `<div class="archive-codes">${codes.map((code) => `<a class="button" href="../archives/media.html#code=${encodeURIComponent(code)}&from=ordinateur">Archive ${code}</a>`).join("")}</div>`;
+        const assets = (puzzle.assets || []).map((source, index) => `<img src="${source}" alt="Support visuel ${index + 1} de l’énigme : ${puzzle.title}" />`).join("");
+        const responseFormat = puzzle.responseFormat ? `<p class="response-format">Format attendu : ${puzzle.responseFormat}</p>` : "";
+        screen.innerHTML = `<button class="back" id="back">← ${categoryTitle(puzzle.categoryId)}</button><article class="puzzle-card"><p class="terminal-line">Énigme ${puzzle.id}</p><h1>${puzzle.title}</h1><p>${puzzle.instructions}</p>${assets ? `<div class="puzzle-assets">${assets}</div>` : ""}${responseFormat}${result?.solved ? `<p class="success">Résolue. Réponse enregistrée : ${result.submittedAnswer}</p>${archiveLinks(result.archiveCodes)}<button id="continue">Continuer les énigmes</button>` : `<form class="login" id="answerForm"><label>Votre réponse<input id="answer" autocomplete="off" autofocus /></label><button>Valider</button><p class="error">${message}</p></form>`}</article>`;
         screen.querySelector("#back").addEventListener("click", () => renderCategory(puzzle.categoryId));
         if (result?.solved) { screen.querySelector("#continue").addEventListener("click", () => renderCategory(puzzle.categoryId)); return; }
         screen.querySelector("#answerForm").addEventListener("submit", (event) => { event.preventDefault(); const answer = screen.querySelector("#answer").value; const accepted = puzzle.acceptedAnswers.some((candidate) => normalize(candidate) === normalize(answer)); if (!accepted) return renderPuzzle(id, "Réponse incorrecte. Réessayez."); progress.solve(id, answer.trim(), puzzle.archiveCodes); renderPuzzle(id); });
       }
-      function boot() { progress.discover(); power.classList.add("on"); screen.classList.remove("off"); screen.innerHTML = `<p class="boot terminal-line">Initialisation du terminal…</p>`; window.setTimeout(() => progress.read().authenticated ? renderDesktop() : renderLogin(), 650); }
-      power.addEventListener("click", () => { if (power.classList.contains("on")) { power.classList.remove("on"); screen.className = "screen off"; screen.replaceChildren(); } else boot(); });
+      function restoreView() {
+        const { view } = progress.read();
+        if (!progress.read().authenticated) return renderLogin();
+        if (view?.name === "category" && categories().some((category) => category.id === view.categoryId)) return renderCategory(view.categoryId);
+        if (view?.name === "puzzle" && activePuzzles().some((puzzle) => puzzle.id === view.puzzleId)) return renderPuzzle(view.puzzleId);
+        return renderDesktop();
+      }
+      function boot(restored = false) { progress.discover(); progress.setPoweredOn(true); power.classList.add("on"); screen.classList.remove("off"); if (restored) return restoreView(); screen.innerHTML = `<p class="boot terminal-line">Initialisation du terminal…</p>`; window.setTimeout(restoreView, 650); }
+      function shutdown() { progress.setPoweredOn(false); power.classList.remove("on"); screen.className = "screen off"; screen.replaceChildren(); }
+      power.addEventListener("click", () => { if (power.classList.contains("on")) shutdown(); else boot(); });
+      if (new URLSearchParams(location.search).get("direct") === "1" && progress.read().authenticated) boot(true);
+      else if (progress.read().poweredOn) boot(true);
     </script>
   </body>
 </html>

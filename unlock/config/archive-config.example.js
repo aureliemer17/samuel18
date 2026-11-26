@@ -16,7 +16,7 @@ window.ARCHIVE_CONFIG = {
     "I-A-1": {
       title: "Les 18 ans de Samuel !",
       items: [
-        { title: "anecdote", type: "document", source: "../../dossiers/I%20-%20Disparitions%20myste%CC%81rieuses/I-A-1%20-%20Exemple/anecdote.html", height: 150 },
+        { title: "anecdote", type: "document", source: "../../dossiers/I%20-%20Disparitions%20myste%CC%81rieuses/I-A-1%20-%20Exemple/anecdote.html", height: 50 },
         { title: "B   PIC0001", type: "image", source: "../../dossiers/I%20-%20Disparitions%20myste%CC%81rieuses/I-A-1%20-%20Exemple/B%20-%20PIC0001.jpeg", width: 1792, height: 2400, orientation: "portrait", createdAt: "16 November 2026" },
         { title: "IMG 9033", type: "image", source: "../../dossiers/I%20-%20Disparitions%20myste%CC%81rieuses/I-A-1%20-%20Exemple/IMG_9033.jpg", width: 5712, height: 3213, orientation: "landscape", createdAt: "16 November 2026" },
         { title: "IMG 9035", type: "image", source: "../../dossiers/I%20-%20Disparitions%20myste%CC%81rieuses/I-A-1%20-%20Exemple/IMG_9035.jpg", width: 5712, height: 3213, orientation: "landscape", createdAt: "16 November 2026" },
