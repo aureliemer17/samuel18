@@ -112,7 +112,7 @@ main {width:min(100%,1040px);}
     </main>
     <script src="../config/config.js?v=ordinateur-20261126"></script>
     <script>
-      const destinations = window.PUZZLE_CONFIG.machines;
+      const destinations = { ...window.PUZZLE_CONFIG.machines, "46": "ordinateur.html" };
       const screen = document.querySelector("#screen");
       const keypad = document.querySelector("#keypad");
       const panel = document.querySelector(".panel");

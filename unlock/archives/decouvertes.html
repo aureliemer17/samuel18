@@ -117,7 +117,10 @@
  .toolbar { flex-wrap:wrap; padding:10px; border:1px solid #8b7047; border-radius:9px; background:linear-gradient(145deg,#443022,#281d16); box-shadow:0 6px 20px #0005; }
  .toolbar button,.toolbar-link { border:1px solid #e2c17c; border-radius:5px; background:linear-gradient(#f4dfa7,#bd9550); color:#392615; box-shadow:inset 0 1px #fff9,0 3px 5px #0005; }
  .toolbar button:hover,.toolbar-link:hover { background:#f9e6b4; }
- .toolbar [hidden] { display:none; }
+  .toolbar [hidden] { display:none; }
+  .reset-confirmation { align-items:center; background:#3f291e; border:1px solid #d8b66d; border-radius:6px; color:#fff0cc; display:flex; flex-wrap:wrap; font:700 .72rem/1.35 "Courier New",monospace; gap:7px; padding:7px 9px; }
+  .reset-confirmation button { background:linear-gradient(#f4dfa7,#bd9550); border:1px solid #e2c17c; border-radius:4px; color:#392615; cursor:pointer; font:inherit; padding:6px 8px; }
+  .reset-confirmation .reset-confirm { background:linear-gradient(#dc806a,#9f3c30); border-color:#f0a591; color:#fff8e2; }
  .cover { border-radius:5px 15px 15px 5px; background:linear-gradient(90deg,#38271b 0,#79552f 2%,#b58b4c 3%,transparent 5%),radial-gradient(ellipse at 45% 35%,#f6e4ae,#d0ad66 78%,#b18b49); box-shadow: 8px 8px 0 -3px #e1d0a8,13px 13px 0 -5px #79532e,0 25px 55px #0008,inset 0 0 0 2px #e8c98b; }
  .cover::before { border:3px double #85612d; border-radius:4px; }
  .cover h1 { color:#35251b; letter-spacing:.07em; text-shadow:0 1px #fff8; }
@@ -142,7 +145,7 @@
 </style>
 </head>
   <body>
-    <nav class="toolbar" aria-label="Actions du dossier"><a class="toolbar-link" href="../index.html">Accueil</a><button id="inventory" type="button">Inventaire</button><button id="exportAll" type="button" hidden>PDF complet</button><button id="resetProgress" type="button" hidden>Réinitialiser le suivi</button></nav>
+    <nav class="toolbar" aria-label="Actions du dossier"><a class="toolbar-link" href="../index.html">Accueil</a><button id="inventory" type="button">Inventaire</button><button id="exportAll" type="button" hidden>PDF complet</button><button id="resetProgress" type="button" hidden>Réinitialiser le suivi</button><div class="reset-confirmation" id="resetConfirmation" hidden><span>Effacer le suivi des archives et de l’ordinateur sur cet appareil ?</span><button id="cancelReset" type="button">Annuler</button><button class="reset-confirm" id="confirmReset" type="button">Réinitialiser</button></div></nav>
     <main class="book">
       <section class="cover" id="cover" tabindex="0" role="button" aria-label="Ouvrir le dossier"><div class="cover__content"><img class="logo" src="../assets/bureau-majorite.png" alt="Bureau de la Majorité" /><div class="division">Archives personnelles · Restitution à la majorité</div><h1>Dossier S-18</h1><p class="subtitle">Les 18 premières années de<span class="name">Samuel</span></p><img class="cover-image" src="../assets/image_dossier_S_18.png" alt="Samuel" /><p class="date">29 novembre 2026</p><p class="quote">« Une vie entière de souvenirs à découvrir. »</p><p class="confidential">Document confidentiel</p></div></section>
       <section class="pages" id="pages"></section>
@@ -202,12 +205,12 @@
         if (!isLocalArchive && item.type === "document") item.source = publishedContentSource(item.source);
         if (!isLocalArchive && dossier.instruction) dossier.instruction = publishedContentSource(dossier.instruction);
       }));
-      const categories = window.ARCHIVE_CONFIG.categories;
-      const sortArchiveItems = (items) => [...items].sort((left, right) => {
-        if (left.isRecapVideo !== right.isRecapVideo) return left.isRecapVideo ? -1 : 1;
+       const categories = window.ARCHIVE_CONFIG.categories;
+       const sortArchiveItems = (items) => [...items].sort((left, right) => {
         const leftIsAnecdote = /(?:^|\/)anecdote\.(?:html?|txt)$/i.test(left.source);
         const rightIsAnecdote = /(?:^|\/)anecdote\.(?:html?|txt)$/i.test(right.source);
         if (leftIsAnecdote !== rightIsAnecdote) return leftIsAnecdote ? -1 : 1;
+        if (left.isRecapVideo !== right.isRecapVideo) return left.isRecapVideo ? -1 : 1;
         return (left.createdAtEpoch ?? Infinity) - (right.createdAtEpoch ?? Infinity);
       });
       const firstPageByDossier = new Map();
@@ -436,7 +439,8 @@
         pages.append(page);
       }
        const shortDocument = (item) => item.type === "document" && (item.height || 0) <= 380;
-       function buildStandardPlan(items) {
+       const isAnecdote = (item) => /(?:^|\/)anecdote\.(?:html?|txt)$/i.test(item.source);
+        function buildStandardPlan(items) {
          const plan = [];
          for (let index = 0; index < items.length;) {
            const item = items[index];
@@ -474,24 +478,24 @@
          });
          return dossierPage;
        }
-       Object.entries(media).filter(([code]) => adminMode || viewed.has(code)).forEach(([code, dossier]) => {
-         const items = sortArchiveItems(dossier.items || []);
-         const recapVideos = items.filter((item) => item.isRecapVideo);
-         if (recapVideos.length === 0) {
+        Object.entries(media).filter(([code]) => adminMode || viewed.has(code)).forEach(([code, dossier]) => {
+          const items = sortArchiveItems(dossier.items || []);
+          const recapVideos = items.filter((item) => item.isRecapVideo);
+          if (recapVideos.length === 0) {
            const plan = buildStandardPlan(items);
            appendStandardItems(code, dossier, plan, 1, plan.length);
            return;
-         }
-         const otherVideos = items.filter((item) => item.type === "video" && !item.isRecapVideo && !item.isFeaturedVideo);
-         const chronologicalItems = items.filter((item) => item.type !== "video" || item.isFeaturedVideo);
-         const plan = buildStandardPlan(chronologicalItems);
-         const totalPages = recapVideos.length + plan.length + Math.ceil(otherVideos.length / 4);
-        let dossierPage = 1;
-        recapVideos.forEach((item) => {
-          appendSinglePage(code, dossier, item, dossierPage, totalPages);
-          dossierPage += 1;
-        });
-         dossierPage = appendStandardItems(code, dossier, plan, dossierPage, totalPages);
+          }
+          const otherVideos = items.filter((item) => item.type === "video" && !item.isRecapVideo && !item.isFeaturedVideo);
+          const anecdoteItems = items.filter(isAnecdote);
+          const chronologicalItems = items.filter((item) => !isAnecdote(item) && !item.isRecapVideo && (item.type !== "video" || item.isFeaturedVideo));
+          const plan = [
+            ...buildStandardPlan(anecdoteItems),
+            ...recapVideos.map((item) => ({ type: "single", item })),
+            ...buildStandardPlan(chronologicalItems),
+          ];
+          const totalPages = plan.length + Math.ceil(otherVideos.length / 4);
+          let dossierPage = appendStandardItems(code, dossier, plan, 1, totalPages);
         for (let index = 0; index < otherVideos.length; index += 4) {
           appendVideoQrList(code, dossier, otherVideos.slice(index, index + 4), dossierPage, totalPages);
           dossierPage += 1;
@@ -680,14 +684,17 @@
           window.print();
         }
         document.querySelector("#exportAll").addEventListener("click", () => exportComplete());
-      document.querySelector("#resetProgress").addEventListener("click", () => {
-        if (adminMode && window.confirm("Réinitialiser le suivi des dossiers consultés sur ce navigateur ?")) {
-          window.ARCHIVE_PROGRESS.reset();
-          localStorage.removeItem("unlock-ordinateur-progress-v1");
-          localStorage.removeItem("unlock-machine-46-progress-v1");
-          window.location.reload();
-        }
-      });
+       const resetProgress = document.querySelector("#resetProgress");
+       const resetConfirmation = document.querySelector("#resetConfirmation");
+       resetProgress.addEventListener("click", () => { if (adminMode) resetConfirmation.hidden = false; });
+       document.querySelector("#cancelReset").addEventListener("click", () => { resetConfirmation.hidden = true; });
+       document.querySelector("#confirmReset").addEventListener("click", () => {
+         if (!adminMode) return;
+         window.ARCHIVE_PROGRESS.reset();
+         localStorage.removeItem("unlock-ordinateur-progress-v1");
+         localStorage.removeItem("unlock-machine-46-progress-v1");
+         window.location.reload();
+       });
        if (openInventory) open();
        else showPage(0);
     </script>

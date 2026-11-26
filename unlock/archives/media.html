@@ -35,8 +35,15 @@
        .photo-gallery img.media { aspect-ratio: auto; height: auto; max-height: none; object-fit: contain; }
       .photo-gallery--1 { grid-template-columns: minmax(0, 1fr); }
       .photo-gallery--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .photo-gallery:not(.photo-gallery--1):not(.photo-gallery--2) .photo--landscape { grid-column: span 2; }
-      .document-frame { background: #fffdf7; height: 420px; max-height: none; min-height: 120px; }
+       .photo-gallery:not(.photo-gallery--1):not(.photo-gallery--2) .photo--landscape { grid-column: span 2; }
+       .document-frame { background: #fffdf7; height: 420px; max-height: none; min-height: 120px; }
+       .video-qr-section { border-top: 1px dashed var(--line); margin-top: 34px; padding-top: 24px; }
+       .video-qr-section h2 { font-size: 1.15rem; margin: 0 0 8px; }
+       .video-qr-section p { font-family: Georgia, serif; line-height: 1.5; margin: 0 0 18px; }
+       .video-qr-list { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+       .video-qr-entry { align-items: center; background: #fffdf6; border: 1px solid var(--line); box-shadow: 2px 3px 0 rgba(74, 49, 18, .16); display: flex; flex-direction: column; min-height: 190px; padding: 16px; text-align: center; }
+       .video-qr-entry h3 { color: var(--muted); font-size: .78rem; margin: 0 0 12px; }
+       .video-qr-entry img { background: #fff; border: 1px solid var(--line); height: 128px; image-rendering: pixelated; padding: 8px; width: 128px; }
        .folder-footer { align-items: end; display: grid; gap: 20px; grid-template-columns: minmax(0, 1fr) minmax(0, 3fr); margin-top: 22px; }
        .folder-return-top { margin: 0 0 22px; }
       .instructions { background: #f3e49c; box-shadow: 3px 5px 7px rgba(62, 42, 11, .25); padding: 14px 16px; transform: rotate(1deg); }
@@ -44,7 +51,7 @@
       .instructions iframe { background: transparent; border: 0; display: block; font-size: .85rem; height: 11.2em; line-height: 1.4; max-height: 11.2em; width: 100%; }
       .return { align-items: center; background: #72572c; box-shadow: 3px 4px 0 #372713; color: #fff8e2; display: inline-flex; font-size: .78rem; font-weight: 800; justify-content: center; padding: 12px 18px; text-decoration: none; text-transform: uppercase; width: 100%; }
       .return:hover { background: #503a1d; }
-       @media (max-width: 620px) { body { padding: 12px; } .folder { padding: 28px 20px 34px; } .folder-footer { align-items: stretch; grid-template-columns: 1fr; } .return { justify-content: center; } .photo-gallery, .photo-gallery--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); } .photo-gallery--1 { grid-template-columns: minmax(0, 1fr); } .photo-gallery:not(.photo-gallery--1) .photo--landscape { grid-column: span 2; } }
+       @media (max-width: 620px) { body { padding: 12px; } .folder { padding: 28px 20px 34px; } .folder-footer { align-items: stretch; grid-template-columns: 1fr; } .return { justify-content: center; } .photo-gallery, .photo-gallery--2, .video-qr-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } .photo-gallery--1 { grid-template-columns: minmax(0, 1fr); } .photo-gallery:not(.photo-gallery--1) .photo--landscape { grid-column: span 2; } }
     </style>
   <!-- Refonte visuelle : écran uniquement -->
 <style>
@@ -125,14 +132,15 @@
       document.querySelector("#title").textContent = item.title;
       const content = document.querySelector("#content");
         const instructionSlot = document.querySelector("#instructions");
-        const returnLink = document.querySelector("#returnLink");
-        const returnLinkTop = document.querySelector("#returnLinkTop");
-        const sortArchiveItems = (items) => [...items].sort((left, right) => {
-         const leftIsAnecdote = /(?:^|\/)anecdote\.(?:html?|txt)$/i.test(left.source);
-         const rightIsAnecdote = /(?:^|\/)anecdote\.(?:html?|txt)$/i.test(right.source);
-         if (leftIsAnecdote !== rightIsAnecdote) return leftIsAnecdote ? -1 : 1;
-         return (left.createdAtEpoch ?? Infinity) - (right.createdAtEpoch ?? Infinity);
-       });
+         const returnLink = document.querySelector("#returnLink");
+         const returnLinkTop = document.querySelector("#returnLinkTop");
+         const sortArchiveItems = (items) => [...items].sort((left, right) => {
+          const leftIsAnecdote = /(?:^|\/)anecdote\.(?:html?|txt)$/i.test(left.source);
+          const rightIsAnecdote = /(?:^|\/)anecdote\.(?:html?|txt)$/i.test(right.source);
+          if (leftIsAnecdote !== rightIsAnecdote) return leftIsAnecdote ? -1 : 1;
+          if (left.isRecapVideo !== right.isRecapVideo) return left.isRecapVideo ? -1 : 1;
+          return (left.createdAtEpoch ?? Infinity) - (right.createdAtEpoch ?? Infinity);
+        });
        if (source === "majorite") {
          returnLink.href = "dossier-majorite.html";
          returnLink.textContent = "Retour au dossier de la majorité";
@@ -196,23 +204,48 @@
           frame.title = mediaItem.title;
           card.append(frame);
         }
-        return card;
-      }
+         return card;
+       }
+
+       function createVideoQrSection(videos) {
+         const section = document.createElement("section");
+         section.className = "video-qr-section";
+         section.innerHTML = "<h2>Vidéos à consulter</h2><p>À regarder à votre rythme : scannez le QR code de la vidéo de votre choix.</p>";
+         const list = document.createElement("div");
+         list.className = "video-qr-list";
+         videos.forEach((videoItem) => {
+           if (!videoItem.externalUrl) return;
+           const entry = document.createElement("article");
+           entry.className = "video-qr-entry";
+           const title = document.createElement("h3");
+           title.textContent = videoItem.title;
+           const qr = document.createElement("img");
+           qr.src = `https://api.qrserver.com/v1/create-qr-code/?size=496x496&data=${encodeURIComponent(videoItem.externalUrl)}`;
+           qr.alt = `QR code vers ${videoItem.title}`;
+           entry.append(title, qr);
+           list.append(entry);
+         });
+         if (list.childElementCount === 0) return null;
+         section.append(list);
+         return section;
+       }
 
        const items = sortArchiveItems(item.items || []);
-      for (let index = 0; index < items.length;) {
-        const mediaItem = items[index];
-        if (mediaItem.type !== "image") {
-          content.append(createCard(mediaItem));
-          index += 1;
+       const videosForQr = items.filter((mediaItem) => mediaItem.type === "video" && !mediaItem.isRecapVideo && mediaItem.externalUrl);
+       const displayedItems = items.filter((mediaItem) => mediaItem.type !== "video" || mediaItem.isRecapVideo || !mediaItem.externalUrl);
+       for (let index = 0; index < displayedItems.length;) {
+         const mediaItem = displayedItems[index];
+         if (mediaItem.type !== "image") {
+           content.append(createCard(mediaItem));
+           index += 1;
           continue;
         }
 
-        const images = [];
-        while (index < items.length && items[index].type === "image") {
-          images.push(items[index]);
-          index += 1;
-        }
+         const images = [];
+         while (index < displayedItems.length && displayedItems[index].type === "image") {
+           images.push(displayedItems[index]);
+           index += 1;
+         }
 
         if (images.length === 1) {
           content.append(createCard(images[0]));
@@ -222,8 +255,11 @@
         const gallery = document.createElement("section");
         gallery.className = `photo-gallery photo-gallery--${Math.min(images.length, 10)}`;
         images.forEach((image) => gallery.append(createCard(image)));
-        content.append(gallery);
-      }
+         content.append(gallery);
+       }
+
+       const videoQrSection = createVideoQrSection(videosForQr);
+       if (videoQrSection) content.append(videoQrSection);
 
       if (item.instruction) {
         const instructions = document.createElement("aside");
