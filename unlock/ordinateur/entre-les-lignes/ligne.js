@@ -7,7 +7,7 @@
   const fromComputer = new URLSearchParams(location.search).get("from") === "ordinateur";
   const backHref = fromComputer ? "../../jeu/ordinateur.html" : "index.html";
   const normalize = (value) => value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
-  const isLetter = (character) => /[A-ZÀ-ÖØ-öø-ÿ]/.test(character);
+  const isLetter = (character) => /[A-Za-zÀ-ÖØ-öø-ÿ]/.test(character);
   if (!puzzle || puzzle.template !== "ligne" || !puzzle.data?.image) {
     app.innerHTML = `<p>Énigme indisponible.</p><a class="back" href="${backHref}">← Retour</a>`;
     return;
