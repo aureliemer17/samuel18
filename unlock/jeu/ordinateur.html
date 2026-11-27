@@ -90,7 +90,13 @@ main { max-width:1100px; }
   .computer:not(:has(.power.on)) .power { left:58.8%; top:68.85%; width:2.75%; height:3.7%; }
   .computer:has(.power.on) .return-key { background:url("../assets/ordinateur/back-key.png") center/100% 100% no-repeat; border:0; bottom:14px; box-shadow:none; color:transparent; height:43px; }
   .computer:has(.power.on) .return-key:active { box-shadow:none; }
+  .screen .puzzle-card.alain-puzzle { display:grid; grid-template-columns:minmax(0,1.1fr) minmax(230px,.9fr); gap:18px; max-width:none; }
+  .screen .alain-puzzle .puzzle-assets { margin:0; }
+  .screen .alain-puzzle .puzzle-details { min-width:0; }
 }
+
+.screen .puzzle-header { margin-bottom:8px; padding-bottom:6px; }
+.screen .puzzle-assets { margin:8px 0; }
 </style>
   </head>
   <body>
@@ -103,9 +109,9 @@ main { max-width:1100px; }
       <a class="button home-link" href="../index.html">← Retour à l’accueil</a>
       <p class="footer">AFFAIRE S-18 · ORDINATEUR DES ÉNIGMES</p>
     </main>
-    <script src="../config/app-update.js?v=89"></script>
-    <script src="../config/ordinateur-catalog.js?v=89"></script>
-    <script src="../config/ordinateur-progress.js?v=89"></script>
+    <script src="../config/app-update.js?v=90"></script>
+    <script src="../config/ordinateur-catalog.js?v=90"></script>
+    <script src="../config/ordinateur-progress.js?v=90"></script>
     <script>
       const catalog = window.ORDINATEUR_CATALOG;
       const progress = window.ORDINATEUR_PROGRESS;
@@ -153,7 +159,7 @@ main { max-width:1100px; }
         if (!isUnlocked(puzzle)) return renderCategory(puzzle.categoryId, puzzle.lockMessage);
         progress.setView({ name: "special-puzzle", puzzleId: puzzle.id, categoryId: puzzle.categoryId });
         const directory = puzzle.template === "sudoku" ? "sudoku/sudoku.html" : puzzle.template === "ligne" ? "entre-les-lignes/ligne.html" : puzzle.template === "nonogramme" ? "nonogramme/nonogramme.html" : "cadenas/cadenas.html";
-          const source = `../ordinateur/${directory}?id=${encodeURIComponent(puzzle.id)}&embedded=1&v=89`;
+          const source = `../ordinateur/${directory}?id=${encodeURIComponent(puzzle.id)}&embedded=1&v=90`;
         screen.innerHTML = `<iframe class="game-frame" title="${puzzle.title}" src="${source}"></iframe>`;
       }
       function renderPuzzle(id, message = "") {
@@ -166,7 +172,9 @@ main { max-width:1100px; }
         const assets = (puzzle.assets || []).map((source, index) => `<img src="${source}" alt="Support visuel ${index + 1} de l’énigme : ${puzzle.title}" />`).join("");
         const responseFormat = puzzle.responseFormat ? `<p class="response-format">Format attendu : ${puzzle.responseFormat}</p>` : "";
         const bonus = !hasArchiveCode(puzzle);
-        screen.innerHTML = `<header class="puzzle-header"><p class="puzzle-id">Énigme ${puzzle.id}</p><h1>${puzzle.title}</h1></header><article class="puzzle-card">${bonus ? '<p class="bonus-note">Bonus : cette énigme est facultative et ne donne pas de code archive.</p>' : ""}${assets ? `<div class="puzzle-assets">${assets}</div>` : ""}<p>${puzzle.instructions}</p>${responseFormat}${result?.solved ? `<p class="success">${bonus ? "Bonus terminé." : `Résolue. Réponse enregistrée : ${result.submittedAnswer}`}</p>${bonus ? "" : archiveLinks(result.archiveCodes)}<button id="continue">Continuer les énigmes</button>` : `<form class="login" id="answerForm"><label>Votre réponse<input id="answer" autocomplete="off" autofocus /></label><button>Valider</button><p class="error">${message}</p></form>`}</article>`;
+        const details = `${bonus ? '<p class="bonus-note">Bonus : cette énigme est facultative et ne donne pas de code archive.</p>' : ""}<p>${puzzle.instructions}</p>${responseFormat}${result?.solved ? `<p class="success">${bonus ? "Bonus terminé." : `Résolue. Réponse enregistrée : ${result.submittedAnswer}`}</p>${bonus ? "" : archiveLinks(result.archiveCodes)}<button id="continue">Continuer les énigmes</button>` : `<form class="login" id="answerForm"><label>Votre réponse<input id="answer" autocomplete="off" autofocus /></label><button>Valider</button><p class="error">${message}</p></form>`}`;
+        const alain = puzzle.categoryId === "alain";
+        screen.innerHTML = `<header class="puzzle-header"><p class="puzzle-id">Énigme ${puzzle.id}</p><h1>${puzzle.title}</h1></header><article class="puzzle-card${alain ? " alain-puzzle" : ""}">${assets ? `<div class="puzzle-assets">${assets}</div>` : ""}<div class="puzzle-details">${details}</div></article>`;
         if (result?.solved) { screen.querySelector("#continue").addEventListener("click", () => renderCategory(puzzle.categoryId)); return; }
         screen.querySelector("#answerForm").addEventListener("submit", (event) => { event.preventDefault(); const answer = screen.querySelector("#answer").value; const accepted = puzzle.acceptedAnswers.some((candidate) => normalize(candidate) === normalize(answer)); if (!accepted) return renderPuzzle(id, "Réponse incorrecte. Réessayez."); progress.solve(id, answer.trim(), puzzle.archiveCodes); renderPuzzle(id); });
       }
@@ -186,7 +194,7 @@ main { max-width:1100px; }
       function boot(restored = false) { progress.discover(); progress.setPoweredOn(true); power.classList.add("on"); screen.classList.remove("off"); if (restored) return restoreView(); screen.innerHTML = `<p class="boot terminal-line">Initialisation du terminal…</p>`; window.setTimeout(() => { if (power.classList.contains("on")) restoreView(); }, 650); }
       function shutdown() { progress.setPoweredOn(false); power.classList.remove("on"); screen.className = "screen off"; screen.replaceChildren(); }
       function goBack() { const view = progress.read().view; if (view?.name === "category") return renderDesktop(); if (view?.name === "puzzle" || view?.name === "special-puzzle") return renderCategory(view.categoryId || activePuzzles().find((puzzle) => puzzle.id === view.puzzleId)?.categoryId); window.location.assign("../index.html"); }
-        function openSpecialPuzzleMobile(puzzle) { const path = puzzle.template === "sudoku" ? "sudoku/sudoku.html" : puzzle.template === "ligne" ? "entre-les-lignes/ligne.html" : puzzle.template === "nonogramme" ? "nonogramme/nonogramme.html" : "cadenas/cadenas.html"; window.location.assign(`../ordinateur/${path}?id=${encodeURIComponent(puzzle.id)}&from=ordinateur&v=89`); }
+        function openSpecialPuzzleMobile(puzzle) { const path = puzzle.template === "sudoku" ? "sudoku/sudoku.html" : puzzle.template === "ligne" ? "entre-les-lignes/ligne.html" : puzzle.template === "nonogramme" ? "nonogramme/nonogramme.html" : "cadenas/cadenas.html"; window.location.assign(`../ordinateur/${path}?id=${encodeURIComponent(puzzle.id)}&from=ordinateur&v=90`); }
       function switchSpecialPuzzleForMobile() { const view = progress.read().view; if (window.matchMedia("(max-width: 700px)").matches && view?.name === "special-puzzle") { const puzzle = activePuzzles().find((entry) => entry.id === view.puzzleId); if (puzzle) openSpecialPuzzleMobile(puzzle); } }
       power.addEventListener("click", () => { if (power.classList.contains("on")) shutdown(); else boot(); });
       returnKey.addEventListener("click", goBack);
