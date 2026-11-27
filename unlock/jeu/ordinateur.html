@@ -93,6 +93,7 @@ main { max-width:1100px; }
   .screen .puzzle-card.alain-puzzle { display:grid; grid-template-columns:minmax(0,1.1fr) minmax(230px,.9fr); gap:18px; max-width:none; }
   .screen .alain-puzzle .puzzle-assets { margin:0; }
   .screen .alain-puzzle .puzzle-details { min-width:0; }
+  .computer:has(.power.on) .screen .categories { grid-template-columns:repeat(3,minmax(150px,1fr)); margin:0 auto; max-width:620px; }
 }
 
 .screen .puzzle-header { margin-bottom:8px; padding-bottom:6px; }
@@ -109,9 +110,9 @@ main { max-width:1100px; }
       <a class="button home-link" href="../index.html">← Retour à l’accueil</a>
       <p class="footer">AFFAIRE S-18 · ORDINATEUR DES ÉNIGMES</p>
     </main>
-    <script src="../config/app-update.js?v=93"></script>
-    <script src="../config/ordinateur-catalog.js?v=93"></script>
-    <script src="../config/ordinateur-progress.js?v=93"></script>
+    <script src="../config/app-update.js?v=94"></script>
+    <script src="../config/ordinateur-catalog.js?v=94"></script>
+    <script src="../config/ordinateur-progress.js?v=94"></script>
     <script>
       const catalog = window.ORDINATEUR_CATALOG;
       const progress = window.ORDINATEUR_PROGRESS;
@@ -159,7 +160,7 @@ main { max-width:1100px; }
         if (!isUnlocked(puzzle)) return renderCategory(puzzle.categoryId, puzzle.lockMessage);
         progress.setView({ name: "special-puzzle", puzzleId: puzzle.id, categoryId: puzzle.categoryId });
         const directory = puzzle.template === "sudoku" ? "sudoku/sudoku.html" : puzzle.template === "ligne" ? "entre-les-lignes/ligne.html" : puzzle.template === "nonogramme" ? "nonogramme/nonogramme.html" : "cadenas/cadenas.html";
-          const source = `../ordinateur/${directory}?id=${encodeURIComponent(puzzle.id)}&embedded=1&v=93`;
+          const source = `../ordinateur/${directory}?id=${encodeURIComponent(puzzle.id)}&embedded=1&v=94`;
         screen.innerHTML = `<iframe class="game-frame" title="${puzzle.title}" src="${source}"></iframe>`;
       }
       function renderPuzzle(id, message = "") {
@@ -194,7 +195,7 @@ main { max-width:1100px; }
       function boot(restored = false) { progress.discover(); progress.setPoweredOn(true); power.classList.add("on"); screen.classList.remove("off"); if (restored) return restoreView(); screen.innerHTML = `<p class="boot terminal-line">Initialisation du terminal…</p>`; window.setTimeout(() => { if (power.classList.contains("on")) restoreView(); }, 650); }
       function shutdown() { progress.setPoweredOn(false); power.classList.remove("on"); screen.className = "screen off"; screen.replaceChildren(); }
       function goBack() { const view = progress.read().view; if (view?.name === "category") return renderDesktop(); if (view?.name === "puzzle" || view?.name === "special-puzzle") return renderCategory(view.categoryId || activePuzzles().find((puzzle) => puzzle.id === view.puzzleId)?.categoryId); window.location.assign("../index.html"); }
-        function openSpecialPuzzleMobile(puzzle) { const path = puzzle.template === "sudoku" ? "sudoku/sudoku.html" : puzzle.template === "ligne" ? "entre-les-lignes/ligne.html" : puzzle.template === "nonogramme" ? "nonogramme/nonogramme.html" : "cadenas/cadenas.html"; window.location.assign(`../ordinateur/${path}?id=${encodeURIComponent(puzzle.id)}&from=ordinateur&v=93`); }
+        function openSpecialPuzzleMobile(puzzle) { const path = puzzle.template === "sudoku" ? "sudoku/sudoku.html" : puzzle.template === "ligne" ? "entre-les-lignes/ligne.html" : puzzle.template === "nonogramme" ? "nonogramme/nonogramme.html" : "cadenas/cadenas.html"; window.location.assign(`../ordinateur/${path}?id=${encodeURIComponent(puzzle.id)}&from=ordinateur&v=94`); }
       function switchSpecialPuzzleForMobile() { const view = progress.read().view; if (window.matchMedia("(max-width: 700px)").matches && view?.name === "special-puzzle") { const puzzle = activePuzzles().find((entry) => entry.id === view.puzzleId); if (puzzle) openSpecialPuzzleMobile(puzzle); } }
       power.addEventListener("click", () => { if (power.classList.contains("on")) shutdown(); else boot(); });
       returnKey.addEventListener("click", goBack);
