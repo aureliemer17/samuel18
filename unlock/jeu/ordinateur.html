@@ -97,9 +97,9 @@ main { max-width:1100px; }
       <a class="button home-link" href="../index.html">← Retour à l’accueil</a>
       <p class="footer">AFFAIRE S-18 · ORDINATEUR DES ÉNIGMES</p>
     </main>
-    <script src="../config/app-update.js?v=80"></script>
-    <script src="../config/ordinateur-catalog.js?v=80"></script>
-    <script src="../config/ordinateur-progress.js?v=80"></script>
+    <script src="../config/app-update.js?v=81"></script>
+    <script src="../config/ordinateur-catalog.js?v=81"></script>
+    <script src="../config/ordinateur-progress.js?v=81"></script>
     <script>
       const catalog = window.ORDINATEUR_CATALOG;
       const progress = window.ORDINATEUR_PROGRESS;
@@ -141,13 +141,13 @@ main { max-width:1100px; }
         screen.innerHTML = `<div class="boot"><header class="desktop-header"><div><p class="terminal-line">Catégorie</p><h1>${categoryTitle(categoryId)}</h1></div><p class="stats">${count.solved} code(s) trouvé(s) · ${count.remaining} restant(s) · ${count.total} archives${count.bonusTotal ? ` · ${count.bonusTotal} bonus` : ""}</p></header>${message ? `<p class="error">${message}</p>` : ""}<section class="puzzle-list" id="puzzles"></section></div>`;
         const container = screen.querySelector("#puzzles");
         if (!puzzles.length) { container.innerHTML = `<p class="empty">Aucune énigme accessible dans cette catégorie.</p>`; return; }
-        puzzles.forEach((puzzle) => { const result = solved()[puzzle.id]; const bonus = !hasArchiveCode(puzzle); const locked = !isUnlocked(puzzle); const button = document.createElement("button"); button.className = `puzzle${result?.solved ? " done" : ""}${bonus ? " bonus" : ""}${locked ? " locked" : ""}`; const label = locked ? "Accès verrouillé" : result?.solved ? (bonus ? "✓ Bonus terminé" : `✓ ${result.archiveCodes.join(" · ")}`) : bonus ? "Jouer pour le plaisir" : "Ouvrir l’énigme"; button.innerHTML = `${locked ? '<span class="puzzle-lock" aria-hidden="true">🔒</span><h2>Énigme verrouillée</h2>' : `${bonus ? '<span class="bonus-badge">Bonus · sans code archive</span>' : ""}<h2>${puzzle.title}</h2>`}<span class="count">${label}</span>`; button.addEventListener("click", () => { if (locked) return renderCategory(categoryId, puzzle.lockMessage); if (!["sudoku", "ligne", "nonogramme", "cadenas"].includes(puzzle.template)) return renderPuzzle(puzzle.id); if (window.matchMedia("(max-width: 700px)").matches) openSpecialPuzzleMobile(puzzle); else renderEmbeddedPuzzle(puzzle); }); container.append(button); });
+        puzzles.forEach((puzzle) => { const result = solved()[puzzle.id]; const bonus = !hasArchiveCode(puzzle); const locked = !isUnlocked(puzzle); const button = document.createElement("button"); button.className = `puzzle${result?.solved ? " done" : ""}${bonus ? " bonus" : ""}${locked ? " locked" : ""}`; const label = result?.solved ? (bonus ? "✓ Bonus terminé" : `✓ ${result.archiveCodes.join(" · ")}`) : bonus ? "Jouer pour le plaisir" : "Ouvrir l’énigme"; button.innerHTML = locked ? '<span class="puzzle-lock" aria-hidden="true">🔒</span><h2>Énigme verrouillée</h2>' : `${bonus ? '<span class="bonus-badge">Bonus · sans code archive</span>' : ""}<h2>${puzzle.title}</h2><span class="count">${label}</span>`; button.addEventListener("click", () => { if (locked) return renderCategory(categoryId, puzzle.lockMessage); if (!["sudoku", "ligne", "nonogramme", "cadenas"].includes(puzzle.template)) return renderPuzzle(puzzle.id); if (window.matchMedia("(max-width: 700px)").matches) openSpecialPuzzleMobile(puzzle); else renderEmbeddedPuzzle(puzzle); }); container.append(button); });
       }
       function renderEmbeddedPuzzle(puzzle) {
         if (!isUnlocked(puzzle)) return renderCategory(puzzle.categoryId, puzzle.lockMessage);
         progress.setView({ name: "special-puzzle", puzzleId: puzzle.id, categoryId: puzzle.categoryId });
         const directory = puzzle.template === "sudoku" ? "sudoku/sudoku.html" : puzzle.template === "ligne" ? "entre-les-lignes/ligne.html" : puzzle.template === "nonogramme" ? "nonogramme/nonogramme.html" : "cadenas/cadenas.html";
-          const source = `../ordinateur/${directory}?id=${encodeURIComponent(puzzle.id)}&embedded=1&v=80`;
+          const source = `../ordinateur/${directory}?id=${encodeURIComponent(puzzle.id)}&embedded=1&v=81`;
         screen.innerHTML = `<iframe class="game-frame" title="${puzzle.title}" src="${source}"></iframe>`;
       }
       function renderPuzzle(id, message = "") {
@@ -180,7 +180,7 @@ main { max-width:1100px; }
       function boot(restored = false) { progress.discover(); progress.setPoweredOn(true); power.classList.add("on"); screen.classList.remove("off"); if (restored) return restoreView(); screen.innerHTML = `<p class="boot terminal-line">Initialisation du terminal…</p>`; window.setTimeout(() => { if (power.classList.contains("on")) restoreView(); }, 650); }
       function shutdown() { progress.setPoweredOn(false); power.classList.remove("on"); screen.className = "screen off"; screen.replaceChildren(); }
       function goBack() { const view = progress.read().view; if (view?.name === "category") return renderDesktop(); if (view?.name === "puzzle" || view?.name === "special-puzzle") return renderCategory(view.categoryId || activePuzzles().find((puzzle) => puzzle.id === view.puzzleId)?.categoryId); window.location.assign("../index.html"); }
-        function openSpecialPuzzleMobile(puzzle) { const path = puzzle.template === "sudoku" ? "sudoku/sudoku.html" : puzzle.template === "ligne" ? "entre-les-lignes/ligne.html" : puzzle.template === "nonogramme" ? "nonogramme/nonogramme.html" : "cadenas/cadenas.html"; window.location.assign(`../ordinateur/${path}?id=${encodeURIComponent(puzzle.id)}&from=ordinateur&v=80`); }
+        function openSpecialPuzzleMobile(puzzle) { const path = puzzle.template === "sudoku" ? "sudoku/sudoku.html" : puzzle.template === "ligne" ? "entre-les-lignes/ligne.html" : puzzle.template === "nonogramme" ? "nonogramme/nonogramme.html" : "cadenas/cadenas.html"; window.location.assign(`../ordinateur/${path}?id=${encodeURIComponent(puzzle.id)}&from=ordinateur&v=81`); }
       function switchSpecialPuzzleForMobile() { const view = progress.read().view; if (window.matchMedia("(max-width: 700px)").matches && view?.name === "special-puzzle") { const puzzle = activePuzzles().find((entry) => entry.id === view.puzzleId); if (puzzle) openSpecialPuzzleMobile(puzzle); } }
       power.addEventListener("click", () => { if (power.classList.contains("on")) shutdown(); else boot(); });
       returnKey.addEventListener("click", goBack);
