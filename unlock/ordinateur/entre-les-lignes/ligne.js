@@ -24,7 +24,7 @@
   let message = "";
   let helpOpen = false;
   let restartConfirmation = false;
-  const archiveLinks = () => `<div class="archive-links">${puzzle.archiveCodes.map((code) => `<a class="button" href="../../archives/media.html#code=${encodeURIComponent(code)}&from=ordinateur">Archive ${code}</a>`).join("")}</div>`;
+  const archiveLinks = () => `<div class="archive-links">${puzzle.archiveCodes.map((code) => `<a class="button" href="../../archives/media.html#code=${encodeURIComponent(code)}&from=ordinateur" target="_top">Archive ${code}</a>`).join("")}</div>`;
   const available = (letter, target = null) => counts[letter] - Object.entries(state.values).filter(([index, value]) => Number(index) !== target && value === letter).length;
   const emptyIndexes = () => slots.filter((slot) => slot && !state.values[slot.index]).map((slot) => slot.index);
   const nextIndex = (from) => {

@@ -26,7 +26,7 @@
   const maxTop = Math.max(...colClues.map((clue) => clue.length));
   const maxLeft = Math.max(...rowClues.map((clue) => clue.length));
   const save = () => progress.saveNonogramme(id, state);
-  const archiveLinks = () => `<div class="archive-links">${puzzle.archiveCodes.map((code) => `<a class="button" href="../../archives/media.html#code=${encodeURIComponent(code)}&from=ordinateur">Archive ${code}</a>`).join("")}</div>`;
+  const archiveLinks = () => `<div class="archive-links">${puzzle.archiveCodes.map((code) => `<a class="button" href="../../archives/media.html#code=${encodeURIComponent(code)}&from=ordinateur" target="_top">Archive ${code}</a>`).join("")}</div>`;
   const matchesSolution = () => solution.every((row, rowIndex) => row.every((value, colIndex) => (state.cells[cellKey(rowIndex, colIndex)] === "black") === Boolean(value)));
   function render(message = "") {
     const solved = state.status === "solved";

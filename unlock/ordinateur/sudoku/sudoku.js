@@ -25,7 +25,7 @@
   const embedded = params.get("embedded") === "1";
   if (embedded && window.matchMedia("(min-width: 701px)").matches) document.documentElement.classList.add("embedded");
   const backHref = fromComputer ? "../../jeu/ordinateur.html?category=sudoku" : "index.html";
-  const archiveLinks = () => `<div class="archive-links">${puzzle.archiveCodes.map((code) => `<a class="button" href="../../archives/media.html#code=${encodeURIComponent(code)}&from=ordinateur">Archive ${code}</a>`).join("")}</div>`;
+  const archiveLinks = () => `<div class="archive-links">${puzzle.archiveCodes.map((code) => `<a class="button" href="../../archives/media.html#code=${encodeURIComponent(code)}&from=ordinateur" target="_top">Archive ${code}</a>`).join("")}</div>`;
   function returnToComputerLayout() { if (fromComputer && window.matchMedia("(min-width: 701px)").matches) window.location.assign(`../../jeu/ordinateur.html?puzzle=${encodeURIComponent(id)}`); }
   function render(message = "") {
     const solved = state.status === "solved";

@@ -43,7 +43,8 @@
        .video-qr-list { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
        .video-qr-entry { align-items: center; background: #fffdf6; border: 1px solid var(--line); box-shadow: 2px 3px 0 rgba(74, 49, 18, .16); display: flex; flex-direction: column; min-height: 190px; padding: 16px; text-align: center; }
        .video-qr-entry h3 { color: var(--muted); font-size: .78rem; margin: 0 0 12px; }
-       .video-qr-entry img { background: #fff; border: 1px solid var(--line); height: 128px; image-rendering: pixelated; padding: 8px; width: 128px; }
+        .video-qr-entry img { background: #fff; border: 1px solid var(--line); height: 128px; image-rendering: pixelated; padding: 8px; width: 128px; }
+        .video-qr-entry a { color: var(--muted); font-family: Georgia, serif; font-size: .9rem; margin-top: 12px; }
        .folder-footer { align-items: end; display: grid; gap: 20px; grid-template-columns: minmax(0, 1fr) minmax(0, 3fr); margin-top: 22px; }
        .folder-return-top { margin: 0 0 22px; }
       .instructions { background: #f3e49c; box-shadow: 3px 5px 7px rgba(62, 42, 11, .25); padding: 14px 16px; transform: rotate(1deg); }
@@ -68,7 +69,10 @@
  h1 { color:#39291c; letter-spacing:-.025em; overflow-wrap:anywhere; border-bottom:3px double #b9a375; padding-bottom:20px; }
  .return { width:auto; max-width:100%; border:1px solid #e4c485; border-radius:6px; background:linear-gradient(#f1dba5,#bc914d); color:#392615; box-shadow:inset 0 1px #fff9,0 4px 9px #0005; gap:9px; }
  .return::before { content:'‹'; font-size:1.3em; }
- .return:hover { background:#f9e6b4; }
+  .return:hover { background:#f9e6b4; }
+  .return--computer { background:linear-gradient(#c9e6a3,#779d51); border-color:#52753d; box-shadow:inset 0 1px #e7ffd1,0 3px 0 #456431; color:#193419; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; }
+  .return--computer::before { content:'←'; }
+  .return--computer:hover { background:linear-gradient(#d9f4bb,#8caf61); }
  .media-card { border-color:#c4b18a; }
  .media-title { overflow-wrap:anywhere; color:#665137; }
  .media-date { letter-spacing:.03em; }
@@ -141,10 +145,20 @@
           if (left.isRecapVideo !== right.isRecapVideo) return left.isRecapVideo ? -1 : 1;
           return (left.createdAtEpoch ?? Infinity) - (right.createdAtEpoch ?? Infinity);
         });
-       if (source === "majorite") {
-         returnLink.href = "dossier-majorite.html";
-         returnLink.textContent = "Retour au dossier de la majorité";
-       }
+        if (source === "majorite") {
+          returnLink.href = "dossier-majorite.html";
+          returnLink.textContent = "Retour au dossier de la majorité";
+        }
+        if (source === "ordinateur") {
+          const computerReturn = document.createElement("a");
+          computerReturn.className = "return return--computer";
+          computerReturn.href = "../jeu/ordinateur.html";
+          computerReturn.textContent = "Retour à l’ordinateur";
+          document.querySelector(".folder-footer").insertBefore(computerReturn, instructionSlot);
+          const computerReturnTop = computerReturn.cloneNode(true);
+          computerReturnTop.classList.add("folder-return-top");
+          returnLinkTop.after(computerReturnTop);
+        }
         if (source === "decouvertes") {
           const adminMode = new URLSearchParams(window.location.hash.slice(1)).get("admin") === "1";
           returnLink.href = `decouvertes.html?inventory=1${adminMode ? "&admin=1" : ""}`;
@@ -223,7 +237,12 @@
            const qr = document.createElement("img");
            qr.src = `https://api.qrserver.com/v1/create-qr-code/?size=496x496&data=${encodeURIComponent(videoItem.externalUrl)}`;
            qr.alt = `QR code vers ${videoItem.title}`;
-           entry.append(title, qr);
+            const link = document.createElement("a");
+            link.href = videoItem.externalUrl;
+            link.target = "_blank";
+            link.rel = "noopener noreferrer";
+            link.textContent = "Ouvrir la vidéo";
+            entry.append(title, qr, link);
            list.append(entry);
          });
          if (list.childElementCount === 0) return null;
