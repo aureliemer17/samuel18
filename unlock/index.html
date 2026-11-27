@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#291a11">
-<link rel="manifest" href="manifest.webmanifest">
+<link rel="manifest" href="manifest.webmanifest?v=65">
 <link rel="icon" type="image/png" href="assets/icone_app.png">
 <link rel="apple-touch-icon" href="assets/icone_app.png">
 <title>Affaire S-18 — Bureau de la Majorité</title>
@@ -73,7 +73,7 @@ footer {display:flex;align-items:center;gap:10px;justify-content:center;}
     <div class="restart-warning__actions"><button class="restart-cancel" id="cancelRestart" type="button">Annuler</button><button class="restart-confirm" id="confirmRestart" type="button">Tout recommencer</button></div>
   </div>
 </section>
-<script src="config/version.js"></script>
+<script src="config/version.js?v=65"></script>
 <script>
 document.querySelector('#version').textContent = `v${window.SITE_VERSION || "?"}`;
 const choices = [...document.querySelectorAll('.choice:not([hidden])')];
