@@ -425,7 +425,7 @@ body.setup .scene { aspect-ratio:var(--ratio); background-size:100% 100%; }
               log(`Transcription ${result.isFinal ? "finale" : "intermediaire"}: ${transcript} | commande: ${command}`);
 
               // Only a single final recognition variant unlocks the elevator.
-              if (result.isFinal && ["senceur", "censeur", "sincere", "sancerre", "sans soeur", "sang soeur", "cent soeur", "100 soeur", "sens soeur", "sent soeur", "s'en soeur", "sans sœur", "sang sœur", "cent sœur", "sens sœur", "sent sœur", "s'en sœur"].includes(command)) {
+              if (result.isFinal && ["senceur", "censeur", "sincere", "sancerre", "sa soeur", "son soeur", "sans soeur", "sang soeur", "cent soeur", "100 soeur", "sens soeur", "sent soeur", "s'en soeur", "sa sœur", "son sœur", "sans sœur", "sang sœur", "cent sœur", "sens sœur", "sent sœur", "s'en sœur"].includes(command)) {
                 unlock("Commande vocale reconnue.");
               }
             });
