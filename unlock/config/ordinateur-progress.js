@@ -79,9 +79,24 @@ window.ORDINATEUR_PROGRESS = (() => {
     return update((value) => { if (value.nonogramme?.[id]?.status !== "solved") delete value.nonogramme[id]; });
   }
 
+  function cadenas(id) {
+    return read().cadenas?.[id] || { status: "not_started", values: [], activeIndex: null };
+  }
+
+  function saveCadenas(id, entry) {
+    return update((value) => {
+      value.cadenas ||= {};
+      value.cadenas[id] = { ...entry, lastUpdated: new Date().toISOString() };
+    });
+  }
+
+  function resetCadenas(id) {
+    return update((value) => { if (value.cadenas?.[id]?.status !== "solved") delete value.cadenas[id]; });
+  }
+
   function reset() {
     try { localStorage.removeItem(key); localStorage.removeItem(legacyKey); } catch { /* Progress remains optional. */ }
   }
 
-  return { read, discover, setPoweredOn, setView, authenticate, solve, sudoku, saveSudoku, resetSudoku, ligne, saveLigne, resetLigne, nonogramme, saveNonogramme, resetNonogramme, reset };
+  return { read, discover, setPoweredOn, setView, authenticate, solve, sudoku, saveSudoku, resetSudoku, ligne, saveLigne, resetLigne, nonogramme, saveNonogramme, resetNonogramme, cadenas, saveCadenas, resetCadenas, reset };
 })();
