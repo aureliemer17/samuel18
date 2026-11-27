@@ -25,7 +25,7 @@
       .login { display:grid; gap:14px; max-width:430px; } input { background:#0a1d10; border:1px solid #6ca464; color:var(--green); font:inherit; padding:12px; width:100%; } button,.button { background:#183621; border:1px solid #92c67d; color:var(--ink); cursor:pointer; font:700 .8rem var(--mono); letter-spacing:.05em; padding:11px 13px; text-decoration:none; text-transform:uppercase; } button:hover,.button:hover { background:#285132; } .error { color:#ffb8a3; } .success { color:#baff9f; }
       .desktop-header { align-items:center; border-bottom:1px solid var(--line); display:flex; gap:12px; justify-content:space-between; margin-bottom:22px; padding-bottom:12px; } .desktop-header h1 { margin:0; }
       .stats { color:#b7d8a9; font-size:.76rem; } .categories,.puzzle-list { display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(175px,1fr)); }
-       .category,.puzzle { background:#0b1e10cc; border:1px solid #48704b; color:inherit; min-height:115px; padding:15px; text-align:left; } .category { align-items:center; aspect-ratio:1; display:flex; flex-direction:column; justify-content:center; min-height:0; text-align:center; } .category.done,.puzzle.done { border-color:#a9e582; } .category-icon { align-items:center; display:flex; font-size:2rem; height:48px; justify-content:center; width:48px; } .category-icon img { display:block; height:100%; object-fit:contain; width:100%; } .category h2 { margin:8px 0; } .count { color:#a8cc93; display:block; font-size:.75rem; margin-top:10px; } .category .count { margin-top:0; }
+       .category,.puzzle { background:#0b1e10cc; border:1px solid #48704b; color:inherit; min-height:115px; padding:15px; text-align:left; } .category { align-items:center; aspect-ratio:1; display:flex; flex-direction:column; justify-content:center; min-height:0; text-align:center; } .category.done,.puzzle.done { border-color:#a9e582; } .puzzle.bonus { border-color:#d6b866; background:#2d2715cc; } .bonus-badge,.bonus-note { color:#ffe49a; font-size:.74rem; letter-spacing:.06em; text-transform:uppercase; } .bonus-badge { display:block; margin-bottom:7px; } .bonus-note { line-height:1.45; margin:0 0 14px; } .category-icon { align-items:center; display:flex; font-size:2rem; height:48px; justify-content:center; width:48px; } .category-icon img { display:block; height:100%; object-fit:contain; width:100%; } .category h2 { margin:8px 0; } .count { color:#a8cc93; display:block; font-size:.75rem; margin-top:10px; } .category .count { margin-top:0; }
       .back { margin-bottom:18px; } .puzzle-header { border-bottom:1px solid var(--line); margin-bottom:18px; padding-bottom:10px; } .puzzle-header h1 { margin:4px 0 0; } .puzzle-id { color:#86be79; font-size:.78rem; letter-spacing:.06em; margin:0; text-transform:uppercase; } .puzzle-card { max-width:650px; } .puzzle-card p { line-height:1.6; white-space:pre-wrap; } .puzzle-assets { display:grid; gap:12px; margin:18px 0; } .puzzle-assets img { background:#eef0e6; border:1px solid #78906f; display:block; height:auto; max-width:100%; padding:8px; } .response-format { color:#b7d8a9; font-size:.78rem; } .archive-codes { display:flex; flex-wrap:wrap; gap:8px; margin:14px 0; } .archive-codes a { color:#c9ffad; } .game-frame { border:0; display:block; height:100%; width:100%; }
       .empty { color:#aac5a0; max-width:520px; line-height:1.65; } .home-link { display:block; margin:16px auto 0; text-align:center; width:max-content; } .footer { color:#665e4d; font-size:.67rem; margin-top:14px; text-align:center; }
       @media (max-width:600px) { body { padding:8px; } .computer { border-width:6px; border-radius:14px; padding:12px; } .screen-shell { border-width:7px; padding:9px; } .screen { min-height:calc(100svh - 95px); padding:18px; } .desktop-header { align-items:flex-start; flex-direction:column; } .categories,.puzzle-list { grid-template-columns:1fr; } }
@@ -97,9 +97,9 @@ main { max-width:1100px; }
       <a class="button home-link" href="../index.html">← Retour à l’accueil</a>
       <p class="footer">AFFAIRE S-18 · ORDINATEUR DES ÉNIGMES</p>
     </main>
-    <script src="../config/app-update.js?v=75"></script>
-    <script src="../config/ordinateur-catalog.js?v=75"></script>
-    <script src="../config/ordinateur-progress.js?v=75"></script>
+    <script src="../config/app-update.js?v=76"></script>
+    <script src="../config/ordinateur-catalog.js?v=76"></script>
+    <script src="../config/ordinateur-progress.js?v=76"></script>
     <script>
       const catalog = window.ORDINATEUR_CATALOG;
       const progress = window.ORDINATEUR_PROGRESS;
@@ -108,12 +108,16 @@ main { max-width:1100px; }
       const returnKey = document.querySelector("#returnKey");
       const normalize = (value) => value.trim().toLocaleLowerCase("fr");
       const activePuzzles = () => catalog.puzzles.filter((puzzle) => puzzle.enabled && puzzle.admin?.published);
+      const hasArchiveCode = (puzzle) => puzzle.archiveCodes?.length > 0;
       const categories = () => [...catalog.categories].sort((a, b) => a.order - b.order);
       const solved = () => progress.read().puzzles;
       const stats = (categoryId) => {
         const puzzles = activePuzzles().filter((puzzle) => !categoryId || puzzle.categoryId === categoryId);
-        const solvedCount = puzzles.filter((puzzle) => solved()[puzzle.id]?.solved).length;
-        return { total:puzzles.length, solved:solvedCount, remaining:puzzles.length - solvedCount };
+        const required = puzzles.filter(hasArchiveCode);
+        const bonus = puzzles.filter((puzzle) => !hasArchiveCode(puzzle));
+        const solvedCount = required.filter((puzzle) => solved()[puzzle.id]?.solved).length;
+        const solvedBonusCount = bonus.filter((puzzle) => solved()[puzzle.id]?.solved).length;
+        return { total:required.length, solved:solvedCount, remaining:required.length - solvedCount, bonusTotal:bonus.length, bonusSolved:solvedBonusCount };
       };
       const categoryTitle = (id) => categories().find((category) => category.id === id)?.title || id;
       function renderLogin(message = "") {
@@ -124,24 +128,24 @@ main { max-width:1100px; }
       function renderDesktop() {
         progress.setView({ name: "desktop" });
         const total = stats();
-        screen.innerHTML = `<div class="boot"><header class="desktop-header"><div><p class="terminal-line">Session DELORME · terminal 46</p><h1>Bureau des énigmes</h1></div><p class="stats">${total.solved} résolue(s) · ${total.remaining} restante(s) · ${total.total} accessible(s)</p></header><section class="categories" id="categories"></section></div>`;
+        screen.innerHTML = `<div class="boot"><header class="desktop-header"><div><p class="terminal-line">Session DELORME · terminal 46</p><h1>Bureau des énigmes</h1></div><p class="stats">${total.solved} code(s) trouvé(s) · ${total.remaining} restant(s) · ${total.total} archive(s)</p></header><section class="categories" id="categories"></section></div>`;
         const container = screen.querySelector("#categories");
         if (!categories().length) { container.innerHTML = `<p class="empty">Aucune catégorie publiée pour le moment. Le catalogue peut être complété sans modifier cette interface.</p>`; return; }
-        categories().forEach((category) => { const count = stats(category.id); const button = document.createElement("button"); const icon = category.icon?.includes("/") ? `<img src="../${category.icon}" alt="" />` : category.icon || "▣"; button.className = `category${count.total > 0 && count.remaining === 0 ? " done" : ""}`; button.innerHTML = `<span class="category-icon">${icon}</span><h2>${category.title}</h2><span class="count">✓ ${count.solved} / ${count.total}</span>`; button.addEventListener("click", () => renderCategory(category.id)); container.append(button); });
+        categories().forEach((category) => { const count = stats(category.id); const button = document.createElement("button"); const icon = category.icon?.includes("/") ? `<img src="../${category.icon}" alt="" />` : category.icon || "▣"; const bonus = count.bonusTotal ? ` · +${count.bonusTotal} bonus` : ""; button.className = `category${count.total > 0 && count.remaining === 0 ? " done" : ""}`; button.innerHTML = `<span class="category-icon">${icon}</span><h2>${category.title}</h2><span class="count">✓ ${count.solved} / ${count.total} archives${bonus}</span>`; button.addEventListener("click", () => renderCategory(category.id)); container.append(button); });
       }
       function renderCategory(categoryId) {
         progress.setView({ name: "category", categoryId });
         const puzzles = activePuzzles().filter((puzzle) => puzzle.categoryId === categoryId).sort((a, b) => a.order - b.order);
         const count = stats(categoryId);
-        screen.innerHTML = `<div class="boot"><header class="desktop-header"><div><p class="terminal-line">Catégorie</p><h1>${categoryTitle(categoryId)}</h1></div><p class="stats">${count.solved} résolue(s) · ${count.remaining} à faire · ${count.total} au total</p></header><section class="puzzle-list" id="puzzles"></section></div>`;
+        screen.innerHTML = `<div class="boot"><header class="desktop-header"><div><p class="terminal-line">Catégorie</p><h1>${categoryTitle(categoryId)}</h1></div><p class="stats">${count.solved} code(s) trouvé(s) · ${count.remaining} restant(s) · ${count.total} archives${count.bonusTotal ? ` · ${count.bonusTotal} bonus` : ""}</p></header><section class="puzzle-list" id="puzzles"></section></div>`;
         const container = screen.querySelector("#puzzles");
         if (!puzzles.length) { container.innerHTML = `<p class="empty">Aucune énigme accessible dans cette catégorie.</p>`; return; }
-        puzzles.forEach((puzzle) => { const result = solved()[puzzle.id]; const button = document.createElement("button"); button.className = `puzzle${result?.solved ? " done" : ""}`; button.innerHTML = `<h2>${puzzle.title}</h2><span class="count">${result?.solved ? `✓ ${result.archiveCodes.join(" · ")}` : "Ouvrir l’énigme"}</span>`; button.addEventListener("click", () => { if (!["sudoku", "ligne", "nonogramme", "cadenas"].includes(puzzle.template)) return renderPuzzle(puzzle.id); if (window.matchMedia("(max-width: 700px)").matches) openSpecialPuzzleMobile(puzzle); else renderEmbeddedPuzzle(puzzle); }); container.append(button); });
+        puzzles.forEach((puzzle) => { const result = solved()[puzzle.id]; const bonus = !hasArchiveCode(puzzle); const button = document.createElement("button"); button.className = `puzzle${result?.solved ? " done" : ""}${bonus ? " bonus" : ""}`; const label = result?.solved ? (bonus ? "✓ Bonus terminé" : `✓ ${result.archiveCodes.join(" · ")}`) : bonus ? "Jouer pour le plaisir" : "Ouvrir l’énigme"; button.innerHTML = `${bonus ? '<span class="bonus-badge">Bonus · sans code archive</span>' : ""}<h2>${puzzle.title}</h2><span class="count">${label}</span>`; button.addEventListener("click", () => { if (!["sudoku", "ligne", "nonogramme", "cadenas"].includes(puzzle.template)) return renderPuzzle(puzzle.id); if (window.matchMedia("(max-width: 700px)").matches) openSpecialPuzzleMobile(puzzle); else renderEmbeddedPuzzle(puzzle); }); container.append(button); });
       }
       function renderEmbeddedPuzzle(puzzle) {
         progress.setView({ name: "special-puzzle", puzzleId: puzzle.id, categoryId: puzzle.categoryId });
         const directory = puzzle.template === "sudoku" ? "sudoku/sudoku.html" : puzzle.template === "ligne" ? "entre-les-lignes/ligne.html" : puzzle.template === "nonogramme" ? "nonogramme/nonogramme.html" : "cadenas/cadenas.html";
-          const source = `../ordinateur/${directory}?id=${encodeURIComponent(puzzle.id)}&embedded=1&v=75`;
+          const source = `../ordinateur/${directory}?id=${encodeURIComponent(puzzle.id)}&embedded=1&v=76`;
         screen.innerHTML = `<iframe class="game-frame" title="${puzzle.title}" src="${source}"></iframe>`;
       }
       function renderPuzzle(id, message = "") {
@@ -152,7 +156,8 @@ main { max-width:1100px; }
         const archiveLinks = (codes) => `<div class="archive-codes">${codes.map((code) => `<a class="button" href="../archives/media.html#code=${encodeURIComponent(code)}&from=ordinateur">Archive ${code}</a>`).join("")}</div>`;
         const assets = (puzzle.assets || []).map((source, index) => `<img src="${source}" alt="Support visuel ${index + 1} de l’énigme : ${puzzle.title}" />`).join("");
         const responseFormat = puzzle.responseFormat ? `<p class="response-format">Format attendu : ${puzzle.responseFormat}</p>` : "";
-        screen.innerHTML = `<header class="puzzle-header"><p class="puzzle-id">Énigme ${puzzle.id}</p><h1>${puzzle.title}</h1></header><article class="puzzle-card"><p>${puzzle.instructions}</p>${assets ? `<div class="puzzle-assets">${assets}</div>` : ""}${responseFormat}${result?.solved ? `<p class="success">Résolue. Réponse enregistrée : ${result.submittedAnswer}</p>${archiveLinks(result.archiveCodes)}<button id="continue">Continuer les énigmes</button>` : `<form class="login" id="answerForm"><label>Votre réponse<input id="answer" autocomplete="off" autofocus /></label><button>Valider</button><p class="error">${message}</p></form>`}</article>`;
+        const bonus = !hasArchiveCode(puzzle);
+        screen.innerHTML = `<header class="puzzle-header"><p class="puzzle-id">Énigme ${puzzle.id}</p><h1>${puzzle.title}</h1></header><article class="puzzle-card">${bonus ? '<p class="bonus-note">Bonus : cette énigme est facultative et ne donne pas de code archive.</p>' : ""}<p>${puzzle.instructions}</p>${assets ? `<div class="puzzle-assets">${assets}</div>` : ""}${responseFormat}${result?.solved ? `<p class="success">${bonus ? "Bonus terminé." : `Résolue. Réponse enregistrée : ${result.submittedAnswer}`}</p>${bonus ? "" : archiveLinks(result.archiveCodes)}<button id="continue">Continuer les énigmes</button>` : `<form class="login" id="answerForm"><label>Votre réponse<input id="answer" autocomplete="off" autofocus /></label><button>Valider</button><p class="error">${message}</p></form>`}</article>`;
         if (result?.solved) { screen.querySelector("#continue").addEventListener("click", () => renderCategory(puzzle.categoryId)); return; }
         screen.querySelector("#answerForm").addEventListener("submit", (event) => { event.preventDefault(); const answer = screen.querySelector("#answer").value; const accepted = puzzle.acceptedAnswers.some((candidate) => normalize(candidate) === normalize(answer)); if (!accepted) return renderPuzzle(id, "Réponse incorrecte. Réessayez."); progress.solve(id, answer.trim(), puzzle.archiveCodes); renderPuzzle(id); });
       }
@@ -172,7 +177,7 @@ main { max-width:1100px; }
       function boot(restored = false) { progress.discover(); progress.setPoweredOn(true); power.classList.add("on"); screen.classList.remove("off"); if (restored) return restoreView(); screen.innerHTML = `<p class="boot terminal-line">Initialisation du terminal…</p>`; window.setTimeout(() => { if (power.classList.contains("on")) restoreView(); }, 650); }
       function shutdown() { progress.setPoweredOn(false); power.classList.remove("on"); screen.className = "screen off"; screen.replaceChildren(); }
       function goBack() { const view = progress.read().view; if (view?.name === "category") return renderDesktop(); if (view?.name === "puzzle" || view?.name === "special-puzzle") return renderCategory(view.categoryId || activePuzzles().find((puzzle) => puzzle.id === view.puzzleId)?.categoryId); window.location.assign("../index.html"); }
-        function openSpecialPuzzleMobile(puzzle) { const path = puzzle.template === "sudoku" ? "sudoku/sudoku.html" : puzzle.template === "ligne" ? "entre-les-lignes/ligne.html" : puzzle.template === "nonogramme" ? "nonogramme/nonogramme.html" : "cadenas/cadenas.html"; window.location.assign(`../ordinateur/${path}?id=${encodeURIComponent(puzzle.id)}&from=ordinateur&v=75`); }
+        function openSpecialPuzzleMobile(puzzle) { const path = puzzle.template === "sudoku" ? "sudoku/sudoku.html" : puzzle.template === "ligne" ? "entre-les-lignes/ligne.html" : puzzle.template === "nonogramme" ? "nonogramme/nonogramme.html" : "cadenas/cadenas.html"; window.location.assign(`../ordinateur/${path}?id=${encodeURIComponent(puzzle.id)}&from=ordinateur&v=76`); }
       function switchSpecialPuzzleForMobile() { const view = progress.read().view; if (window.matchMedia("(max-width: 700px)").matches && view?.name === "special-puzzle") { const puzzle = activePuzzles().find((entry) => entry.id === view.puzzleId); if (puzzle) openSpecialPuzzleMobile(puzzle); } }
       power.addEventListener("click", () => { if (power.classList.contains("on")) shutdown(); else boot(); });
       returnKey.addEventListener("click", goBack);
