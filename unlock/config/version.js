@@ -1,2 +1,2 @@
 // Incrémentez cette version à chaque publication du site.
-window.SITE_VERSION = "19";
+window.SITE_VERSION = "20";
