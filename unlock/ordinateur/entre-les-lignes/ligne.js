@@ -5,7 +5,9 @@
   const progress = window.ORDINATEUR_PROGRESS;
   const puzzle = common.puzzleById(id);
   const fromComputer = new URLSearchParams(location.search).get("from") === "ordinateur";
-  const backHref = fromComputer ? "../../jeu/ordinateur.html" : "index.html";
+  const embedded = new URLSearchParams(location.search).get("embedded") === "1";
+  if (embedded && window.matchMedia("(min-width: 701px)").matches) document.documentElement.classList.add("embedded");
+  const backHref = fromComputer ? "../../jeu/ordinateur.html?category=ligne" : "index.html";
   const normalize = (value) => value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
   const isLetter = (character) => /[A-Za-zÀ-ÖØ-öø-ÿ]/.test(character);
   if (!puzzle || puzzle.template !== "ligne" || !puzzle.data?.image) {
@@ -20,6 +22,7 @@
   state.values ||= {};
   state.activeIndex ??= null;
   let message = "";
+  let helpOpen = false;
   const archiveLinks = () => `<div class="archive-links">${puzzle.archiveCodes.map((code) => `<a class="button" href="../../archives/media.html#code=${encodeURIComponent(code)}&from=ordinateur">Archive ${code}</a>`).join("")}</div>`;
   const available = (letter, target = null) => counts[letter] - Object.entries(state.values).filter(([index, value]) => Number(index) !== target && value === letter).length;
   const emptyIndexes = () => slots.filter((slot) => slot && !state.values[slot.index]).map((slot) => slot.index);
@@ -46,7 +49,10 @@
     flushWord();
     const tiles = Object.keys(counts).sort((left, right) => left.localeCompare(right, "fr")).map((letter) => `<button class="tile ${available(letter, state.activeIndex) ? "" : "exhausted"}" data-letter="${letter}" ${solved ? "disabled" : ""}>${letter}<span class="tile-count">${available(letter, state.activeIndex)}</span></button>`).join("");
     const reset = solved ? "" : `<button class="button" id="reset">Réinitialiser</button>`;
-    app.innerHTML = `<a class="back" href="${backHref}">← ${fromComputer ? "Bureau des énigmes" : "Catalogue"}</a><p class="eyebrow">Ordinateur des énigmes / Entre les lignes</p><h1>${puzzle.title}</h1><p>Trouvez l’expression représentée par l’image.</p><div class="game"><section class="panel"><img class="image" src="${puzzle.data.image}" alt="Illustration de l’énigme" /></section><section class="panel"><div class="expression" aria-label="Expression à reconstituer">${expression.join("")}</div><h2>Réserve de lettres</h2><div class="tiles">${tiles}</div><div class="actions"><button class="button" id="erase" ${solved ? "disabled" : ""}>Effacer</button>${reset}</div><p class="message ${solved ? "success" : ""}">${message || (solved ? `Résolu : ${answer}` : "")}</p>${solved ? archiveLinks() : ""}</section></div>`;
+    app.innerHTML = `<header class="puzzle-header"><div class="header-row"><p class="puzzle-id">Énigme ${puzzle.id}</p><div class="header-actions"><button class="header-button" id="back" type="button" aria-label="Retour">←</button><button class="header-button header-button--off" id="off" type="button" aria-label="Éteindre">⏻</button></div></div><div class="title-row"><h1>${puzzle.title}</h1><button class="help-button" id="help" type="button" aria-label="Afficher les consignes" aria-expanded="${helpOpen}" aria-controls="instructions">?</button></div></header>${helpOpen ? `<p class="instructions" id="instructions">${puzzle.instructions}</p>` : ""}<div class="game"><section class="panel"><img class="image" src="${puzzle.data.image}" alt="Illustration de l’énigme" /></section><section class="panel"><div class="expression" aria-label="Expression à reconstituer">${expression.join("")}</div><h2>Réserve de lettres</h2><div class="tiles">${tiles}</div><div class="actions"><button class="button" id="erase" ${solved ? "disabled" : ""}>Effacer</button>${reset}</div><p class="message ${solved ? "success" : ""}">${message || (solved ? `Résolu : ${answer}` : "")}</p>${solved ? archiveLinks() : ""}</section></div>`;
+    app.querySelector("#help").addEventListener("click", () => { helpOpen = !helpOpen; render(); });
+    app.querySelector("#back").addEventListener("click", () => window.location.assign(backHref));
+    app.querySelector("#off").addEventListener("click", () => { if (window.parent !== window) window.parent.postMessage({ type:"s18-computer-off" }, "*"); else { progress.setPoweredOn(false); window.location.assign("../../jeu/ordinateur.html"); } });
     app.querySelectorAll("[data-slot]").forEach((button) => button.addEventListener("click", () => { state.activeIndex = Number(button.dataset.slot); save(); render(); }));
     app.querySelectorAll("[data-letter]").forEach((button) => button.addEventListener("click", () => place(button.dataset.letter)));
     app.querySelector("#erase").addEventListener("click", erase);

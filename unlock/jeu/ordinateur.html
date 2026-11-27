@@ -18,6 +18,7 @@
       .screen.off { background:#061008; box-shadow:inset 0 0 25px #000; color:transparent; }
       .power { background:#4a3d30; border:3px solid #817663; border-radius:50%; bottom:17px; box-shadow:inset 0 0 0 3px #252017,0 2px 0 #fff7; color:#f5e4b4; cursor:pointer; height:31px; position:absolute; right:22px; width:31px; }
       .power.on { background:#6da54e; box-shadow:inset 0 0 0 3px #26421e,0 0 10px #92ef67; }
+      .return-key { display:none; }
       .boot { animation:boot .65s steps(3,end); color:var(--green); } @keyframes boot { from { opacity:0; transform:scaleY(.03); } to { opacity:1; transform:none; } }
       h1,h2,h3,p { margin-top:0; } h1 { font-size:clamp(1.25rem,5vw,2.2rem); } h2 { font-size:clamp(1.1rem,4vw,1.55rem); } h3 { font-size:1rem; }
       .terminal-line,.meta { color:#86be79; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; }
@@ -25,7 +26,7 @@
       .desktop-header { align-items:center; border-bottom:1px solid var(--line); display:flex; gap:12px; justify-content:space-between; margin-bottom:22px; padding-bottom:12px; } .desktop-header h1 { margin:0; }
       .stats { color:#b7d8a9; font-size:.76rem; } .categories,.puzzle-list { display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(175px,1fr)); }
       .category,.puzzle { background:#0b1e10cc; border:1px solid #48704b; color:inherit; min-height:115px; padding:15px; text-align:left; } .category.done,.puzzle.done { border-color:#a9e582; } .category-icon { align-items:center; display:flex; font-size:2rem; height:48px; justify-content:center; width:48px; } .category-icon img { display:block; height:100%; object-fit:contain; width:100%; } .count { color:#a8cc93; display:block; font-size:.75rem; margin-top:10px; }
-      .back { margin-bottom:18px; } .puzzle-card { background:#0a1a0eaa; border:1px solid #527756; max-width:650px; padding:20px; } .puzzle-card p { line-height:1.6; white-space:pre-wrap; } .puzzle-assets { display:grid; gap:12px; margin:18px 0; } .puzzle-assets img { background:#eef0e6; border:1px solid #78906f; display:block; height:auto; max-width:100%; padding:8px; } .response-format { color:#b7d8a9; font-size:.78rem; } .archive-codes { display:flex; flex-wrap:wrap; gap:8px; margin:14px 0; } .archive-codes a { color:#c9ffad; }
+      .back { margin-bottom:18px; } .puzzle-header { border-bottom:1px solid var(--line); margin-bottom:18px; padding-bottom:10px; } .puzzle-header h1 { margin:4px 0 0; } .puzzle-id { color:#86be79; font-size:.78rem; letter-spacing:.06em; margin:0; text-transform:uppercase; } .puzzle-card { max-width:650px; } .puzzle-card p { line-height:1.6; white-space:pre-wrap; } .puzzle-assets { display:grid; gap:12px; margin:18px 0; } .puzzle-assets img { background:#eef0e6; border:1px solid #78906f; display:block; height:auto; max-width:100%; padding:8px; } .response-format { color:#b7d8a9; font-size:.78rem; } .archive-codes { display:flex; flex-wrap:wrap; gap:8px; margin:14px 0; } .archive-codes a { color:#c9ffad; } .game-frame { border:0; display:block; height:100%; width:100%; }
       .empty { color:#aac5a0; max-width:520px; line-height:1.65; } .home-link { display:block; margin:16px auto 0; text-align:center; width:max-content; } .footer { color:#665e4d; font-size:.67rem; margin-top:14px; text-align:center; }
       @media (max-width:600px) { body { padding:8px; } .computer { border-width:6px; border-radius:14px; padding:12px; } .screen-shell { border-width:7px; padding:9px; } .screen { min-height:calc(100svh - 95px); padding:18px; } .desktop-header { align-items:flex-start; flex-direction:column; } .categories,.puzzle-list { grid-template-columns:1fr; } }
       @media (prefers-reduced-motion:reduce) { * { animation:none !important; } }
@@ -41,14 +42,14 @@ main { max-width:1100px; }
 .power { left:74%; top:67.4%; right:auto; bottom:auto; width:8.2%; height:4.7%; border:1px solid #6c5739; border-radius:5px; background:linear-gradient(#e9d4a9,#a98c5d); color:#302718; box-shadow:0 2px 3px #0009; padding:0; font-size:clamp(13px,3cqw,24px); line-height:1; }
 .power.on { background:linear-gradient(#c9e6a3,#779d51); color:#193419; box-shadow:0 0 10px #9dfc72; }
 .power:focus-visible, .button:focus-visible, button:focus-visible { outline:2px solid #f4d18a; outline-offset:3px; }
-.power-label { position:absolute; top:72.7%; left:70%; width:16%; text-align:center; font-size:clamp(8px,1.45cqw,12px); color:#3e2d18; font-weight:bold; pointer-events:none; }
+ .power-label { position:absolute; top:72.7%; left:70%; width:16%; text-align:center; font-size:clamp(8px,1.45cqw,12px); color:#3e2d18; font-weight:bold; pointer-events:none; }
 .screen h1 { font-size:clamp(17px,3.4cqw,28px); } .screen h2 { font-size:clamp(14px,2.5cqw,21px); margin-bottom:6px; }
 .screen .desktop-header { flex-direction:column; align-items:flex-start; gap:4px; margin-bottom:10px; padding-bottom:7px; }
 .screen .stats { margin:0; } .screen .categories,.screen .puzzle-list { grid-template-columns:repeat(auto-fit,minmax(min(100%,125px),1fr)); gap:8px; }
 .screen .category,.screen .puzzle { min-height:70px; padding:9px; } .screen .category-icon { font-size:1.3rem; } .screen .count { margin-top:5px; }
 .screen .puzzle-card { padding:10px; } .screen .back { margin-bottom:10px; } .screen input { font-size:16px; } .screen .login { gap:8px; } .screen button,.screen .button { padding:9px; }
 .home-link { background:linear-gradient(#e6cc91,#ad8548); color:#302313; border:1px solid #f1dba8; border-radius:5px; box-shadow:0 3px 8px #0006; } .home-link:hover { background:#f2dda7; } .footer { color:#cbbd9e; margin:9px 0 0; }
-@media (min-width:701px) { .computer:has(.power.on) { width:min(100%,1100px); aspect-ratio:auto; padding:25px 30px 75px; background:linear-gradient(145deg,#f1dfb8,#c5ad80 60%,#9e855d); border:5px solid #a48a61; border-radius:32px 32px 24px 24px; box-shadow:inset 0 0 0 3px #f4e3bf,0 20px 50px #0008; } .computer:has(.power.on) .badge { position:static; color:#5b482c; text-shadow:none; margin-bottom:10px; } .computer:has(.power.on) .screen-shell { position:relative; inset:auto; width:100%; height:auto; border:12px solid #78694f; border-radius:24px; background:#282c20; box-shadow:inset 0 0 0 3px #c6b38b; padding:5px; } .computer:has(.power.on) .screen { height:clamp(240px,calc(100svh - 245px),850px); padding:22px; font-size:15px; border-radius:14px; } .computer:has(.power.on) .power { top:auto; left:auto; right:30px; bottom:17px; width:58px; height:36px; } .computer:has(.power.on) .power-label { top:auto; left:auto; right:96px; bottom:27px; width:auto; font-size:11px; } .computer:has(.power.on)::after { content:""; position:absolute; bottom:16px; left:35px; width:60%; height:36px; border-radius:5px; background:repeating-linear-gradient(90deg,transparent 0 3px,#c9b58e 3px 5px,#e6d3ac 5px 24px,#8d7958 24px 27px),repeating-linear-gradient(0deg,#e5d1a7 0 13px,#8d7958 13px 17px); box-shadow:0 2px 4px #655333; pointer-events:none; } .screen .categories,.screen .puzzle-list { grid-template-columns:repeat(auto-fit,minmax(175px,1fr)); } }
+@media (min-width:701px) { .computer:has(.power.on) { width:min(100%,1100px); aspect-ratio:auto; padding:25px 30px 75px; background:linear-gradient(145deg,#f1dfb8,#c5ad80 60%,#9e855d); border:5px solid #a48a61; border-radius:32px 32px 24px 24px; box-shadow:inset 0 0 0 3px #f4e3bf,0 20px 50px #0008; } .computer:has(.power.on) .badge { position:static; color:#5b482c; text-shadow:none; margin-bottom:10px; } .computer:has(.power.on) .screen-shell { position:relative; inset:auto; width:100%; height:auto; border:12px solid #78694f; border-radius:24px; background:#282c20; box-shadow:inset 0 0 0 3px #c6b38b; padding:5px; } .computer:has(.power.on) .screen { height:clamp(240px,calc(100svh - 245px),850px); padding:22px; font-size:15px; border-radius:14px; } .computer:has(.power.on) .power { top:auto; left:auto; right:30px; bottom:17px; width:58px; height:36px; } .computer:has(.power.on) .return-key { background:linear-gradient(#c9e6a3,#779d51); border:1px solid #52753d; border-radius:5px; bottom:17px; box-shadow:inset 0 1px #e7ffd1,0 3px 0 #456431; color:#193419; cursor:pointer; display:block; font:bold 16px/1 var(--mono); height:36px; padding:0; position:absolute; right:98px; width:58px; } .computer:has(.power.on) .return-key:active { box-shadow:inset 0 2px 5px #4c7239; transform:translateY(2px); } .computer:has(.power.on) .power-label { top:auto; left:auto; right:96px; bottom:27px; width:auto; font-size:11px; } .computer:has(.power.on)::after { content:""; position:absolute; bottom:16px; left:35px; width:60%; height:36px; border-radius:5px; background:repeating-linear-gradient(90deg,transparent 0 3px,#c9b58e 3px 5px,#e6d3ac 5px 24px,#8d7958 24px 27px),repeating-linear-gradient(0deg,#e5d1a7 0 13px,#8d7958 13px 17px); box-shadow:0 2px 4px #655333; pointer-events:none; } .screen .categories,.screen .puzzle-list { grid-template-columns:repeat(auto-fit,minmax(175px,1fr)); } }
 @media (max-width:700px) { body { padding:8px; } .computer { width:100%; max-width:520px; } body:has(.power.on) { display:block; padding:0; background:#07140d; } body:has(.power.on) main { max-width:none; } .computer:has(.power.on) { width:100%; max-width:none; aspect-ratio:auto; background:none; box-shadow:none; border-radius:0; padding:0; } .computer:has(.power.on) .badge { position:static; text-align:left; width:auto; margin:0; padding:17px 115px 15px 15px; color:#a8f78d; text-shadow:none; border-bottom:1px solid #3d6044; font-size:11px; } .computer:has(.power.on) .screen-shell { position:static; width:100%; height:auto; border-radius:0; overflow:visible; } .computer:has(.power.on) .screen { min-height:calc(100svh - 145px); height:auto; padding:18px 14px; font-size:15px; border-radius:0; overflow:visible; } .computer:has(.power.on) .power { top:7px; right:10px; left:auto; width:94px; height:34px; font-size:13px; } .computer:has(.power.on) .power::after { content:" Arrêt"; } .computer:has(.power.on) .power-label { display:none; } .screen .categories,.screen .puzzle-list { grid-template-columns:1fr; } .screen .category,.screen .puzzle { min-height:80px; padding:14px; } .screen .puzzle-card { padding:14px; } .screen h1 { font-size:clamp(22px,6vw,32px); } .screen h2 { font-size:19px; } .screen button,.screen .button { min-height:44px; } body:has(.power.on) .footer { padding-bottom:12px; } }
 
 /* Panoramic room, fixed scale when resizing the window horizontally. */
@@ -57,8 +58,7 @@ main { max-width:1100px; }
  main { max-width:none; }
  .computer:not(:has(.power.on)) { position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); width:1672px; height:941px; max-width:none; aspect-ratio:auto; background:none; box-shadow:none; pointer-events:none; }
  .computer:not(:has(.power.on)) .screen-shell { left:39%; top:35.8%; width:20.6%; height:23.5%; }
- .computer:not(:has(.power.on)) .power { pointer-events:auto; left:58.45%; top:68.35%; width:3.45%; height:4.7%; background:transparent; border:0; box-shadow:none; color:transparent; border-radius:5px; }
- .computer:not(:has(.power.on)) .power:hover { background:#c9ff9b18; box-shadow:0 0 12px #a8f78d66; }
+  .computer:not(:has(.power.on)) .power { pointer-events:auto; left:58.45%; top:68.35%; width:3.45%; height:4.7%; background:transparent; border:0; box-shadow:none; color:transparent; border-radius:5px; }
  .computer:has(.power.on) { width:min(94vw,1100px); padding-top:20px; }
  .computer:has(.power.on) .power { background:url("data:image/webp;base64,UklGRp4DAABXRUJQVlA4IJIDAACwEQCdASo6ACsAPj0ai0OiIaEUDVY4IAPEoAnTOOiO+3cobvN4Db6c8B/dOnA6iD0AP2O64X9t5kTxLWTcSM9kIAc6Olfx4f7n1KtID056Kv+y7B3kzBGhhicGLW9CCUPpV91mmF1LWCeAvqtd/L3LTP7hJL8+ZJCbGy1Hct5Lj2+Bvd+mdcrTht8u23bm/MRD5fsohAAA/voejnviI/6OE3VSdoTTVSRumUWsg/bnrzNOk7/W72tzdFk5MqluoV+4bvDl9K/PpWEr+6j/kCAZZzz+5jr/+L6S6OokAu8n/L9OfJuO0dmGZQSIlaAn1W7MgpNN/Y3a1z/75nA/zEKCvnVXblHZWpg6AE9/hDRoJCLv2/4ojszqpO+3iJ8aSkTWC7B+NUxmfDZAOq7ssheB+P9b7WhV16yO8T3IWdgXGl/NIDd+gVGWONuLrRe7qFQXcLxTRf7Nehn5/ZcuuSyjL8JIEvaCFRlJLE0QAah6KCq6CPZSMArlRs8W/pJEPgmE5Mb9rtvw1l0P2D6aZM53X2syascuSmb+xhb6FMOVn3bG10cMPLE4FkHYTxThUw3z7qmxvvQ04s3gj8TFjrkiBsqXmdWGcSZOTu2ntbXA/8WPw6PHuxI1g1pRm1/k345+AgX+JBZ4oBbwDy2x5kX3IxRiPv8sPxiX7IEqavfs9Ucgf+Xu7mb2+4ArFlvSmYHZTpKDFS96L0IAZkNS9MwH8Ct+7frWk50T5FhrKBpqa1kkKQM1n5kiZ8SHlcUcGqz/8//sr3P/1iCwDFz/l9Bbwp73yudS+4fTMtHYT1z3gZ8eAOD4qznOVnLl6BToj+NAYQQV3bfkNDcfHW4f0cpPtjwvvCI/torkYZGFan80k9BEFq557CKhxlu+/aalvEL3Z+kXzAoKLp71MPN7eCArwmjKNW/VMQUArWlBQm/eD7dYOHXuBPn2k28WA/zgC00SpHR+8kebmeJ27DqgEZskbiRSn5fblI6aF9ySUQk/CEDvbcxn2tvclgTQXNVdnWQt9dDG+XXKbsVsK7NS8iSFrUQON+F2xRL5OcTvnwO79gkJTPG9n9VzH1oxLeJPB/k/aWGXf6LwkxIwwQQ9mfx6a8dW7U7szpNQRiQKAMPvM/hd9QgZmhLJbWBs1+h/pyvXiwOfRI4SP9O7oZDWY+3EdqpfJQlLxAwWAGdoDCPEz0CGykeo8o7GEwiwPgfIh25AAA==") center/100% 100% no-repeat; color:transparent; border:0; box-shadow:0 0 9px #a8f78d66; width:57px; height:43px; bottom:12px; }
  body:not(:has(.power.on)) .home-link { position:fixed; bottom:16px; left:50%; transform:translateX(-50%); margin:0; }
@@ -66,15 +66,17 @@ main { max-width:1100px; }
 }
 @media (min-width:1673px) { body { background-size:cover; } .computer:not(:has(.power.on)) { width:max(100vw, calc(100vh * 1672 / 941)); height:max(100vh, calc(100vw * 941 / 1672)); } }
 @media (min-width:701px) and (max-height:420px) { .computer:not(:has(.power.on)) { top:calc(50% - 115px); } body:not(:has(.power.on)) { background-position:center calc(50% - 115px); } }
-@media (max-width:700px) { .computer:not(:has(.power.on)) .power { background:linear-gradient(#ad946b,#756044); border:1px solid #6c5739; color:#f4e4b7; box-shadow:0 1px 2px #0007; } .computer:has(.power.on) .screen-shell { padding-top:49px; } .computer:has(.power.on) .power { top:8px; width:44px; height:36px; } .computer:has(.power.on) .power::after { content:none; } }
+@media (max-width:700px) { .computer:not(:has(.power.on)) .power { background:#756044; border:1px solid #6c5739; color:#d4c6aa; box-shadow:inset 0 1px #bcae91; } .computer:has(.power.on) .screen-shell { padding-top:49px; } .computer:has(.power.on) .power { top:8px; width:44px; height:36px; } .computer:has(.power.on) .power::after { content:none; } }
 
 @media (max-width:700px) {
   .computer:has(.power.on) .screen-shell { padding-top:0; }
   .computer:has(.power.on) .screen { padding-top:14px; }
   .computer:has(.power.on) .power { top:7px; right:10px; width:36px; height:30px; z-index:5; }
+  .computer:has(.power.on) .return-key { align-items:center; background:linear-gradient(#c9e6a3,#779d51); border:1px solid #52753d; border-radius:5px; box-shadow:inset 0 1px #e7ffd1,0 3px 0 #456431; color:#193419; cursor:pointer; display:flex; font:bold 16px/1 var(--mono); height:30px; justify-content:center; padding:0; position:absolute; right:53px; top:7px; width:36px; z-index:5; }
+  .computer:has(.power.on) .return-key:active { box-shadow:inset 0 2px 5px #4c7239; transform:translateY(2px); }
   .computer:has(.power.on) .screen .desktop-header .terminal-line { padding-right:42px; min-height:24px; display:flex; align-items:center; margin-bottom:8px; }
   .computer:has(.power.on) .screen > .boot > .terminal-line { padding-right:42px; min-height:24px; }
-  .computer:has(.power.on) .screen > .back { margin-right:48px; }
+  body:has(.power.on) .home-link { display:none; }
 }
 </style>
   </head>
@@ -82,6 +84,7 @@ main { max-width:1100px; }
     <main>
       <section class="computer" aria-label="Ordinateur des énigmes">
         <div class="screen-shell"><div class="screen off" id="screen" aria-live="polite"></div></div>
+        <button class="return-key" id="returnKey" type="button" aria-label="Retour">←</button>
         <button class="power" id="power" type="button" aria-label="Marche / arrêt">⏻</button>
       </section>
       <a class="button home-link" href="../index.html">← Retour à l’accueil</a>
@@ -94,6 +97,7 @@ main { max-width:1100px; }
       const progress = window.ORDINATEUR_PROGRESS;
       const screen = document.querySelector("#screen");
       const power = document.querySelector("#power");
+      const returnKey = document.querySelector("#returnKey");
       const normalize = (value) => value.trim().toLocaleLowerCase("fr");
       const activePuzzles = () => catalog.puzzles.filter((puzzle) => puzzle.enabled && puzzle.admin?.published);
       const categories = () => [...catalog.categories].sort((a, b) => a.order - b.order);
@@ -107,7 +111,7 @@ main { max-width:1100px; }
       function renderLogin(message = "") {
         progress.setView({ name: "login" });
         screen.innerHTML = `<div class="boot"><p class="terminal-line">S-18 / TERMINAL 46 / ACCÈS RESTREINT</p><h1>LOGIN</h1><form class="login" id="loginForm"><label>Identifiant<input id="login" autocomplete="username" autofocus /></label><button>Ouvrir la session</button><p class="error">${message}</p></form></div>`;
-        screen.querySelector("#loginForm").addEventListener("submit", (event) => { event.preventDefault(); if (normalize(screen.querySelector("#login").value) === "delorme") { progress.authenticate(); renderDesktop(); } else renderLogin("Identifiant non reconnu."); });
+        screen.querySelector("#loginForm").addEventListener("submit", (event) => { event.preventDefault(); if (normalize(screen.querySelector("#login").value) === "delorme") { progress.authenticate(); const category = new URLSearchParams(location.search).get("category"); if (category && categories().some((entry) => entry.id === category)) renderCategory(category); else renderDesktop(); } else renderLogin("Identifiant non reconnu."); });
       }
       function renderDesktop() {
         progress.setView({ name: "desktop" });
@@ -115,16 +119,21 @@ main { max-width:1100px; }
         screen.innerHTML = `<div class="boot"><header class="desktop-header"><div><p class="terminal-line">Session DELORME · terminal 46</p><h1>Bureau des énigmes</h1></div><p class="stats">${total.solved} résolue(s) · ${total.remaining} restante(s) · ${total.total} accessible(s)</p></header><section class="categories" id="categories"></section></div>`;
         const container = screen.querySelector("#categories");
         if (!categories().length) { container.innerHTML = `<p class="empty">Aucune catégorie publiée pour le moment. Le catalogue peut être complété sans modifier cette interface.</p>`; return; }
-        categories().forEach((category) => { const count = stats(category.id); const button = document.createElement("button"); const icon = category.icon?.includes("/") ? `<img src="../${category.icon}" alt="" />` : category.icon || "▣"; button.className = `category${count.total > 0 && count.remaining === 0 ? " done" : ""}`; button.innerHTML = `<span class="category-icon">${icon}</span><h2>${category.title}</h2><span class="count">${count.solved} / ${count.total} résolue(s)</span>`; button.addEventListener("click", () => category.id === "sudoku" ? window.location.assign(`../ordinateur/sudoku/index.html?from=ordinateur`) : category.id === "ligne" ? window.location.assign(`../ordinateur/entre-les-lignes/index.html?from=ordinateur`) : renderCategory(category.id)); container.append(button); });
+        categories().forEach((category) => { const count = stats(category.id); const button = document.createElement("button"); const icon = category.icon?.includes("/") ? `<img src="../${category.icon}" alt="" />` : category.icon || "▣"; button.className = `category${count.total > 0 && count.remaining === 0 ? " done" : ""}`; button.innerHTML = `<span class="category-icon">${icon}</span><h2>${category.title}</h2><span class="count">${count.solved} / ${count.total} résolue(s)</span>`; button.addEventListener("click", () => renderCategory(category.id)); container.append(button); });
       }
       function renderCategory(categoryId) {
         progress.setView({ name: "category", categoryId });
         const puzzles = activePuzzles().filter((puzzle) => puzzle.categoryId === categoryId).sort((a, b) => a.order - b.order);
-        screen.innerHTML = `<button class="back" id="back">← Bureau</button><p class="terminal-line">Catégorie</p><h1>${categoryTitle(categoryId)}</h1><section class="puzzle-list" id="puzzles"></section>`;
-        screen.querySelector("#back").addEventListener("click", renderDesktop);
+        const count = stats(categoryId);
+        screen.innerHTML = `<div class="boot"><header class="desktop-header"><div><p class="terminal-line">Catégorie</p><h1>${categoryTitle(categoryId)}</h1></div><p class="stats">${count.solved} résolue(s) · ${count.remaining} à faire · ${count.total} au total</p></header><section class="puzzle-list" id="puzzles"></section></div>`;
         const container = screen.querySelector("#puzzles");
         if (!puzzles.length) { container.innerHTML = `<p class="empty">Aucune énigme accessible dans cette catégorie.</p>`; return; }
-        puzzles.forEach((puzzle) => { const result = solved()[puzzle.id]; const button = document.createElement("button"); button.className = `puzzle${result?.solved ? " done" : ""}`; button.innerHTML = `<span class="terminal-line">${result?.solved ? "Résolue" : "À résoudre"}</span><h2>${puzzle.title}</h2><span class="count">${result?.solved ? result.archiveCodes.join(" · ") : "Ouvrir l’énigme"}</span>`; button.addEventListener("click", () => puzzle.template === "sudoku" ? window.location.assign(`../ordinateur/sudoku/sudoku.html?id=${encodeURIComponent(puzzle.id)}&from=ordinateur`) : puzzle.template === "ligne" ? window.location.assign(`../ordinateur/entre-les-lignes/ligne.html?id=${encodeURIComponent(puzzle.id)}&from=ordinateur`) : renderPuzzle(puzzle.id)); container.append(button); });
+        puzzles.forEach((puzzle) => { const result = solved()[puzzle.id]; const button = document.createElement("button"); button.className = `puzzle${result?.solved ? " done" : ""}`; button.innerHTML = `<span class="terminal-line">${result?.solved ? "Résolue" : "À faire"}</span><h2>${puzzle.title}</h2><span class="count">${result?.solved ? result.archiveCodes.join(" · ") : "Ouvrir l’énigme"}</span>`; button.addEventListener("click", () => { if (puzzle.template !== "sudoku" && puzzle.template !== "ligne") return renderPuzzle(puzzle.id); if (window.matchMedia("(max-width: 700px)").matches) { const path = puzzle.template === "sudoku" ? "sudoku/sudoku.html" : "entre-les-lignes/ligne.html"; window.location.assign(`../ordinateur/${path}?id=${encodeURIComponent(puzzle.id)}&from=ordinateur`); } else renderEmbeddedPuzzle(puzzle); }); container.append(button); });
+      }
+      function renderEmbeddedPuzzle(puzzle) {
+        progress.setView({ name: "special-puzzle", puzzleId: puzzle.id, categoryId: puzzle.categoryId });
+        const source = puzzle.template === "sudoku" ? `../ordinateur/sudoku/sudoku.html?id=${encodeURIComponent(puzzle.id)}&embedded=1` : `../ordinateur/entre-les-lignes/ligne.html?id=${encodeURIComponent(puzzle.id)}&embedded=1`;
+        screen.innerHTML = `<iframe class="game-frame" title="${puzzle.title}" src="${source}"></iframe>`;
       }
       function renderPuzzle(id, message = "") {
         const puzzle = activePuzzles().find((entry) => entry.id === id);
@@ -134,21 +143,26 @@ main { max-width:1100px; }
         const archiveLinks = (codes) => `<div class="archive-codes">${codes.map((code) => `<a class="button" href="../archives/media.html#code=${encodeURIComponent(code)}&from=ordinateur">Archive ${code}</a>`).join("")}</div>`;
         const assets = (puzzle.assets || []).map((source, index) => `<img src="${source}" alt="Support visuel ${index + 1} de l’énigme : ${puzzle.title}" />`).join("");
         const responseFormat = puzzle.responseFormat ? `<p class="response-format">Format attendu : ${puzzle.responseFormat}</p>` : "";
-        screen.innerHTML = `<button class="back" id="back">← ${categoryTitle(puzzle.categoryId)}</button><article class="puzzle-card"><p class="terminal-line">Énigme ${puzzle.id}</p><h1>${puzzle.title}</h1><p>${puzzle.instructions}</p>${assets ? `<div class="puzzle-assets">${assets}</div>` : ""}${responseFormat}${result?.solved ? `<p class="success">Résolue. Réponse enregistrée : ${result.submittedAnswer}</p>${archiveLinks(result.archiveCodes)}<button id="continue">Continuer les énigmes</button>` : `<form class="login" id="answerForm"><label>Votre réponse<input id="answer" autocomplete="off" autofocus /></label><button>Valider</button><p class="error">${message}</p></form>`}</article>`;
-        screen.querySelector("#back").addEventListener("click", () => renderCategory(puzzle.categoryId));
+        screen.innerHTML = `<header class="puzzle-header"><p class="puzzle-id">Énigme ${puzzle.id}</p><h1>${puzzle.title}</h1></header><article class="puzzle-card"><p>${puzzle.instructions}</p>${assets ? `<div class="puzzle-assets">${assets}</div>` : ""}${responseFormat}${result?.solved ? `<p class="success">Résolue. Réponse enregistrée : ${result.submittedAnswer}</p>${archiveLinks(result.archiveCodes)}<button id="continue">Continuer les énigmes</button>` : `<form class="login" id="answerForm"><label>Votre réponse<input id="answer" autocomplete="off" autofocus /></label><button>Valider</button><p class="error">${message}</p></form>`}</article>`;
         if (result?.solved) { screen.querySelector("#continue").addEventListener("click", () => renderCategory(puzzle.categoryId)); return; }
         screen.querySelector("#answerForm").addEventListener("submit", (event) => { event.preventDefault(); const answer = screen.querySelector("#answer").value; const accepted = puzzle.acceptedAnswers.some((candidate) => normalize(candidate) === normalize(answer)); if (!accepted) return renderPuzzle(id, "Réponse incorrecte. Réessayez."); progress.solve(id, answer.trim(), puzzle.archiveCodes); renderPuzzle(id); });
       }
       function restoreView() {
-        const { view } = progress.read();
         if (!progress.read().authenticated) return renderLogin();
+        const requestedCategory = new URLSearchParams(location.search).get("category");
+        if (requestedCategory && categories().some((category) => category.id === requestedCategory)) return renderCategory(requestedCategory);
+        const { view } = progress.read();
         if (view?.name === "category" && categories().some((category) => category.id === view.categoryId)) return renderCategory(view.categoryId);
         if (view?.name === "puzzle" && activePuzzles().some((puzzle) => puzzle.id === view.puzzleId)) return renderPuzzle(view.puzzleId);
+        if (view?.name === "special-puzzle") { const puzzle = activePuzzles().find((entry) => entry.id === view.puzzleId); if (puzzle) return renderEmbeddedPuzzle(puzzle); }
         return renderDesktop();
       }
       function boot(restored = false) { progress.discover(); progress.setPoweredOn(true); power.classList.add("on"); screen.classList.remove("off"); if (restored) return restoreView(); screen.innerHTML = `<p class="boot terminal-line">Initialisation du terminal…</p>`; window.setTimeout(() => { if (power.classList.contains("on")) restoreView(); }, 650); }
       function shutdown() { progress.setPoweredOn(false); power.classList.remove("on"); screen.className = "screen off"; screen.replaceChildren(); }
+      function goBack() { const view = progress.read().view; if (view?.name === "category") return renderDesktop(); if (view?.name === "puzzle" || view?.name === "special-puzzle") return renderCategory(view.categoryId || activePuzzles().find((puzzle) => puzzle.id === view.puzzleId)?.categoryId); window.location.assign("../index.html"); }
       power.addEventListener("click", () => { if (power.classList.contains("on")) shutdown(); else boot(); });
+      returnKey.addEventListener("click", goBack);
+      window.addEventListener("message", (event) => { if (event.data?.type === "s18-computer-off") shutdown(); });
       if (new URLSearchParams(location.search).get("direct") === "1" && progress.read().authenticated) boot(true);
       else if (progress.read().poweredOn) boot(true);
     </script>

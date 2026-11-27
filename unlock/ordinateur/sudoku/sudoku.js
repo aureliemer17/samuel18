@@ -5,7 +5,7 @@
   const progress = window.ORDINATEUR_PROGRESS;
   const puzzle = common.puzzleById(id);
   if (!puzzle || puzzle.template !== "sudoku" || !puzzle.data?.initialGrid) {
-    app.innerHTML = `<p>Sudoku indisponible.</p><a class="back" href="index.html">← Catalogue Sudoku</a>`;
+    app.innerHTML = `<p>Sudoku indisponible.</p><a class="back" href="../../jeu/ordinateur.html?category=sudoku">← Liste des énigmes</a>`;
     return;
   }
   const { size, boxRows, boxCols, initialGrid, solution } = puzzle.data;
@@ -20,8 +20,11 @@
   const key = (row, col) => `${row}-${col}`;
   const valueAt = (row, col) => initialGrid[row][col] || state.values[key(row, col)] || "";
   const save = () => progress.saveSudoku(id, state);
-  const fromComputer = new URLSearchParams(location.search).get("from") === "ordinateur";
-  const backHref = fromComputer ? "../../jeu/ordinateur.html" : "index.html";
+  const params = new URLSearchParams(location.search);
+  const fromComputer = params.get("from") === "ordinateur";
+  const embedded = params.get("embedded") === "1";
+  if (embedded && window.matchMedia("(min-width: 701px)").matches) document.documentElement.classList.add("embedded");
+  const backHref = fromComputer ? "../../jeu/ordinateur.html?category=sudoku" : "index.html";
   const archiveLinks = () => `<div class="archive-links">${puzzle.archiveCodes.map((code) => `<a class="button" href="../../archives/media.html#code=${encodeURIComponent(code)}&from=ordinateur">Archive ${code}</a>`).join("")}</div>`;
   function render(message = "") {
     const solved = state.status === "solved";
@@ -33,10 +36,12 @@
       const border = `${(col + 1) % boxCols === 0 && col + 1 < size ? "border-right:3px solid #315e35;" : ""}${(row + 1) % boxRows === 0 && row + 1 < size ? "border-bottom:3px solid #315e35;" : ""}`;
       cells.push(`<button class="${classes}" data-row="${row}" data-col="${col}" data-notes="${(state.notes[cellKey] || []).join(" ")}" style="${border}" ${initialGrid[row][col] || solved ? "disabled" : ""}>${value}</button>`);
     }
-    const restartControls = restartConfirmation ? `<div class="restart-confirmation"><p>Effacer toutes les cases et notes ?</p><button class="button" id="cancelRestart">Annuler</button><button class="button danger" id="confirmRestart">Effacer la grille</button></div>` : `<button class="button" id="restart" ${solved ? "disabled" : ""}>Recommencer</button>`;
-    app.innerHTML = `<a class="back" href="${backHref}">← ${fromComputer ? "Bureau des énigmes" : "Catalogue Sudoku"}</a><p class="eyebrow">Ordinateur des énigmes / Sudoku</p><div class="title-row"><h1>${puzzle.title}</h1><button class="help-button" id="help" type="button" aria-expanded="${helpOpen}" aria-controls="instructions">?</button></div>${helpOpen ? `<p class="instructions" id="instructions">${puzzle.instructions}</p>` : ""}<div class="layout"><section class="panel"><div class="grid" style="--size:${size};--box-cols:${boxCols}">${cells.join("")}</div></section><aside class="panel controls"><div class="keypad" id="keypad" style="--keypad-cols:${size}">${Array.from({ length:size }, (_, index) => `<button class="button" data-value="${index + 1}">${index + 1}</button>`).join("")}</div><div class="tool-actions"><button class="button icon-button" id="undo" aria-label="Annuler la dernière saisie" title="Annuler la dernière saisie" ${state.history.length ? "" : "disabled"}><span aria-hidden="true">↶</span><small>Annuler</small></button><button class="button icon-button" data-action="erase" id="erase" aria-label="Effacer la case sélectionnée" title="Effacer la case sélectionnée"><span aria-hidden="true">⌫</span><small>Effacer</small></button><button class="button icon-button notes-button ${notesMode ? "active" : ""}" id="notes" aria-label="Mode notes ${notesMode ? "actif" : "inactif"}" title="Mode notes"><span aria-hidden="true">✎</span><small>Notes</small><span class="note-state" aria-hidden="true">${notesMode ? "ON" : "OFF"}</span></button></div><button class="button" id="verify" ${solved ? "disabled" : ""}>Vérifier la grille</button>${restartControls}<p class="message ${solved ? "success" : ""}">${message || (solved ? `Résolu. Codes obtenus : ${state.archiveCodes.join(" · ")}` : "")}</p>${solved ? archiveLinks() : ""}</aside></div>`;
+    const restartControls = restartConfirmation ? `<div class="restart-confirmation"><p>Effacer toutes les cases et notes ?</p><button class="button" id="cancelRestart">Annuler</button><button class="button danger" id="confirmRestart">Effacer la grille</button></div>` : `<div class="validation-actions"><button class="button" id="verify" ${solved ? "disabled" : ""}>Vérifier</button><button class="button" id="restart" ${solved ? "disabled" : ""}>Recommencer</button></div>`;
+    app.innerHTML = `<header class="puzzle-header"><div class="header-row"><p class="puzzle-id">Énigme ${puzzle.id}</p><div class="header-actions"><button class="header-button" id="back" type="button" aria-label="Retour">←</button><button class="header-button header-button--off" id="off" type="button" aria-label="Éteindre">⏻</button></div></div><div class="title-row"><h1>${puzzle.title}</h1><button class="help-button" id="help" type="button" aria-label="Afficher les consignes" aria-expanded="${helpOpen}" aria-controls="instructions">?</button></div></header>${helpOpen ? `<p class="instructions" id="instructions">${puzzle.instructions}</p>` : ""}<div class="layout"><section class="panel"><div class="grid" style="--size:${size};--box-cols:${boxCols}">${cells.join("")}</div></section><aside class="panel controls"><div class="keypad" id="keypad" style="--keypad-cols:${size}">${Array.from({ length:size }, (_, index) => `<button class="button" data-value="${index + 1}">${index + 1}</button>`).join("")}</div><div class="tool-actions"><button class="button icon-button" id="undo" aria-label="Annuler la dernière saisie" title="Annuler la dernière saisie" ${state.history.length ? "" : "disabled"}><span aria-hidden="true">↶</span><small>Annuler</small></button><button class="button icon-button" data-action="erase" id="erase" aria-label="Effacer la case sélectionnée" title="Effacer la case sélectionnée"><span aria-hidden="true">⌫</span><small>Effacer</small></button><button class="button icon-button notes-button ${notesMode ? "active" : ""}" id="notes" aria-label="Mode notes ${notesMode ? "actif" : "inactif"}" title="Mode notes"><span aria-hidden="true">✎</span><small>Notes</small><span class="note-state" aria-hidden="true">${notesMode ? "ON" : "OFF"}</span></button></div>${restartControls}<p class="message ${solved ? "success" : ""}">${message || (solved ? `Résolu. Codes obtenus : ${state.archiveCodes.join(" · ")}` : "")}</p>${solved ? archiveLinks() : ""}</aside></div>`;
     app.querySelectorAll(".cell:not(.fixed)").forEach((cell) => cell.addEventListener("click", () => { selected = [Number(cell.dataset.row), Number(cell.dataset.col)]; render(); }));
     app.querySelector("#help").addEventListener("click", () => { helpOpen = !helpOpen; render(); });
+    app.querySelector("#back").addEventListener("click", () => window.location.assign(backHref));
+    app.querySelector("#off").addEventListener("click", () => { if (window.parent !== window) window.parent.postMessage({ type:"s18-computer-off" }, "*"); else { progress.setPoweredOn(false); window.location.assign("../../jeu/ordinateur.html"); } });
     app.querySelector("#notes").addEventListener("click", () => { notesMode = !notesMode; render(); });
     app.querySelector("#keypad").addEventListener("click", (event) => apply(event.target.dataset.value, event.target.dataset.action));
     app.querySelector("#erase").addEventListener("click", (event) => apply(event.target.dataset.value, event.target.dataset.action));
@@ -44,7 +49,7 @@
     app.querySelector("#restart")?.addEventListener("click", () => { restartConfirmation = true; render(); });
     app.querySelector("#cancelRestart")?.addEventListener("click", () => { restartConfirmation = false; render(); });
     app.querySelector("#confirmRestart")?.addEventListener("click", restart);
-    app.querySelector("#verify").addEventListener("click", verify);
+    app.querySelector("#verify")?.addEventListener("click", verify);
   }
   function apply(value, action) {
     if (!selected || state.status === "solved") return;

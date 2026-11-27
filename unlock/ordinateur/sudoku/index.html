@@ -1,33 +1,12 @@
 <!doctype html>
-<html lang="fr" style="touch-action: manipulation">
+<html lang="fr">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#102218" />
-    <title>Catalogue Sudoku — Affaire S-18</title>
-    <link rel="stylesheet" href="sudoku.css" />
+    <meta http-equiv="refresh" content="0; url=../../jeu/ordinateur.html?category=sudoku" />
+    <title>Sudokus — Affaire S-18</title>
   </head>
   <body>
-    <main>
-      <a class="back" id="back">← Accueil</a>
-      <p class="eyebrow">Affaire S-18 / Ordinateur des énigmes</p>
-      <h1>Catalogue Sudoku</h1>
-      <p id="stats"></p>
-      <section id="catalog" class="catalog" aria-live="polite"></section>
-    </main>
-    <script src="../../config/ordinateur-catalog.js"></script>
-    <script src="../../config/ordinateur-progress.js"></script>
-    <script src="../common/catalog.js"></script>
-    <script>
-      const fromComputer = new URLSearchParams(location.search).get("from") === "ordinateur";
-      const puzzles = window.ORDINATEUR_COMMON.activePuzzles().filter((puzzle) => puzzle.template === "sudoku").sort((a, b) => a.order - b.order);
-      const progress = window.ORDINATEUR_PROGRESS;
-      const status = (puzzle) => progress.sudoku(puzzle.id).status;
-      const back = document.querySelector("#back");
-      back.href = fromComputer ? "../../jeu/ordinateur.html" : "../../index.html";
-      back.textContent = fromComputer ? "← Bureau des énigmes" : "← Accueil";
-      document.querySelector("#stats").textContent = `${puzzles.filter((puzzle) => status(puzzle) === "solved").length} résolu(s) · ${puzzles.filter((puzzle) => status(puzzle) === "in_progress").length} en cours · ${puzzles.length} accessible(s)`;
-      document.querySelector("#catalog").innerHTML = puzzles.map((puzzle) => `<a class="card ${status(puzzle)}" href="sudoku.html?id=${encodeURIComponent(puzzle.id)}${fromComputer ? "&from=ordinateur" : ""}"><span>${status(puzzle) === "solved" ? "Résolu" : status(puzzle) === "in_progress" ? "En cours" : "À faire"}</span><strong>${puzzle.title}</strong><small>${puzzle.difficulty || "Sudoku"}</small></a>`).join("") || "<p>Aucun sudoku publié.</p>";
-    </script>
+    <p>Redirection vers les énigmes… <a href="../../jeu/ordinateur.html?category=sudoku">Continuer</a></p>
   </body>
 </html>
