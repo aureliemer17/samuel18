@@ -145,8 +145,9 @@
          returnLink.href = "dossier-majorite.html";
          returnLink.textContent = "Retour au dossier de la majorité";
        }
-       if (source === "decouvertes") {
-         returnLink.href = "decouvertes.html?inventory=1";
+        if (source === "decouvertes") {
+          const adminMode = new URLSearchParams(window.location.hash.slice(1)).get("admin") === "1";
+          returnLink.href = `decouvertes.html?inventory=1${adminMode ? "&admin=1" : ""}`;
          returnLink.textContent = "Retour à l'inventaire";
        }
        returnLinkTop.href = returnLink.href;

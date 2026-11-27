@@ -15,6 +15,7 @@
   state.values ||= [];
   let helpOpen = false;
   let message = "";
+  let restartConfirmation = false;
 
   const save = () => progress.saveCadenas(id, state);
   const isSolved = () => state.status === "solved";
@@ -22,13 +23,17 @@
   const isCorrect = () => data.inputType === "couleurs"
     ? state.values.join("|") === data.answer.join("|")
     : state.values.join("") === data.answer;
+  const palette = () => {
+    if (!state.palette) state.palette = [...colors].sort(() => Math.random() - .5).map(([value]) => value);
+    return state.palette.map((value) => colors.find(([token]) => token === value));
+  };
 
   function render() {
-    const input = data.inputType === "chiffres"
+    const input = isSolved() ? "" : data.inputType === "chiffres"
       ? `<div class="keypad">${[1, 2, 3, 4, 5, 6, 7, 8, 9, 0].map((value) => `<button class="button" data-value="${value}">${value}</button>`).join("")}</div>`
       : data.inputType === "couleurs"
-        ? `<div class="palette">${colors.map(([value, label, color]) => `<button class="color-choice" data-value="${value}" style="background:${color}" aria-label="${label}"></button>`).join("")}</div>`
-        : `<input class="letter-input" id="letters" inputmode="text" autocomplete="off" autocorrect="off" autocapitalize="characters">`;
+        ? `<div class="palette">${palette().map(([value, label, color]) => `<button class="color-choice" data-value="${value}" style="background:${color}" aria-label="${label}"></button>`).join("")}</div>`
+        : `<div class="keypad letterpad">${"ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").map((value) => `<button class="button" data-value="${value}">${value}</button>`).join("")}</div>`;
     const slots = Array.from({ length:data.length }, (_, index) => {
       const value = state.values[index] || "";
       const color = colors.find(([token]) => token === value);
@@ -36,7 +41,8 @@
     }).join("");
     const archiveLinks = puzzle.archiveCodes.map((code) => `<a class="button" href="../../archives/media.html#code=${encodeURIComponent(code)}&from=ordinateur">Archive ${code}</a>`).join("");
 
-    app.innerHTML = `<header class="puzzle-header"><div class="header-row"><p class="puzzle-id">Énigme ${puzzle.id}</p><div class="header-actions"><button class="header-button" id="back" type="button" aria-label="Retour">←</button><button class="header-button" id="off" type="button" aria-label="Éteindre">⏻</button></div></div><div class="title-row"><h1>${puzzle.title}</h1><button class="help-button" id="help" type="button" aria-expanded="${helpOpen}">?</button></div></header>${helpOpen ? `<p class="instructions">${puzzle.instructions}</p>` : ""}<div class="layout"><section class="panel game"><img class="puzzle-image" src="${data.image}" alt="Indices du cadenas"><div class="answer">${slots}</div></section><aside class="panel controls">${input}<button class="button restart" id="restart" type="button">↻ Recommencer</button><p class="message ${isSolved() ? "success" : ""}">${message || (isSolved() ? `Cadenas ouvert : ${Array.isArray(data.answer) ? data.answer.join(" / ") : data.answer}` : "")}</p>${isSolved() ? `<div class="archive-links">${archiveLinks}</div>` : ""}</aside></div>`;
+    const restart = isSolved() ? "" : restartConfirmation ? `<div class="restart-confirmation"><p>Effacer toutes les cases marquées ?</p><div class="restart-actions"><button class="button" id="cancelRestart">Non</button><button class="button danger" id="confirmRestart">Oui, effacer</button></div></div>` : `<button class="icon-button restart" id="restart" type="button" aria-label="Recommencer" title="Recommencer">↻</button>`;
+    app.innerHTML = `<header class="puzzle-header"><div class="header-row"><p class="puzzle-id">Énigme ${puzzle.id}</p><div class="header-actions"><button class="header-button" id="back" type="button" aria-label="Retour">←</button><button class="header-button header-button--off" id="off" type="button" aria-label="Éteindre">⏻</button></div></div><div class="title-row"><h1>${puzzle.title}</h1><button class="help-button" id="help" type="button" aria-expanded="${helpOpen}">?</button></div></header>${helpOpen ? `<p class="instructions">${puzzle.instructions}</p>` : ""}<div class="layout ${isSolved() ? "solved" : ""}"><section class="panel game"><img class="puzzle-image" src="${data.image}" alt="Indices du cadenas"><div class="answer">${slots}</div></section><aside class="panel controls">${input}${restart}<p class="message ${isSolved() ? "success" : ""}">${message || (isSolved() ? `Cadenas ouvert : ${Array.isArray(data.answer) ? data.answer.join(" / ") : data.answer}` : "")}</p>${isSolved() ? `<div class="archive-links">${archiveLinks}</div>` : ""}</aside></div>`;
 
     app.querySelector("#help").addEventListener("click", () => { helpOpen = !helpOpen; render(); });
     app.querySelector("#back").addEventListener("click", () => location.assign("../../jeu/ordinateur.html?category=cadenas"));
@@ -48,28 +54,22 @@
       state.activeIndex = Number(slot.dataset.slot);
       save();
       render();
-      if (data.inputType === "lettres" && !isSolved()) app.querySelector("#letters").focus();
     }));
     app.querySelectorAll("[data-value]").forEach((button) => button.addEventListener("click", () => put(button.dataset.value)));
-    app.querySelector("#restart").addEventListener("click", () => {
-      if (!confirm("Effacer toutes les cases marquées ?")) return;
+    app.querySelector("#restart")?.addEventListener("click", () => {
+      restartConfirmation = true;
+      render();
+    });
+    app.querySelector("#cancelRestart")?.addEventListener("click", () => { restartConfirmation = false; render(); });
+    app.querySelector("#confirmRestart")?.addEventListener("click", () => {
       progress.resetCadenas(id);
       state = progress.cadenas(id);
       state.values = [];
+      restartConfirmation = false;
       message = "";
       render();
     });
 
-    const letters = app.querySelector("#letters");
-    if (!letters) return;
-    letters.value = state.values.join("");
-    letters.addEventListener("focus", () => document.body.classList.add("keyboard-open"));
-    letters.addEventListener("blur", () => document.body.classList.remove("keyboard-open"));
-    letters.addEventListener("input", () => {
-      state.values = [...letters.value.toUpperCase().replace(/[^A-Z]/g, "")].slice(0, data.length);
-      state.activeIndex = state.values.length < data.length ? state.values.length : null;
-      changed();
-    });
   }
 
   function put(value) {

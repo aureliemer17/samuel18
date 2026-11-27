@@ -579,7 +579,7 @@
          const link = event.target.closest("button[data-dossier]");
          if (!link) return;
          if (mobileLayout) {
-           window.location.assign(`media.html#code=${encodeURIComponent(link.dataset.dossier)}&from=decouvertes`);
+            window.location.assign(`media.html#code=${encodeURIComponent(link.dataset.dossier)}&from=decouvertes${adminMode ? "&admin=1" : ""}`);
            return;
          }
          showPage(firstPageByDossier.get(link.dataset.dossier));

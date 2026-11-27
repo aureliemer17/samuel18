@@ -23,6 +23,7 @@
   state.activeIndex ??= null;
   let message = "";
   let helpOpen = false;
+  let restartConfirmation = false;
   const archiveLinks = () => `<div class="archive-links">${puzzle.archiveCodes.map((code) => `<a class="button" href="../../archives/media.html#code=${encodeURIComponent(code)}&from=ordinateur">Archive ${code}</a>`).join("")}</div>`;
   const available = (letter, target = null) => counts[letter] - Object.entries(state.values).filter(([index, value]) => Number(index) !== target && value === letter).length;
   const emptyIndexes = () => slots.filter((slot) => slot && !state.values[slot.index]).map((slot) => slot.index);
@@ -49,15 +50,17 @@
     });
     flushWord();
     const tiles = Object.keys(counts).sort((left, right) => left.localeCompare(right, "fr")).map((letter) => `<button class="tile ${available(letter, state.activeIndex) ? "" : "exhausted"}" data-letter="${letter}" ${solved ? "disabled" : ""}>${letter}<span class="tile-count">${available(letter, state.activeIndex)}</span></button>`).join("");
-    const reset = solved ? "" : `<button class="button" id="reset">Réinitialiser</button>`;
-    app.innerHTML = `<header class="puzzle-header"><div class="header-row"><p class="puzzle-id">Énigme ${puzzle.id}</p><div class="header-actions"><button class="header-button" id="back" type="button" aria-label="Retour">←</button><button class="header-button header-button--off" id="off" type="button" aria-label="Éteindre">⏻</button></div></div><div class="title-row"><h1>${puzzle.title}</h1><button class="help-button" id="help" type="button" aria-label="Afficher les consignes" aria-expanded="${helpOpen}" aria-controls="instructions">?</button></div></header>${helpOpen ? `<p class="instructions" id="instructions">${puzzle.instructions}</p>` : ""}<div class="game"><section class="panel"><img class="image" src="${puzzle.data.image}" alt="Illustration de l’énigme" /></section><section class="panel"><div class="expression" aria-label="Expression à reconstituer">${expression.join("")}</div><h2>Réserve de lettres</h2><div class="tiles">${tiles}</div><div class="actions"><button class="button" id="erase" ${solved ? "disabled" : ""}>Effacer</button>${reset}</div><p class="message ${solved ? "success" : ""}">${message || (solved ? `Résolu : ${answer}` : "")}</p>${solved ? archiveLinks() : ""}</section></div>`;
+    const restart = solved ? "" : restartConfirmation ? `<div class="restart-confirmation"><p>Effacer toutes les lettres placées ?</p><button class="button" id="cancelRestart">Non</button><button class="button danger" id="confirmRestart">Oui, effacer</button></div>` : `<button class="button restart-icon" id="restart" aria-label="Recommencer" title="Recommencer">↻</button>`;
+    app.innerHTML = `<header class="puzzle-header"><div class="header-row"><p class="puzzle-id">Énigme ${puzzle.id}</p><div class="header-actions"><button class="header-button" id="back" type="button" aria-label="Retour">←</button><button class="header-button header-button--off" id="off" type="button" aria-label="Éteindre">⏻</button></div></div><div class="title-row"><h1>${puzzle.title}</h1><button class="help-button" id="help" type="button" aria-label="Afficher les consignes" aria-expanded="${helpOpen}" aria-controls="instructions">?</button></div></header>${helpOpen ? `<p class="instructions" id="instructions">${puzzle.instructions}</p>` : ""}<div class="game"><section class="panel"><img class="image" src="${puzzle.data.image}" alt="Illustration de l’énigme" /></section><section class="panel"><div class="expression" aria-label="Expression à reconstituer">${expression.join("")}</div><h2>Réserve de lettres</h2><div class="tiles">${tiles}</div><div class="actions"><button class="button" id="erase" ${solved ? "disabled" : ""}>Effacer</button>${restart}</div><p class="message ${solved ? "success" : ""}">${message || (solved ? `Résolu : ${answer}` : "")}</p>${solved ? archiveLinks() : ""}</section></div>`;
     app.querySelector("#help").addEventListener("click", () => { helpOpen = !helpOpen; render(); });
     app.querySelector("#back").addEventListener("click", () => window.location.assign(backHref));
     app.querySelector("#off").addEventListener("click", () => { if (window.parent !== window) window.parent.postMessage({ type:"s18-computer-off" }, "*"); else { progress.setPoweredOn(false); window.location.assign("../../jeu/ordinateur.html"); } });
     app.querySelectorAll("[data-slot]").forEach((button) => button.addEventListener("click", () => { state.activeIndex = Number(button.dataset.slot); save(); render(); }));
     app.querySelectorAll("[data-letter]").forEach((button) => button.addEventListener("click", () => place(button.dataset.letter)));
     app.querySelector("#erase").addEventListener("click", erase);
-    app.querySelector("#reset")?.addEventListener("click", () => { progress.resetLigne(id); state = progress.ligne(id); state.values ||= {}; state.activeIndex = null; message = "Réponse réinitialisée."; render(); });
+    app.querySelector("#restart")?.addEventListener("click", () => { restartConfirmation = true; render(); });
+    app.querySelector("#cancelRestart")?.addEventListener("click", () => { restartConfirmation = false; render(); });
+    app.querySelector("#confirmRestart")?.addEventListener("click", () => { progress.resetLigne(id); state = progress.ligne(id); state.values ||= {}; state.activeIndex = null; restartConfirmation = false; message = "Réponse réinitialisée."; render(); });
   }
   function place(letter) {
     const target = state.activeIndex ?? emptyIndexes()[0];
