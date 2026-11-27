@@ -12,10 +12,10 @@ window.ORDINATEUR_CATALOG = {
     { id: "recherche", title: "Recherches", icon: "assets/ordinateur/categories/512/clair-carre/recherche.png", order: 2 },
     { id: "cadenas", title: "Cadenas", icon: "assets/ordinateur/categories/512/clair-carre/cadenas.png", order: 3 },
     { id: "nonogramme", title: "Nonogrammes", icon: "assets/ordinateur/categories/512/clair-carre/nonogrammes.png", order: 4 },
-    { id: "labyrinthe", title: "Labyrinthes", icon: "assets/ordinateur/categories/512/clair-carre/labyrinthes.png", order: 5 },
+    { id: "labyrinthe", title: "Labyrinthes", icon: "assets/ordinateur/categories/512/clair-carre/labyrinthes.png", order: 8 },
     { id: "sudoku", title: "Sudokus", icon: "assets/ordinateur/categories/512/clair-carre/sudokus.png", order: 6 },
     { id: "defi", title: "Défis", icon: "assets/ordinateur/categories/512/clair-carre/defis.png", order: 7 },
-    { id: "ligne", title: "Dingbats", icon: "assets/ordinateur/categories/512/clair-carre/entre-les-lignes.png", order: 8 },
+    { id: "ligne", title: "Dingbats", icon: "assets/ordinateur/categories/512/clair-carre/entre-les-lignes.png", order: 5 },
   ],
   puzzles: [
     { id: "code-alain-01", categoryId: "alain", title: "Le code d’Alain", order: 1, instructions: "Complétez la suite : UN2TR DE3QU TR4CI ?????", responseFormat: "texte libre", acceptedAnswers: ["QU5SI"], archiveCodes: ["VII-E-7"], enabled: true, admin: { published: true } },
