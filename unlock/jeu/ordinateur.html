@@ -149,6 +149,9 @@ main { max-width:1100px; }
       }
       function restoreView() {
         if (!progress.read().authenticated) return renderLogin();
+        const requestedPuzzle = new URLSearchParams(location.search).get("puzzle");
+        const specialPuzzle = activePuzzles().find((puzzle) => puzzle.id === requestedPuzzle && (puzzle.template === "sudoku" || puzzle.template === "ligne"));
+        if (specialPuzzle) return renderEmbeddedPuzzle(specialPuzzle);
         const requestedCategory = new URLSearchParams(location.search).get("category");
         if (requestedCategory && categories().some((category) => category.id === requestedCategory)) return renderCategory(requestedCategory);
         const { view } = progress.read();
@@ -160,9 +163,12 @@ main { max-width:1100px; }
       function boot(restored = false) { progress.discover(); progress.setPoweredOn(true); power.classList.add("on"); screen.classList.remove("off"); if (restored) return restoreView(); screen.innerHTML = `<p class="boot terminal-line">Initialisation du terminal…</p>`; window.setTimeout(() => { if (power.classList.contains("on")) restoreView(); }, 650); }
       function shutdown() { progress.setPoweredOn(false); power.classList.remove("on"); screen.className = "screen off"; screen.replaceChildren(); }
       function goBack() { const view = progress.read().view; if (view?.name === "category") return renderDesktop(); if (view?.name === "puzzle" || view?.name === "special-puzzle") return renderCategory(view.categoryId || activePuzzles().find((puzzle) => puzzle.id === view.puzzleId)?.categoryId); window.location.assign("../index.html"); }
+      function openSpecialPuzzleMobile(puzzle) { const path = puzzle.template === "sudoku" ? "sudoku/sudoku.html" : "entre-les-lignes/ligne.html"; window.location.assign(`../ordinateur/${path}?id=${encodeURIComponent(puzzle.id)}&from=ordinateur`); }
+      function switchSpecialPuzzleForMobile() { const view = progress.read().view; if (window.matchMedia("(max-width: 700px)").matches && view?.name === "special-puzzle") { const puzzle = activePuzzles().find((entry) => entry.id === view.puzzleId); if (puzzle) openSpecialPuzzleMobile(puzzle); } }
       power.addEventListener("click", () => { if (power.classList.contains("on")) shutdown(); else boot(); });
       returnKey.addEventListener("click", goBack);
       window.addEventListener("message", (event) => { if (event.data?.type === "s18-computer-off") shutdown(); });
+      window.addEventListener("resize", switchSpecialPuzzleForMobile);
       if (new URLSearchParams(location.search).get("direct") === "1" && progress.read().authenticated) boot(true);
       else if (progress.read().poweredOn) boot(true);
     </script>

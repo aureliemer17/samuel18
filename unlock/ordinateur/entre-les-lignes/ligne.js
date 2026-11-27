@@ -31,6 +31,7 @@
     return empty.find((index) => index > from) ?? empty[0] ?? null;
   };
   const save = () => progress.saveLigne(id, state);
+  function returnToComputerLayout() { if (fromComputer && window.matchMedia("(min-width: 701px)").matches) window.location.assign(`../../jeu/ordinateur.html?puzzle=${encodeURIComponent(id)}`); }
   function render() {
     const solved = state.status === "solved";
     const expression = [];
@@ -92,5 +93,6 @@
     render();
   }
   window.addEventListener("keydown", (event) => { const letter = normalize(event.key); if (/^[A-Z]$/.test(letter)) place(letter); if (event.key === "Backspace" || event.key === "Delete") erase(); });
+  window.addEventListener("resize", returnToComputerLayout);
   render();
 })();

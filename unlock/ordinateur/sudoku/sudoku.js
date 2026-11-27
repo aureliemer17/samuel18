@@ -26,6 +26,7 @@
   if (embedded && window.matchMedia("(min-width: 701px)").matches) document.documentElement.classList.add("embedded");
   const backHref = fromComputer ? "../../jeu/ordinateur.html?category=sudoku" : "index.html";
   const archiveLinks = () => `<div class="archive-links">${puzzle.archiveCodes.map((code) => `<a class="button" href="../../archives/media.html#code=${encodeURIComponent(code)}&from=ordinateur">Archive ${code}</a>`).join("")}</div>`;
+  function returnToComputerLayout() { if (fromComputer && window.matchMedia("(min-width: 701px)").matches) window.location.assign(`../../jeu/ordinateur.html?puzzle=${encodeURIComponent(id)}`); }
   function render(message = "") {
     const solved = state.status === "solved";
     const cells = [];
@@ -68,5 +69,6 @@
   function isComplete() { return Array.from({ length:size }, (_, row) => Array.from({ length:size }, (_, col) => valueAt(row, col))).every((row) => row.every(Boolean)); }
   function verify() { const values = Array.from({ length:size }, (_, row) => Array.from({ length:size }, (_, col) => Number(valueAt(row, col)))); if (values.some((row) => row.some((value) => !value))) return render("La grille est incomplète."); if (values.some((row, r) => row.some((value, c) => value !== solution[r][c]))) return render("Cette grille n’est pas correcte. Réessayez."); state.status = "solved"; state.notes = {}; state.archiveCodes = puzzle.archiveCodes; progress.solve(id, values.map((row) => row.join("")).join("/"), puzzle.archiveCodes); save(); render(); }
   window.addEventListener("keydown", (event) => { if (event.key >= "1" && event.key <= String(size)) apply(event.key); if (event.key === "Backspace" || event.key === "Delete") apply(null, "erase"); });
+  window.addEventListener("resize", returnToComputerLayout);
   render();
 })();
